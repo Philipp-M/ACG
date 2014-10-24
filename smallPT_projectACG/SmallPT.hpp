@@ -1,13 +1,20 @@
 
 #ifndef SMALLPT_HPP_
 #define SMALLPT_HPP_
-
+#define _USE_MATH_DEFINES
+#include <cmath>
 #include <iostream>
 #include <cstdio>
 #include <cstdlib>
-#include <cmath>
 #include "DataTypes.hpp"
 #include "GScene.hpp"
+
+
+#ifdef _WIN32
+double inline erand48(unsigned short xsubi[3]) {
+	return ((double)rand() / (double)RAND_MAX);
+}
+#endif
 
 class SmallPT
 {
