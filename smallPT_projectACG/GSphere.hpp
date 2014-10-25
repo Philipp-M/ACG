@@ -31,6 +31,7 @@ struct GSphere: public GPrimitiveObject , public GObject
 	 * for simplicity the sphere is also a "normal" Object
 	 */
 	const GPrimitiveObject* intersect(const Ray& ray, double& t) const;
+	Vec getCentroid();
 };
 
 #endif

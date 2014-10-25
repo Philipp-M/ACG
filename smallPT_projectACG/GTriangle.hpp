@@ -12,21 +12,44 @@ public:
 	GTriangle(Vec v0_, Vec v1_, Vec v2_, Vec emission_, Vec color_,  Refl_t refl_) :
 			v0(v0_), v1(v1_), v2(v2_), emission(emission_), color(color_), refl(refl_)
 	{
-		Vec edge1 = v1 - v0;
-		Vec edge2 = v2 - v0;
-		normal = (edge1%edge2).norm();
+		updateGeometry();
 	}
+	/***** implementations of GPrimitiveObject *****/
+	/*
+	 * implemented intersection method of a triangle
+	 */
 	double intersect(const Ray &ray) const;
 
 	Vec getNorm(const Vec& position) const;
 	Vec getColor(const Vec& position) const;
 	Vec getEmission(const Vec& position) const;
-
-	const GPrimitiveObject* intersect(const Ray& ray, double& t) const;
-
 	Refl_t getReflectionType() const;
+
+	/***** implementations of GObject *****/
+	/**
+	 * for simplicity the triangle is also a "normal" Object
+	 */
+	const GPrimitiveObject* intersect(const Ray& ray, double& t) const;
+	Vec getCentroid();
+
+	/***** custom methods *****/
+	void setV0(const Vec& v) { v0 = v; updateGeometry(); }
+	void setV1(const Vec& v) { v1 = v; updateGeometry(); }
+	void setV2(const Vec& v) { v2 = v; updateGeometry(); }
+	void setV(const Vec& v0_, const Vec& v1_, const Vec& v2_) { v0 = v0_; v1 = v1_; v2 = v2_; updateGeometry(); }
+	Vec getV0() const { return v0; }
+	Vec getV1() const { return v1; }
+	Vec getV2() const { return v2; }
+
 	virtual ~GTriangle();
 private:
+	/***** methods *****/
+	/**
+	 * updates the Geometry (which is  for now just the normal)
+	 * the front face is determined like in open GL: Counter Clockwise: v0, v1, v2
+	 */
+	void updateGeometry() {	normal = ((v1 - v0)%(v2 - v0)).norm(); }
+	/***** attributes *****/
 	Vec v0;
 	Vec v1;
 	Vec v2;

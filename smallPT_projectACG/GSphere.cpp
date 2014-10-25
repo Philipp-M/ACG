@@ -35,3 +35,8 @@ const GPrimitiveObject* GSphere::intersect(const Ray& ray, double& t) const
 {
 	return (t = intersect(ray)) != 0 ? this : NULL;
 }
+
+Vec GSphere::getCentroid()
+{
+	return position;
+}

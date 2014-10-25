@@ -11,6 +11,7 @@ class GObject
 {
 public:
 	virtual const GPrimitiveObject* intersect(const Ray& ray, double& t) const = 0;
+	virtual Vec getCentroid()  = 0;
 	virtual ~GObject() {};
 };
 
