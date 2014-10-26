@@ -4,6 +4,7 @@
 #include "GTriangle.hpp"
 #include <cstdlib>
 #include <cstdio>
+
 int main(int argc, char *argv[])
 {
 	int w = 1024, h = 768; // image size

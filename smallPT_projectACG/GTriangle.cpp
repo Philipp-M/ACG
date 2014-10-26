@@ -50,7 +50,7 @@ const GPrimitiveObject* GTriangle::intersect(const Ray& ray, double& t) const
 	return (t = intersect(ray)) != 0 ? this : NULL;
 }
 
-Vec GTriangle::getCentroid()
+Vec GTriangle::getCentroid() const
 {
 	return (v0 + v1 + v2)*0.33333333333333333333;
 }

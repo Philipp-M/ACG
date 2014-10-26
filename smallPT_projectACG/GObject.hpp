@@ -1,6 +1,5 @@
-
-#ifndef GOBJECT_HPP_
-#define GOBJECT_HPP_
+#ifndef GOBJECT_HPP
+#define GOBJECT_HPP
 #include "DataTypes.hpp"
 #include "GPrimitiveObject.hpp"
 
@@ -11,8 +10,8 @@ class GObject
 {
 public:
 	virtual const GPrimitiveObject* intersect(const Ray& ray, double& t) const = 0;
-	virtual Vec getCentroid()  = 0;
+	virtual Vec getCentroid() const = 0;
 	virtual ~GObject() {};
 };
 
-#endif /* GOBJECT_HPP_ */
+#endif // GOBJECT_HPP

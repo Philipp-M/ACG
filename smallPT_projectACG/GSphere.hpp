@@ -1,5 +1,5 @@
-#ifndef GSPHERE_H
-#define GSPHERE_H
+#ifndef GSPHERE_HPP
+#define GSPHERE_HPP
 
 #include <iostream>
 #include "DataTypes.hpp"
@@ -15,7 +15,7 @@ struct GSphere: public GPrimitiveObject , public GObject
 			radius(rad_), position(p_), emission(e_), color(c_), refl(refl_)
 	{
 	}
-	~GSphere();
+	~GSphere() {};
 
 	/***** implementations of GPrimitiveObject *****/
 	/*
@@ -31,7 +31,7 @@ struct GSphere: public GPrimitiveObject , public GObject
 	 * for simplicity the sphere is also a "normal" Object
 	 */
 	const GPrimitiveObject* intersect(const Ray& ray, double& t) const;
-	Vec getCentroid();
+	Vec getCentroid() const;
 };
 
-#endif
+#endif //GSPHERE_HPP

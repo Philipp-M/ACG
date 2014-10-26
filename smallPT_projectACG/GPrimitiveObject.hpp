@@ -1,5 +1,5 @@
-#ifndef GOBJECT_H_
-#define GOBJECT_H_
+#ifndef GPRIMITIVEOBJECT_HPP
+#define GPRIMITIVEOBJECT_HPP
 
 #include "DataTypes.hpp"
 
@@ -33,7 +33,11 @@ public:
 	 * returns the type of reflection(e.g. diffuse etc.)
 	 */
 	virtual Refl_t getReflectionType() const = 0;
+	/**
+	 * returns the centroid of the Object
+	 */
+	Vec getCentroid() const;
 	virtual ~GPrimitiveObject() {}
 };
 
-#endif /* GOBJECT_H_ */
+#endif // GPRIMITIVEOBJECT_HPP

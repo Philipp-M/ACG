@@ -1,6 +1,6 @@
 
-#ifndef SMALLPT_HPP_
-#define SMALLPT_HPP_
+#ifndef SMALLPT_HPP
+#define SMALLPT_HPP
 #define _USE_MATH_DEFINES
 #include <cmath>
 #include <iostream>
@@ -19,8 +19,8 @@ double inline erand48(unsigned short xsubi[3]) {
 class SmallPT
 {
 public:
-	SmallPT();
-	~SmallPT();
+	SmallPT() {};
+	~SmallPT() {};
 
 	static double clamp(double x)
 	{
@@ -86,4 +86,4 @@ public:
 	}
 };
 
-#endif /* SMALLPT_HPP_ */
+#endif //SMALLPT_HPP

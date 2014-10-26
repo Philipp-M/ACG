@@ -1,8 +1,5 @@
 #include "GSphere.hpp"
 
-GSphere::~GSphere()
-{
-}
 double GSphere::intersect(const Ray &ray) const
 {
 	Vec op = position - ray.origin; // Solve t^2*d.d + 2*t*(o-p).d + (o-p).(o-p)-R^2 = 0
@@ -18,14 +15,17 @@ Vec GSphere::getNorm(const Vec& position) const
 {
 	return (position - this->position).norm();
 }
+
 Vec GSphere::getColor(const Vec& position) const
 {
 	return color;
 }
+
 Vec GSphere::getEmission(const Vec& position) const
 {
 	return emission;
 }
+
 Refl_t GSphere::getReflectionType() const
 {
 	return refl;
@@ -36,7 +36,7 @@ const GPrimitiveObject* GSphere::intersect(const Ray& ray, double& t) const
 	return (t = intersect(ray)) != 0 ? this : NULL;
 }
 
-Vec GSphere::getCentroid()
+Vec GSphere::getCentroid() const
 {
 	return position;
 }

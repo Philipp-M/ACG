@@ -6,9 +6,7 @@
 #include "DataTypes.hpp"
 #include "GPrimitiveObject.hpp"
 #include "GObject.hpp"
-#include <limits>
-
-// Ray intersection Point, contains information about the intersection
+#include "GAccelStruct.hpp"
 
 class GScene
 {
@@ -17,29 +15,15 @@ public:
 	~GScene();
 	/**
 	 * returns NULL if nothing was hit, else the pointer to the corresponding intersection Object
-	 *
-	 * definitely needs optimization
 	 */
 	const GPrimitiveObject * intersect(const Ray &ray, double& t) const
 	{
-		t = 1e20;//std::numeric_limits<double>::infinity(); // c++ way to indicate infinity
-		double dis;
-		const GPrimitiveObject* retVal = NULL;
-		const GPrimitiveObject* tmpObj = NULL;
-		for (int i = int(objects.size()-1); i >= 0; i--)
-		{
-			if (((tmpObj = objects[i]->intersect(ray, dis)) != NULL) && dis < t)
-			{
-				t = dis;
-				retVal = tmpObj;
-			}
-		}
-		return t < 1e20 ? retVal : NULL;
+		return accelStruct->intersect(ray, t);
 	}
-	void addItem(GObject* object);
+	void addItem(GObject* object, bool update = true);
 private:
+	GAccelStruct* accelStruct;
 	std::vector<GObject*> objects;
-	// should contain an acceleration structure in future (obviously a BVH)
 };
 
 #endif /* GEOMETRICSCENE_HPP_ */

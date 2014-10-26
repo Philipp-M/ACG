@@ -1,26 +1,10 @@
-/*
- * DataTypes.hpp
- *
- *  Created on: 22.10.2014
- *      Author: Philipp Mildenberger
- */
-
-#ifndef DATATYPES_HPP_
-#define DATATYPES_HPP_
+#ifndef DATATYPES_HPP
+#define DATATYPES_HPP
 
 #include <cmath>
 /* Basic Data types: Vec - 2D Vector and all the standard operations
  *                   Ray - a Ray with an origin and a direction(unit) vector
  *                   Refl_t - an enum, describing the Reflection type
- *                   *********************** custom Types ******************
- *                   RayIntPt - a ray intersection point contains information
- *                              about the intersection with a geometric body:
- *                                  Normal of Point(unit vector),
- *                                  Color of Reflection,
- *                                  Type of Reflection,
- *                                  and of course the intersection point
- *                                  for performance issues, also the distance
- *                                  from the origin of the ray to the intersection point is included
  */
 
 // Vec STRUCTURE ACTS AS POINTS, COLORS, VECTORS
@@ -76,20 +60,4 @@ enum Refl_t
 {
 	DIFF, SPEC, REFR
 };
-//struct RayIntPt
-//{
-//	Vec position;
-//	Vec normal;
-//	Vec color;
-//	Vec emission;
-//	double distance;
-//
-//	Refl_t reflType;
-//
-//	RayIntPt(Vec position_, Vec normal_, double distance_, Vec color_, Vec emission_, Refl_t reflType_) :
-//			normal(normal_), position(position_), distance(distance_), color(color_), emission(emission_), reflType(reflType_)
-//	{
-//	}
-//};
-
-#endif /* DATATYPES_HPP_ */
+#endif // DATATYPES_HPP

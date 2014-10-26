@@ -1,5 +1,5 @@
-#ifndef GTRIANGLE_H_
-#define GTRIANGLE_H_
+#ifndef GTRIANGLE_HPP
+#define GTRIANGLE_HPP
 
 #include "DataTypes.hpp"
 #include "GObject.hpp"
@@ -30,7 +30,7 @@ public:
 	 * for simplicity the triangle is also a "normal" Object
 	 */
 	const GPrimitiveObject* intersect(const Ray& ray, double& t) const;
-	Vec getCentroid();
+	Vec getCentroid() const;
 
 	/***** custom methods *****/
 	void setV0(const Vec& v) { v0 = v; updateGeometry(); }
@@ -59,4 +59,4 @@ private:
 	Refl_t refl;
 };
 
-#endif /* GTRIANGLE_H_ */
+#endif // GTRIANGLE_HPP
