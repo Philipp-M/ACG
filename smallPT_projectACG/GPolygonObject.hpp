@@ -8,27 +8,21 @@
 #include "GAccelStruct.hpp"
 #include "GSimpleAccelStruct.hpp"
 
-class GPolygonObject
+class GPolygonObject : public GObject
 {
 public:
-	GPolygonObject()
-	{
-		accelStruct = NULL;
-		updateGeometry();
-	}
-	GPolygonObject(const std::vector<GTriangle>& triangles)
-	{
-		faces = triangles;
-		accelStruct = NULL;
-		updateGeometry();
-	}
-	const GPrimitiveObject* intersect(const Ray& ray, double& t) const;
+	GPolygonObject() : accelStruct(NULL) { updateGeometry(); }
+	GPolygonObject(const std::vector<GTriangle>& triangles) : faces(triangles), accelStruct(NULL) { updateGeometry(); }
 
+	/***** implementations of GObject *****/
+	const GPrimitiveObject* intersect(const Ray& ray, double& t) const;
 	Vec getCentroid() const;
-	~GPolygonObject()
-	{
-	}
-	;
+
+	/***** custom methods *****/
+	void addFace(const GTriangle& triangle) { faces.push_back(triangle); updateGeometry(); }
+	std::vector<GTriangle> getFaces() { return faces; }
+
+	~GPolygonObject() { }
 private:
 	void updateGeometry()
 	{
