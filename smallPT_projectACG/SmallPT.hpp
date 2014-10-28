@@ -67,6 +67,7 @@ public:
 			double r1 = 2 * M_PI * erand48(Xi), r2 = erand48(Xi), r2s = sqrt(r2);
 			Vec w = nl, u = ((fabs(w.x) > .1 ? Vec(0, 1) : Vec(1)) % w).norm(), v = w % u;
 			Vec d = (u * cos(r1) * r2s + v * sin(r1) * r2s + w * sqrt(1 - r2)).norm();
+
 			return emission + f.mult(radiance(Ray(x, d), scene, depth, Xi));
 		}
 		else if (refl == SPEC)            // Ideal SPECULAR reflection
@@ -80,9 +81,15 @@ public:
 		Vec tdir = (ray.direction * nnt - n * ((into ? 1 : -1) * (ddn * nnt + sqrt(cos2t)))).norm();
 		double a = nt - nc, b = nt + nc, R0 = a * a / (b * b), c = 1 - (into ? -ddn : tdir.dot(n));
 		double Re = R0 + (1 - R0) * c * c * c * c * c, Tr = 1 - Re, P = .25 + .5 * Re, RP = Re / P, TP = Tr / (1 - P);
+		double densityFactor;
+		if(into)
+			densityFactor = 0;
+		else
+			densityFactor = 0.8;
+		f = Vec(exp(-t*densityFactor*(1-f.x)),exp(-t*densityFactor*(1-f.y)),exp(-t*densityFactor*(1-f.z)));
 		return emission + f.mult(depth > 2 ? (erand48(Xi) < P ?   // Russian roulette
-		radiance(reflRay, scene, depth, Xi) * RP : radiance(Ray(x, tdir), scene, depth, Xi) * TP) :
-																radiance(reflRay, scene, depth, Xi) * Re + radiance(Ray(x, tdir), scene, depth, Xi) * Tr);
+				radiance(reflRay, scene, depth, Xi) * RP : radiance(Ray(x, tdir), scene, depth, Xi) * TP) :
+																			radiance(reflRay, scene, depth, Xi) * Re + radiance(Ray(x, tdir), scene, depth, Xi) * Tr);
 	}
 };
 
