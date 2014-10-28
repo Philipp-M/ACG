@@ -35,7 +35,8 @@ int main(int argc, char *argv[])
 	scene.addItem(new GSphere(1e5, Vec(50, -1e5 + 81.6, 81.6), Vec(), Vec(.75, .75, .75), DIFF));
 	scene.addItem(new GSphere(16.5, Vec(27, 16.5, 47), Vec(), Vec(1, 1, 1) * .999, SPEC));
 	scene.addItem(new GTriangle(Vec(17, 34, 20), Vec(27+20, 60+20, 20-10), Vec(27-20, 60-5, 20+30), Vec(), Vec(0.5, 1, 0) * .999, DIFF));
-	scene.addItem(new GSphere(16.5, Vec(73, 16.5, 78), Vec(), Vec(1, 0, 0) * .999, REFR));
+	scene.addItem(new GSphere(20, Vec(73, 20, 78), Vec(), Vec(1, 0.0, 0.0) * .999, REFR));
+	scene.addItem(new GSphere(3, Vec(73-17*2, 3, 78), Vec(), Vec(1, 0.1, 0.1) * .999, REFR));
 	scene.addItem(new GSphere(600, Vec(50, 681.6 - .27, 81.6), Vec(12, 12, 12), Vec(), DIFF));
 
 #pragma omp parallel for schedule(dynamic, 1) private(r) // OpenMP
