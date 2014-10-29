@@ -2,6 +2,8 @@
 #include "GScene.hpp"
 #include "GSphere.hpp"
 #include "GTriangle.hpp"
+#include "GPolygonObject.hpp"
+#include "ObjLoader.hpp"
 #include <cstdlib>
 #include <cstdio>
 
@@ -26,7 +28,10 @@ int main(int argc, char *argv[])
 //	scene.addItem(new GSphere(16.5, Vec(27, 16.5, 47), Vec(), Vec(1, 1, 1) * .999, SPEC));
 //	scene.addItem(new GSphere(16.5, Vec(73, 16.5, 78), Vec(), Vec(1, 1, 1) * .999, REFR));
 //	scene.addItem(new GSphere(1.5, Vec(50, 81.6 - 16.5, 81.6), Vec(4, 4, 4) * 100, Vec(), DIFF));
-
+//	std::vector<GPolygonObject*> cube;
+//	cube = ObjLoader::loadOfFile("cube2.obj");
+//	if(cube.size() >= 1)
+//		scene.addItem(cube[0]);
 	scene.addItem(new GSphere(1e5, Vec(1e5 + 1, 40.8, 81.6), Vec(), Vec(.75, .25, .25), DIFF));
 	scene.addItem(new GSphere(1e5, Vec(-1e5 + 99, 40.8, 81.6), Vec(), Vec(.25, .25, .75), DIFF));
 	scene.addItem(new GSphere(1e5, Vec(50, 40.8, 1e5), Vec(), Vec(.75, .75, .75), DIFF));
