@@ -9,11 +9,12 @@
 
 int main(int argc, char *argv[])
 {
-	int w = 1024, h = 768; // image size
+	int w = 512, h = 512; // image size
 	int samps = argc == 2 ? atoi(argv[1]) / 4 : 1; // # samples (default of 1
-	Ray cam(Vec(50, 52, 295.6), Vec(0, -0.042612, -1).norm()); // camera pos, dir
-	Vec cx = Vec(w * .5135 / h); // x direction increment (uses implicit 0 for y, z)
-	Vec cy = (cx % cam.direction).norm() * .5135; // y direction increment (note cross product)
+	//Ray cam(Vec(50, 52, 295.6), Vec(0, -0.042612, -1).norm()); // camera pos, dir
+	Ray cam(Vec(50, 50, 230), Vec(0, 0, -1).norm()); // camera pos, dir
+	Vec cx = Vec(w * .7135 / h); // x direction increment (uses implicit 0 for y, z)
+	Vec cy = (cx % cam.direction).norm() * .7135; // y direction increment (note cross product)
 	Vec r; // used for colors of samples
 	Vec *c = new Vec[w * h]; // The image
 
@@ -28,20 +29,20 @@ int main(int argc, char *argv[])
 //	scene.addItem(new GSphere(16.5, Vec(27, 16.5, 47), Vec(), Vec(1, 1, 1) * .999, SPEC));
 //	scene.addItem(new GSphere(16.5, Vec(73, 16.5, 78), Vec(), Vec(1, 1, 1) * .999, REFR));
 //	scene.addItem(new GSphere(1.5, Vec(50, 81.6 - 16.5, 81.6), Vec(4, 4, 4) * 100, Vec(), DIFF));
-//	std::vector<GPolygonObject*> cube;
-//	cube = ObjLoader::loadOfFile("cube2.obj");
-//	if(cube.size() >= 1)
-//		scene.addItem(cube[0]);
-	scene.addItem(new GSphere(1e5, Vec(1e5 + 1, 40.8, 81.6), Vec(), Vec(.75, .25, .25), DIFF));
-	scene.addItem(new GSphere(1e5, Vec(-1e5 + 99, 40.8, 81.6), Vec(), Vec(.25, .25, .75), DIFF));
-	scene.addItem(new GSphere(1e5, Vec(50, 40.8, 1e5), Vec(), Vec(.75, .75, .75), DIFF));
-	scene.addItem(new GSphere(1e5, Vec(50, 40.8, -1e5 + 170), Vec(), Vec(), DIFF));
-	scene.addItem(new GSphere(1e5, Vec(50, 1e5, 81.6), Vec(), Vec(.75, .75, .75), DIFF));
-	scene.addItem(new GSphere(1e5, Vec(50, -1e5 + 81.6, 81.6), Vec(), Vec(.75, .75, .75), DIFF));
-	scene.addItem(new GSphere(16.5, Vec(27, 16.5, 47), Vec(), Vec(1, 1, 1) * .999, SPEC));
-	scene.addItem(new GTriangle(Vec(17, 34, 20), Vec(27+20, 60+20, 20-10), Vec(27-20, 60-5, 20+30), Vec(), Vec(0.5, 1, 0) * .999, DIFF));
-	scene.addItem(new GSphere(16.5, Vec(73, 16.5, 78), Vec(), Vec(1, 0, 0) * .999, REFR));
-	scene.addItem(new GSphere(600, Vec(50, 681.6 - .27, 81.6), Vec(12, 12, 12), Vec(), DIFF));
+	std::vector<GPolygonObject*> sceneObj;
+	sceneObj = ObjLoader::loadOfFile("scenes/cornell.obj");
+	for(size_t i = 0; i < sceneObj.size(); i++)
+		scene.addItem(sceneObj[i]);
+//	scene.addItem(new GSphere(1e5, Vec(1e5 + 1, 40.8, 81.6), Vec(), Vec(.75, .25, .25), DIFF));
+//	scene.addItem(new GSphere(1e5, Vec(-1e5 + 99, 40.8, 81.6), Vec(), Vec(.25, .25, .75), DIFF));
+//	scene.addItem(new GSphere(1e5, Vec(50, 40.8, 1e5), Vec(), Vec(.75, .75, .75), DIFF));
+//	scene.addItem(new GSphere(1e5, Vec(50, 40.8, -1e5 + 170), Vec(), Vec(), DIFF));
+//	scene.addItem(new GSphere(1e5, Vec(50, 1e5, 81.6), Vec(), Vec(.75, .75, .75), DIFF));
+//	scene.addItem(new GSphere(1e5, Vec(50, -1e5 + 81.6, 81.6), Vec(), Vec(.75, .75, .75), DIFF));
+//	scene.addItem(new GSphere(16.5, Vec(27, 16.5, 47), Vec(), Vec(1, 1, 1) * .999, SPEC));
+//	scene.addItem(new GTriangle(Vec(17, 34, 20), Vec(27+20, 60+20, 20-10), Vec(27-20, 60-5, 20+30), Vec(), Vec(0.5, 1, 0) * .999, DIFF));
+//	scene.addItem(new GSphere(16.5, Vec(85, 16.5, 78), Vec(), Vec(0.9, 0.8, 0.8) * .999, REFR));
+//	scene.addItem(new GSphere(600, Vec(50, 681.6 - .27, 81.6), Vec(12, 12, 12), Vec(), DIFF));
 
 #pragma omp parallel for schedule(dynamic, 1) private(r) // OpenMP
 
