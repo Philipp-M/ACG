@@ -5,7 +5,7 @@ A Path tracer project based on the well known smallPT from Kevin Beason: www.kev
 The target of this little project is to implement a few features like displacement mapping, depth of field, BVH, motion blur etc.
 
 An Example Image rendered with 10000 spp of the original cornell box:
-![CornellBox](https://github.com/Philipp-M/ACG/tree/master/smallPT_projectACG/images/cornell10000spp.jpg?raw=true)
+![CornellBox](https://raw.githubusercontent.com/Philipp-M/ACG/master/smallPT_projectACG/images/cornell10000spp.jpg)
 License
 -------
 see smallPT_projectACG/LICENSE
