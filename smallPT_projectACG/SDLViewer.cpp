@@ -13,14 +13,14 @@ void SDLViewer::display()
 	while (!quit)
 	{
 		bool needsUpdate = false;
-		if (imageRefreshed)
+		if (imageNeedsRefresh)
 			needsUpdate = true;
 		// Handle events on queue
 		handleEvents(events, needsUpdate);
 
 		if (needsUpdate)
 		{
-			if (imageRefreshed)
+			if (imageNeedsRefresh)
 			{
 				Uint32 *pixels = new Uint32[gScreenSurface->w * gScreenSurface->h];
 				SDL_Surface* tonemappedImage = toneMap(pixels);
@@ -117,7 +117,7 @@ int SDLViewer::renderThreadF(void* data)
 	/********** create the scene *************/
 	GScene scene;
 	std::vector<GPolygonObject*> sceneObj;
-	sceneObj = ObjLoader::loadOfFile("scenes/cornell.obj");
+	sceneObj = ObjLoader::loadOfFile("scenes/cornell.obj", "./scenes/");
 	for (size_t i = 0; i < sceneObj.size(); i++)
 		scene.addItem(sceneObj[i]);
 	while (!viewer->quit)
@@ -153,7 +153,7 @@ int SDLViewer::renderThreadF(void* data)
 			for (int i = 0; i < w * h; i++)
 				viewer->rawSamplesData[i] = viewer->rawSamplesData[i] + c[i];
 			viewer->curSPP += viewer->sampleStep;
-			viewer->imageRefreshed = true;
+			viewer->imageNeedsRefresh = true;
 		}
 		SDL_UnlockMutex(viewer->mutex);
 		delete[] c;
@@ -236,7 +236,7 @@ SDL_Surface* SDLViewer::toneMap(Uint32* pixels)
 		}
 
 		renderedImage = SDL_CreateRGBSurfaceFrom((void*) pixels, w, h, 32, 4 * w, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
-		imageRefreshed = false;
+		imageNeedsRefresh = false;
 	}
 	SDL_UnlockMutex(mutex);
 	return renderedImage;

@@ -28,7 +28,7 @@ private:
 	Vec* rawSamplesData;
 	int curSPP;
 	int sampleStep;
-	bool imageRefreshed;
+	bool imageNeedsRefresh;
 	bool quit;
 
 };
