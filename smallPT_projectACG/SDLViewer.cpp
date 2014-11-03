@@ -43,7 +43,7 @@ void SDLViewer::display()
 }
 
 SDLViewer::SDLViewer(int w, int h, int sampleStep) :
-		quit(false), curSPP(0), sampleStep(sampleStep)
+		curSPP(0), sampleStep(sampleStep), quit(false)
 {
 	if (this->sampleStep < 4)
 		this->sampleStep = 4;
@@ -125,10 +125,10 @@ int SDLViewer::renderThreadF(void* data)
 		Vec *c = new Vec[w * h]; // stack would be better, but can be exceeded, which causes a Segmention Fault...
 		unsigned int seed = SDL_GetTicks();
 #pragma omp parallel for schedule(dynamic, 1) private(r) // OpenMP
-		for (int y = 0; y < h; y++)
+		for (unsigned short y = 0; y < h; y++)
 		{ // Loop over image rows
 			for (unsigned short x = 0, Xi[3] =
-			{ 0, (unsigned short) (seed % (1 << 16)), (unsigned short) y * y * y }; x < w; x++)   // Loop columns
+			{ 0, (unsigned short) (seed % (1 << 16)), (unsigned short) (y * y * y) }; x < w; x++)   // Loop columns
 			{
 				// FOR EACH PIXEL DO 2x2 SUBSAMPLES, AND samps SAMPLES PER SUBSAMPLE
 				for (int sy = 0, i = (h - y - 1) * w + x; sy < 2; sy++)     // 2x2 subpixel rows

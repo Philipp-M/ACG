@@ -36,11 +36,11 @@ private:
 	void updateGeometry()
 	{
 		Vec tmp;
-		for (int i = 0; i < faces.size(); i++)
+		for (size_t i = 0; i < faces.size(); i++)
 			tmp = tmp + faces[i].getCentroid();
 		centroid = tmp * (1.0 / faces.size());
 		accelObjs.clear();
-		for (int i = 0; i < faces.size(); i++)
+		for (size_t i = 0; i < faces.size(); i++)
 			accelObjs.push_back((GObject*) &faces[i]);
 		// for now just the simple AccelStruct...
 		if (accelStruct != NULL)
