@@ -238,9 +238,9 @@ exportFaceGroupToShape(
     return false;
   }
 
-  size_t offset;
+  //size_t offset;
 
-  offset = shape.mesh.indices.size();
+  //offset = shape.mesh.indices.size();
 
   // Flatten vertices and indices
   for (size_t i = 0; i < faceGroup.size(); i++) {
@@ -624,7 +624,7 @@ std::string LoadObj(
       token += 7;
       sscanf(token, "%s", namebuf);
 
-      bool ret = exportFaceGroupToShape(shape, vertexCache, v, vn, vt, faceGroup, material, name, false);
+      //bool ret = exportFaceGroupToShape(shape, vertexCache, v, vn, vt, faceGroup, material, name, false);
       faceGroup.clear();
 
       if (material_map.find(namebuf) != material_map.end()) {
