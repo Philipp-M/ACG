@@ -1,6 +1,13 @@
 #include "GSphere.hpp"
-#include <glm\glm.hpp>
-#include <glm\gtc\matrix_transform.hpp>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
+#ifdef __linux__
+namespace glm
+{
+	typedef highp_mat4 mat4;
+}
+#endif
 
 double GSphere::intersect(const Ray &ray) const
 {
@@ -45,7 +52,7 @@ Vec GSphere::getCentroid() const
 
 
 //simple translation operatoins
-void GSphere::translate(Vec t) {
+void GSphere::translate(const Vec& t) {
 	position = position + t;
 }
 void GSphere::rotationX(float rad) {
@@ -59,7 +66,7 @@ void GSphere::rotationZ(float rad) {
 }
 
 
-void GSphere::rotation(float rad, Vec dir) {
+void GSphere::rotation(float rad, const Vec& dir) {
 	glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), glm::radians(rad), glm::vec3(dir.x, dir.y, dir.z));
 	
 	glm::vec4  pos = glm::vec4(position.x, position.y, position.z, 1.0);
@@ -73,6 +80,6 @@ void GSphere::rotation(float rad, Vec dir) {
 void GSphere::translateAcc(Vec t, double acc, long time) {
 	Vec v = Vec(acc*time, acc*time, acc*time);
 
-	Vec t = t + v;	//simple linear accelaration wrt to time in seconds
+	t = t + v;	//simple linear accelaration wrt to time in seconds
 	position = position + t;
 }

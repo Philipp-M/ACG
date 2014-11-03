@@ -1,7 +1,14 @@
 #include "GTriangle.hpp"
 #include <cstdio>
-#include <glm\glm.hpp>
-#include <glm\gtc\matrix_transform.hpp>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
+#ifdef __linux__
+namespace glm
+{
+	typedef highp_mat4 mat4;
+}
+#endif
 
 double GTriangle::intersect(const Ray& ray) const
 {
@@ -58,7 +65,7 @@ Vec GTriangle::getCentroid() const
 }
 
 
-void GTriangle::translate(Vec t) {
+void GTriangle::translate(const Vec& t) {
 	v0 = v0 + t;  
 	v1 = v1 + t; 
 	v2 = v2 + t;
@@ -74,12 +81,12 @@ void GTriangle::rotationZ(float rad) {
 	rotation(rad, Vec(0, 0, 1));
 }
 
-void GTriangle::rotation(float rad, Vec dir) {
-	rotationCentroid(getCentroid(), rad,dir);
+void GTriangle::rotation(float rad, const Vec& dir) {
+	rotationCentroid(getCentroid(), rad, dir);
 }
 
-void rotationCentroid(Vec centroid, float rad, Vec dir) {
-
+void GTriangle::rotationCentroid(Vec centroid, float rad, const Vec& dir)
+{
 	glm::mat4 translateCentroid = glm::translate(glm::mat4(1.0), glm::vec3(centroid.x, centroid.y, centroid.z));
 	glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), glm::radians(rad), glm::vec3(dir.x, dir.y, dir.z));
 	glm::mat4 translateCentroidBack = glm::translate(glm::mat4(1.0), -glm::vec3(centroid.x, centroid.y, centroid.z));
@@ -98,16 +105,19 @@ void rotationCentroid(Vec centroid, float rad, Vec dir) {
 	v0 = Vec(vec0.x, vec0.y, vec0.z);
 	v1 = Vec(vec1.x, vec1.y, vec1.z);
 	v2 = Vec(vec2.x, vec2.y, vec2.z);
+	updateGeometry();
 }
 
-void GTriangle::translateAcc(Vec t, double acc, long time) {
+void GTriangle::translateAcc(Vec t, double acc, long time)
+{
 	Vec v = Vec(acc*time, acc*time, acc*time);
 
-	Vec t = t + v;	//simple linear accelaration wrt to time in seconds
+	t = t + v;	//simple linear accelaration wrt to time in seconds
 
 	v0 = v0 + t;
 	v1 = v1 + t;
 	v2 = v2 + t;
+	//updateGeometry() not necessary, since the normal does not change...
 }
 
 GTriangle::~GTriangle()

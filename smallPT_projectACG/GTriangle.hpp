@@ -42,7 +42,7 @@ public:
 	Vec getV2() const { return v2; }
 
 	//simple translation operatoins
-	void translate(Vec t);
+	void translate(const Vec& t);
 	void rotationX(float rad);
 	void rotationY(float rad);
 	void rotationZ(float rad);
@@ -50,10 +50,10 @@ public:
 	//very simple liner acceleration
 	void translateAcc(Vec t, double acc, long time);
 
-	void rotation(float rad, Vec dir);
+	void rotation(float rad, const Vec& dir);
 
 	//for GPolyObject
-	void rotationCentroid(Vec centroid,float rad, Vec dir);
+	void rotationCentroid(Vec centroid,float rad, const Vec& dir);
 
 	virtual ~GTriangle();
 private:

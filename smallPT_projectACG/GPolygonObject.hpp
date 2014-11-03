@@ -23,7 +23,7 @@ public:
 	std::vector<GTriangle> getFaces() { return faces; }
 
 	//simple translation operatoins
-	void translate(Vec t);
+	void translate(const Vec& t);
 	void rotationX(float rad);
 	void rotationY(float rad);
 	void rotationZ(float rad);

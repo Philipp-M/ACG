@@ -11,7 +11,7 @@ Vec GPolygonObject::getCentroid() const
 }
 
 //simple translation operatoins
-void GPolygonObject::translate(Vec t) {
+void GPolygonObject::translate(const Vec& t) {
 	for( GTriangle f : faces ) 
 		f.translate(t);
 	updateGeometry();

@@ -34,7 +34,7 @@ class GSphere: public GPrimitiveObject , public GObject
 	Vec getCentroid() const;
 
 	//simple translation operatoins
-	void translate(Vec t);
+	void translate(const Vec& t);
 	void rotationX(float rad);
 	void rotationY(float rad);
 	void rotationZ(float rad);
@@ -42,7 +42,7 @@ class GSphere: public GPrimitiveObject , public GObject
 	//very simple liner acceleration
 	void translateAcc(Vec t, double acc, long time);
 
-	void rotation(float rad, Vec dir);
+	void rotation(float rad, const Vec& dir);
 };
 
 #endif //GSPHERE_HPP

@@ -14,7 +14,7 @@ public:
 	virtual ~GObject() {};
 
 	//simple translation operatoins
-	virtual void translate(Vec t)  = 0;
+	virtual void translate(const Vec& t)  = 0;
 	virtual void rotationX(float rad) = 0;
 	virtual void rotationY(float rad)  = 0;
 	virtual void rotationZ(float rad)  = 0;
