@@ -8,7 +8,7 @@ GScene::GScene()
 
 GScene::~GScene()
 {
-	for(int i = 0; i < objects.size(); i++)
+	for(size_t i = 0; i < objects.size(); i++)
 		delete objects[i];
 	delete accelStruct;
 }
