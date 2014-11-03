@@ -1,4 +1,6 @@
 #include "GSphere.hpp"
+#include <glm\glm.hpp>
+#include <glm\gtc\matrix_transform.hpp>
 
 double GSphere::intersect(const Ray &ray) const
 {
@@ -39,4 +41,38 @@ const GPrimitiveObject* GSphere::intersect(const Ray& ray, double& t) const
 Vec GSphere::getCentroid() const
 {
 	return position;
+}
+
+
+//simple translation operatoins
+void GSphere::translate(Vec t) {
+	position = position + t;
+}
+void GSphere::rotationX(float rad) {
+	rotation(rad, Vec(1, 0, 0));
+}
+void GSphere::rotationY(float rad) {
+	rotation(rad, Vec(0, 1, 0));
+}
+void GSphere::rotationZ(float rad) {
+	rotation(rad, Vec(0, 0, 1));
+}
+
+
+void GSphere::rotation(float rad, Vec dir) {
+	glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), glm::radians(rad), glm::vec3(dir.x, dir.y, dir.z));
+	
+	glm::vec4  pos = glm::vec4(position.x, position.y, position.z, 1.0);
+	
+	pos = rotation * pos;
+
+	position = Vec(pos.x, pos.y, pos.z);
+}
+
+//very simple liner acceleration
+void GSphere::translateAcc(Vec t, double acc, long time) {
+	Vec v = Vec(acc*time, acc*time, acc*time);
+
+	Vec t = t + v;	//simple linear accelaration wrt to time in seconds
+	position = position + t;
 }

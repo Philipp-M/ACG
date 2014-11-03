@@ -22,6 +22,15 @@ public:
 	void addFace(const GTriangle& triangle) { faces.push_back(triangle); updateGeometry(); }
 	std::vector<GTriangle> getFaces() { return faces; }
 
+	//simple translation operatoins
+	void translate(Vec t);
+	void rotationX(float rad);
+	void rotationY(float rad);
+	void rotationZ(float rad);
+
+	//very simple liner acceleration
+	void translateAcc(Vec t, double acc, long time);
+
 	~GPolygonObject() { }
 private:
 	void updateGeometry()
@@ -38,6 +47,9 @@ private:
 			delete accelStruct;
 		accelStruct = new GSimpleAccelStruct(accelObjs);
 	}
+
+	void rotation(float rad, Vec dir);
+
 	std::vector<GTriangle> faces;
 	std::vector<GObject*> accelObjs; // temporarily for the simple accel Struct...
 	Vec centroid;

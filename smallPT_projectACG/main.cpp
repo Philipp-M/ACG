@@ -7,6 +7,7 @@
 #include "SDLViewer.hpp"
 #include <cstdlib>
 #include <cstdio>
+#include <string>
 
 int main(int argc, char *argv[])
 {
@@ -21,4 +22,7 @@ int main(int argc, char *argv[])
 		samplePerStep = std::stoi(argv[3]);
 	SDLViewer view(w,h, samplePerStep);
 	view.display();
+
+	
+	return 0;
 }

@@ -41,6 +41,20 @@ public:
 	Vec getV1() const { return v1; }
 	Vec getV2() const { return v2; }
 
+	//simple translation operatoins
+	void translate(Vec t);
+	void rotationX(float rad);
+	void rotationY(float rad);
+	void rotationZ(float rad);
+
+	//very simple liner acceleration
+	void translateAcc(Vec t, double acc, long time);
+
+	void rotation(float rad, Vec dir);
+
+	//for GPolyObject
+	void rotationCentroid(Vec centroid,float rad, Vec dir);
+
 	virtual ~GTriangle();
 private:
 	/***** methods *****/
@@ -57,6 +71,7 @@ private:
 	Vec color;
 	Vec normal;
 	Refl_t refl;
+
 };
 
 #endif // GTRIANGLE_HPP

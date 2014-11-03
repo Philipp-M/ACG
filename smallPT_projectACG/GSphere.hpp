@@ -6,7 +6,7 @@
 #include "GPrimitiveObject.hpp"
 #include "GObject.hpp"
 
-struct GSphere: public GPrimitiveObject , public GObject
+class GSphere: public GPrimitiveObject , public GObject
 {
 	double radius;       // radius
 	Vec position, emission, color;      // position, emission, color
@@ -32,6 +32,17 @@ struct GSphere: public GPrimitiveObject , public GObject
 	 */
 	const GPrimitiveObject* intersect(const Ray& ray, double& t) const;
 	Vec getCentroid() const;
+
+	//simple translation operatoins
+	void translate(Vec t);
+	void rotationX(float rad);
+	void rotationY(float rad);
+	void rotationZ(float rad);
+
+	//very simple liner acceleration
+	void translateAcc(Vec t, double acc, long time);
+
+	void rotation(float rad, Vec dir);
 };
 
 #endif //GSPHERE_HPP
