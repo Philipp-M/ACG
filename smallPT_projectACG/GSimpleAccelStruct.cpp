@@ -10,7 +10,7 @@ const GPrimitiveObject* GSimpleAccelStruct::intersect(const Ray& ray, double& t)
 	const GPrimitiveObject* tmpObj = NULL;
 	for (int i = int(objects.size() - 1); i >= 0; i--)
 	{
-		if(bboxes[i].intersect(ray))
+		if(bboxes[i].intersect(ray,dis))
 		{
 			if (((tmpObj = objects[i]->intersect(ray, dis)) != NULL) && dis < t)
 			{

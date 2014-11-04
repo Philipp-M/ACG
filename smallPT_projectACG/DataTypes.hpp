@@ -49,10 +49,13 @@ struct Vec
 // Ray STRUCTURE
 struct Ray
 {
-	Vec origin, direction;
+	Vec origin, direction, invdir;
 	Ray(Vec origin_, Vec direction_) :
 			origin(origin_), direction(direction_)
 	{
+		invdir.x = 1.0/direction_.x;
+		invdir.y = 1.0/direction_.y;
+		invdir.z = 1.0/direction_.z;
 	}
 };
 // ENUM OF MATERIAL TYPES USED IN radiance FUNCTION

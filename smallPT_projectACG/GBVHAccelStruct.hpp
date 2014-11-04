@@ -19,28 +19,29 @@ public:
 	~GBoundingBox()
 	{
 	}
-	bool intersect(const Ray& ray) const
+	bool intersect(const Ray& ray, double& t) const
 	{
-		double tmin = (min.x - ray.origin.x) / ray.direction.x;
-		double tmax = (max.x - ray.origin.x) / ray.direction.x;
+		float t1 = (min.x - ray.origin.x)*ray.invdir.x;
+		float t2 = (max.x - ray.origin.x)*ray.invdir.x;
+		float t3 = (min.y - ray.origin.y)*ray.invdir.y;
+		float t4 = (max.y - ray.origin.y)*ray.invdir.y;
+		float t5 = (min.z - ray.origin.z)*ray.invdir.z;
+		float t6 = (max.z - ray.origin.z)*ray.invdir.z;
+		float tmin = std::max(std::max(std::min(t1, t2), std::min(t3, t4)), std::min(t5, t6));
+		float tmax = std::min(std::min(std::max(t1, t2), std::max(t3, t4)), std::max(t5, t6));
+		// if tmax < 0, ray (line) is intersecting AABB, but whole AABB is behing us
+		if (tmax < 0)
+		{
+		    t = tmax;
+		    return false;
+		}
+		// if tmin > tmax, ray doesn't intersect AABB
 		if (tmin > tmax)
-			std::swap(tmin, tmax);
-		double tymin = (min.y - ray.origin.y) / ray.direction.y;
-		double tymax = (max.y - ray.origin.y) / ray.direction.y;
-		if (tymin > tymax)
-			std::swap(tymin, tymax);
-		if ((tmin > tymax) || (tymin > tmax))
-			return false;
-		if (tymin > tmin)
-			tmin = tymin;
-		if (tymax < tmax)
-			tmax = tymax;
-		double tzmin = (min.z - ray.origin.z) / ray.direction.z;
-		double tzmax = (max.z - ray.origin.z) / ray.direction.z;
-		if (tzmin > tzmax)
-			std::swap(tzmin, tzmax);
-		if ((tmin > tzmax) || (tzmin > tmax))
-			return false;
+		{
+		    t = tmax;
+		    return false;
+		}
+		t = tmin;
 		return true;
 	}
 	GBoundingBox operator+(const GBoundingBox &b) const
