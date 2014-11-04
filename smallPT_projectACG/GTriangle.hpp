@@ -2,6 +2,7 @@
 #define GTRIANGLE_HPP
 
 #include "DataTypes.hpp"
+#include "GBVHAccelStruct.hpp"
 #include "GObject.hpp"
 #include "GPrimitiveObject.hpp"
 
@@ -31,6 +32,7 @@ public:
 	 */
 	const GPrimitiveObject* intersect(const Ray& ray, double& t) const;
 	Vec getCentroid() const;
+	GBoundingBox createBoundingBox() const;
 
 	/***** custom methods *****/
 	void setV0(const Vec& v) { v0 = v; updateGeometry(); }

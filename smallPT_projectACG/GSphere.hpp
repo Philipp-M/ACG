@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include "DataTypes.hpp"
+#include "GBVHAccelStruct.hpp"
 #include "GPrimitiveObject.hpp"
 #include "GObject.hpp"
 
@@ -32,6 +33,7 @@ struct GSphere: public GPrimitiveObject , public GObject
 	 */
 	const GPrimitiveObject* intersect(const Ray& ray, double& t) const;
 	Vec getCentroid() const;
+	GBoundingBox createBoundingBox() const;
 };
 
 #endif //GSPHERE_HPP

@@ -7,6 +7,7 @@
 #include "GTriangle.hpp"
 #include "GAccelStruct.hpp"
 #include "GSimpleAccelStruct.hpp"
+#include "GBVHAccelStruct.hpp"
 
 class GPolygonObject : public GObject
 {
@@ -17,7 +18,7 @@ public:
 	/***** implementations of GObject *****/
 	const GPrimitiveObject* intersect(const Ray& ray, double& t) const;
 	Vec getCentroid() const;
-
+	GBoundingBox createBoundingBox() const;
 	/***** custom methods *****/
 	void addFace(const GTriangle& triangle) { faces.push_back(triangle); updateGeometry(); }
 	std::vector<GTriangle> getFaces() { return faces; }

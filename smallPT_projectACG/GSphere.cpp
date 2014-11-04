@@ -40,3 +40,9 @@ Vec GSphere::getCentroid() const
 {
 	return position;
 }
+
+GBoundingBox GSphere::createBoundingBox() const
+{
+	// todo
+	return GBoundingBox(Vec(),Vec());
+}

@@ -60,3 +60,21 @@ GTriangle::~GTriangle()
 	// TODO Auto-generated destructor stub
 }
 
+GBoundingBox GTriangle::createBoundingBox() const
+{
+	Vec min, max;
+//	min.x = v0.x <= v1.x ? v1.x <= v2.x ? v0.x : v0.x <= v2.x ? v0.x : v2.x : v1.x <= v2.x ? v1.x : v2.x;
+//	min.y = v0.y <= v1.y ? v1.y <= v2.y ? v0.y : v0.y <= v2.y ? v0.y : v2.y : v1.y <= v2.y ? v1.y : v2.y;
+//	min.z = v0.z <= v1.z ? v1.z <= v2.z ? v0.z : v0.z <= v2.z ? v0.z : v2.z : v1.z <= v2.z ? v1.z : v2.z;
+//	had some fun with the above statements ;), but the straight forward solution is:
+	min.x = std::min(std::min(v0.x,v1.x), v2.x);
+	min.y = std::min(std::min(v0.y,v1.y), v2.y);
+	min.z = std::min(std::min(v0.z,v1.z), v2.z);
+
+	max.x = std::max(std::max(v0.x,v1.x), v2.x);
+	max.y = std::max(std::max(v0.y,v1.y), v2.y);
+	max.z = std::max(std::max(v0.z,v1.z), v2.z);
+
+	return GBoundingBox(min, max);
+
+}

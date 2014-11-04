@@ -9,3 +9,9 @@ Vec GPolygonObject::getCentroid() const
 {
 	return centroid;
 }
+
+GBoundingBox GPolygonObject::createBoundingBox() const
+{
+	// todo
+	return GBoundingBox(Vec(),Vec());
+}
