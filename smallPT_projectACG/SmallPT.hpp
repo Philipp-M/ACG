@@ -81,12 +81,11 @@ public:
 		Vec tdir = (ray.direction * nnt - n * ((into ? 1 : -1) * (ddn * nnt + sqrt(cos2t)))).norm();
 		double a = nt - nc, b = nt + nc, R0 = a * a / (b * b), c = 1 - (into ? -ddn : tdir.dot(n));
 		double Re = R0 + (1 - R0) * c * c * c * c * c, Tr = 1 - Re, P = .25 + .5 * Re, RP = Re / P, TP = Tr / (1 - P);
-		double densityFactor;
+		double densityFactor = f.dot(f);
+		Vec fn = f * (1.0/densityFactor); //f.norm();
 		if(into)
 			densityFactor = 0;
-		else
-			densityFactor = 0.8;
-		f = Vec(exp(-t*densityFactor*(1-f.x)),exp(-t*densityFactor*(1-f.y)),exp(-t*densityFactor*(1-f.z)));
+		f = Vec(exp(-t*densityFactor*(1-fn.x)),exp(-t*densityFactor*(1-fn.y)),exp(-t*densityFactor*(1-fn.z)));
 		return emission + f.mult(depth > 2 ? (erand48(Xi) < P ?   // Russian roulette
 				radiance(reflRay, scene, depth, Xi) * RP : radiance(Ray(x, tdir), scene, depth, Xi) * TP) :
 																			radiance(reflRay, scene, depth, Xi) * Re + radiance(Ray(x, tdir), scene, depth, Xi) * Tr);
