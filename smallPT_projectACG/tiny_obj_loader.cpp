@@ -625,6 +625,7 @@ std::string LoadObj(
       sscanf(token, "%s", namebuf);
 
       //bool ret = exportFaceGroupToShape(shape, vertexCache, v, vn, vt, faceGroup, material, name, false);
+      exportFaceGroupToShape(shape, vertexCache, v, vn, vt, faceGroup, material, name, false);
       faceGroup.clear();
 
       if (material_map.find(namebuf) != material_map.end()) {
