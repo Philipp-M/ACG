@@ -12,6 +12,13 @@ Vec GPolygonObject::getCentroid() const
 
 GBoundingBox GPolygonObject::createBoundingBox() const
 {
-	// todo
-	return GBoundingBox(Vec(),Vec());
+	if(!faces.empty())
+	{
+		GBoundingBox bbox = faces[0].createBoundingBox();
+		for(size_t i = 1; i < faces.size(); i++)
+			bbox = bbox + faces[i].createBoundingBox();
+		return bbox;
+	}
+	else
+		return GBoundingBox(Vec(),Vec());
 }
