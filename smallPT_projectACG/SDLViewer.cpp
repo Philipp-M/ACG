@@ -115,11 +115,14 @@ int SDLViewer::renderThreadF(void* data)
 	Vec r; // used for colors of samples
 	int samps = viewer->sampleStep / 4;
 	/********** create the scene *************/
+	viewer->timeElapsed = SDL_GetTicks();
 	GScene scene;
 	std::vector<GPolygonObject*> sceneObj;
 	sceneObj = ObjLoader::loadOfFile("scenes/cornell.obj", "./scenes/");
 	for (size_t i = 0; i < sceneObj.size(); i++)
 		scene.addItem(sceneObj[i]);
+	std::cerr << "time needed for building the scene: " <<(double)(SDL_GetTicks() - viewer->timeElapsed) / 1000.0 << " s\n\n"; // print progress
+	viewer->timeElapsed = SDL_GetTicks();
 	while (!viewer->quit)
 	{
 		Vec *c = new Vec[w * h]; // stack would be better, but can be exceeded, which causes a Segmention Fault...
@@ -157,9 +160,10 @@ int SDLViewer::renderThreadF(void* data)
 		}
 		SDL_UnlockMutex(viewer->mutex);
 		delete[] c;
-		std::cerr << "\rRendering (" << viewer->curSPP << " spp)"; // print progress
+		std::cerr << "\rRendering (" << viewer->curSPP << " spp, " <<((double)viewer->curSPP*w*h) / (double)(SDL_GetTicks() - viewer->timeElapsed) << "k sp/s)"; // print progress
 
 	}
+	std::cerr << "\n\ntime needed for rendering: " <<(double)(SDL_GetTicks() - viewer->timeElapsed) / 1000.0 << " s\n"; // print progress
 	return 0;
 }
 

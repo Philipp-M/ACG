@@ -30,6 +30,7 @@ private:
 	int sampleStep;
 	bool imageNeedsRefresh;
 	bool quit;
+	long timeElapsed;
 
 };
 
