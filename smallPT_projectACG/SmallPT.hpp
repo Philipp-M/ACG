@@ -54,6 +54,9 @@ public:
 		Vec f = intPoint->getColor(x);
 		Vec emission = intPoint->getEmission(x);
 		Refl_t refl = intPoint->getReflectionType();
+		if(emission.x > 0 || emission.y > 0 || emission.z > 0) // stop when there is light,
+															   // because there can be the case, that the ray is bouncing over the recursion limit...
+			return emission;
 		if (++depth > 5)
 		{
 			double p = f.x > f.y && f.x > f.z ? f.x : f.y > f.z ? f.y : f.z; // max refl
