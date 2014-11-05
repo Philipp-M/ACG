@@ -2,6 +2,7 @@
 #define DATATYPES_HPP
 
 #include <cmath>
+#include <algorithm>
 /* Basic Data types: Vec - 2D Vector and all the standard operations
  *                   Ray - a Ray with an origin and a direction(unit) vector
  *                   Refl_t - an enum, describing the Reflection type
@@ -80,6 +81,7 @@ public:
 	~GBoundingBox()
 	{
 	}
+
 	bool intersect(const Ray& ray, double& tmin, double& tmax) const
 	{
 		float t1 = (min.x - ray.origin.x)*ray.invdir.x;
@@ -88,6 +90,7 @@ public:
 		float t4 = (max.y - ray.origin.y)*ray.invdir.y;
 		float t5 = (min.z - ray.origin.z)*ray.invdir.z;
 		float t6 = (max.z - ray.origin.z)*ray.invdir.z;
+
 		float tmin_ = std::max(std::max(std::min(t1, t2), std::min(t3, t4)), std::min(t5, t6));
 		float tmax_ = std::min(std::min(std::max(t1, t2), std::max(t3, t4)), std::max(t5, t6));
 		// if tmax < 0, ray (line) is intersecting AABB, but whole AABB is behing us
@@ -118,7 +121,10 @@ public:
 		maxNew.z = std::max(this->max.z, b.max.z);
 		return GBoundingBox(minNew,maxNew);
 	}
+	const Vec& getMax() const { return max; }
+	const Vec& getMin() const { return min; }
 private:
 	Vec min, max; // 2 coordinates are enough for describing a Bounding Box
 };
+
 #endif // DATATYPES_HPP

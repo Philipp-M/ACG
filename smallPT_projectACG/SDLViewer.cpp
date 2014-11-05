@@ -118,7 +118,7 @@ int SDLViewer::renderThreadF(void* data)
 	viewer->timeElapsed = SDL_GetTicks();
 	GScene scene;
 	std::vector<GPolygonObject*> sceneObj;
-	sceneObj = ObjLoader::loadOfFile("scenes/cornell.obj", "./scenes/");
+	sceneObj = ObjLoader::loadOfFile("scenes/cornell7.obj", "./scenes/");
 	for (size_t i = 0; i < sceneObj.size(); i++)
 		scene.addItem(sceneObj[i]);
 	std::cerr << "time needed for building the scene: " <<(double)(SDL_GetTicks() - viewer->timeElapsed) / 1000.0 << " s\n\n"; // print progress

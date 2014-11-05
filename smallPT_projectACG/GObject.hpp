@@ -2,7 +2,6 @@
 #define GOBJECT_HPP
 #include "DataTypes.hpp"
 #include "GPrimitiveObject.hpp"
-#include "GBVHAccelStruct.hpp"
 /**
  * interface for more complex Objects, then primitves
  */

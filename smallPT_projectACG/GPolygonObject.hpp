@@ -38,6 +38,7 @@ private:
 		if (accelStruct != NULL)
 			delete accelStruct;
 		accelStruct = new GSimpleAccelStruct(accelObjs);
+		GBVHAccelStruct bvh(accelObjs);
 	}
 	std::vector<GTriangle> faces;
 	std::vector<GObject*> accelObjs; // temporarily for the simple accel Struct...
