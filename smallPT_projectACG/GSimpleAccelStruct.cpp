@@ -5,12 +5,12 @@
 const GPrimitiveObject* GSimpleAccelStruct::intersect(const Ray& ray, double& t) const
 {
 	t = std::numeric_limits<double>::infinity(); // c++ way to indicate infinity
-	double dis;
+	double dis, tmp;
 	const GPrimitiveObject* retVal = NULL;
 	const GPrimitiveObject* tmpObj = NULL;
 	for (int i = int(objects.size() - 1); i >= 0; i--)
 	{
-		if(bboxes[i].intersect(ray,dis))
+		if(bboxes[i].intersect(ray,dis, tmp))
 		{
 			if (((tmpObj = objects[i]->intersect(ray, dis)) != NULL) && dis < t)
 			{
