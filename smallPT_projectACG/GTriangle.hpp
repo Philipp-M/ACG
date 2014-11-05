@@ -29,7 +29,7 @@ public:
 	/**
 	 * for simplicity the triangle is also a "normal" Object
 	 */
-	const GPrimitiveObject* intersect(const Ray& ray, double& t) const;
+	bool intersect(const Ray &ray, RayIntPt& intPoint) const;
 	Vec getCentroid() const;
 
 	/***** custom methods *****/

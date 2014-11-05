@@ -1,8 +1,8 @@
 #include "GPolygonObject.hpp"
 
-const GPrimitiveObject* GPolygonObject::intersect(const Ray& ray, double& t) const
+bool GPolygonObject::intersect(const Ray &ray, RayIntPt& intPoint) const
 {
-	return accelStruct->intersect(ray, t);
+	return accelStruct->intersect(ray, intPoint);
 }
 
 Vec GPolygonObject::getCentroid() const

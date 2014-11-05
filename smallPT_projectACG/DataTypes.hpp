@@ -60,4 +60,14 @@ enum Refl_t
 {
 	DIFF, SPEC, REFR
 };
+
+struct RayIntPt
+{
+	Vec position;
+	Vec normal;
+	Vec color;
+	Vec emission;
+	double distance;
+	Refl_t reflType;
+};
 #endif // DATATYPES_HPP
