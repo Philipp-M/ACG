@@ -43,53 +43,54 @@ public:
 //	}
 	static Vec radiance(const Ray &ray, GScene* scene, int depth, unsigned short *Xi)
 	{
-		double t;                               // distance to intersection
-		const GPrimitiveObject* intPoint = scene->intersect(ray, t);
-		if (intPoint == NULL)
+		RayIntPt intPoint;
+		if (!scene->intersect(ray, intPoint))
 			return Vec(); // if miss, return black
-		//const Sphere &object = spheres[id];        // the hit object
-		Vec x = ray.origin + ray.direction * t;
-		Vec n = intPoint->getNorm(x);
-		Vec nl = n.dot(ray.direction) < 0 ? n : n * -1;
-		Vec f = intPoint->getColor(x);
-		Vec emission = intPoint->getEmission(x);
-		Refl_t refl = intPoint->getReflectionType();
+//		//const Sphere &object = spheres[id];        // the hit object
+//		Vec x = ray.origin + ray.direction * t;
+//		Vec n = intPoint->getNorm(x);
+		Vec nl = intPoint.normal.dot(ray.direction) < 0 ? intPoint.normal : intPoint.normal * -1;
+//		Vec f = intPoint->getColor(x);
+//		Vec emission = intPoint->getEmission(x);
+//		Refl_t refl = intPoint->getReflectionType();
+		if(intPoint.emission.x > 0 || intPoint.emission.y > 0 || intPoint.emission.z > 0) // stop when there is light,
+															   // because there can be the case, that the ray is bouncing over the recursion limit...
+			return intPoint.emission;
 		if (++depth > 5)
 		{
-			double p = f.x > f.y && f.x > f.z ? f.x : f.y > f.z ? f.y : f.z; // max refl
+			double p = intPoint.color.x > intPoint.color.y && intPoint.color.x > intPoint.color.z ? intPoint.color.x : intPoint.color.y > intPoint.color.z ? intPoint.color.y : intPoint.color.z; // max refl
 			if (erand48(Xi) < p)
-				f = f * (1 / p);
+				intPoint.color = intPoint.color * (1 / p);
 			else
-				return emission; //R.R.
+				return intPoint.emission; //R.R.
 		}
-		if (refl == DIFF)
+		if (intPoint.reflType == DIFF)
 		{                  // Ideal DIFFUSE reflection
 			double r1 = 2 * M_PI * erand48(Xi), r2 = erand48(Xi), r2s = sqrt(r2);
 			Vec w = nl, u = ((fabs(w.x) > .1 ? Vec(0, 1) : Vec(1)) % w).norm(), v = w % u;
 			Vec d = (u * cos(r1) * r2s + v * sin(r1) * r2s + w * sqrt(1 - r2)).norm();
 
-			return emission + f.mult(radiance(Ray(x, d), scene, depth, Xi));
+			return intPoint.emission + intPoint.color.mult(radiance(Ray(intPoint.position, d), scene, depth, Xi));
 		}
-		else if (refl == SPEC)            // Ideal SPECULAR reflection
-			return emission + f.mult(radiance(Ray(x, ray.direction - n * 2 * n.dot(ray.direction)), scene, depth, Xi));
-		Ray reflRay(x, ray.direction - n * 2 * n.dot(ray.direction));     // Ideal dielectric REFRACTION
-		bool into = n.dot(nl) > 0;                // Ray from outside going in?
+		else if (intPoint.reflType == SPEC)            // Ideal SPECULAR reflection
+			return intPoint.emission + intPoint.color.mult(radiance(Ray(intPoint.position, ray.direction - intPoint.normal * 2 * intPoint.normal.dot(ray.direction)), scene, depth, Xi));
+		Ray reflRay(intPoint.position, ray.direction - intPoint.normal * 2 * intPoint.normal.dot(ray.direction));     // Ideal dielectric REFRACTION
+		bool into = intPoint.normal.dot(nl) > 0;                // Ray from outside going in?
 		double nc = 1, nt = 1.5, nnt = into ? nc / nt : nt / nc, ddn = ray.direction.dot(nl), cos2t;
 		if ((cos2t = 1 - nnt * nnt * (1 - ddn * ddn)) < 0)    // Total internal reflection
-			return intPoint->getEmission(x) + f.mult(radiance(reflRay, scene, depth, Xi));
+			return intPoint.emission + intPoint.color.mult(radiance(reflRay, scene, depth, Xi));
 
-		Vec tdir = (ray.direction * nnt - n * ((into ? 1 : -1) * (ddn * nnt + sqrt(cos2t)))).norm();
-		double a = nt - nc, b = nt + nc, R0 = a * a / (b * b), c = 1 - (into ? -ddn : tdir.dot(n));
+		Vec tdir = (ray.direction * nnt - intPoint.normal * ((into ? 1 : -1) * (ddn * nnt + sqrt(cos2t)))).norm();
+		double a = nt - nc, b = nt + nc, R0 = a * a / (b * b), c = 1 - (into ? -ddn : tdir.dot(intPoint.normal));
 		double Re = R0 + (1 - R0) * c * c * c * c * c, Tr = 1 - Re, P = .25 + .5 * Re, RP = Re / P, TP = Tr / (1 - P);
-		double densityFactor;
+		double densityFactor = intPoint.color.dot(intPoint.color);
+		Vec fn = intPoint.color * (1.0/densityFactor); //f.norm();
 		if(into)
 			densityFactor = 0;
-		else
-			densityFactor = 0.8;
-		f = Vec(exp(-t*densityFactor*(1-f.x)),exp(-t*densityFactor*(1-f.y)),exp(-t*densityFactor*(1-f.z)));
-		return emission + f.mult(depth > 2 ? (erand48(Xi) < P ?   // Russian roulette
-				radiance(reflRay, scene, depth, Xi) * RP : radiance(Ray(x, tdir), scene, depth, Xi) * TP) :
-																			radiance(reflRay, scene, depth, Xi) * Re + radiance(Ray(x, tdir), scene, depth, Xi) * Tr);
+		intPoint.color = Vec(exp(-intPoint.distance*densityFactor*(1-fn.x)),exp(-intPoint.distance*densityFactor*(1-fn.y)),exp(-intPoint.distance*densityFactor*(1-fn.z)));
+		return intPoint.emission + intPoint.color.mult(depth > 2 ? (erand48(Xi) < P ?   // Russian roulette
+				radiance(reflRay, scene, depth, Xi) * RP : radiance(Ray(intPoint.position, tdir), scene, depth, Xi) * TP) :
+																			radiance(reflRay, scene, depth, Xi) * Re + radiance(Ray(intPoint.position, tdir), scene, depth, Xi) * Tr);
 	}
 };
 

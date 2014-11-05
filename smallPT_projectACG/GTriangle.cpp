@@ -54,9 +54,19 @@ Refl_t GTriangle::getReflectionType() const
 	return refl;
 }
 
-const GPrimitiveObject* GTriangle::intersect(const Ray& ray, double& t) const
+bool GTriangle::intersect(const Ray &ray, RayIntPt& intPoint) const
 {
-	return (t = intersect(ray)) != 0 ? this : NULL;
+	double t = intersect(ray);
+	if(t == 0)
+		return false;
+	intPoint.distance = t;
+	intPoint.normal = normal;
+	intPoint.position = ray.origin + ray.direction * t;
+	intPoint.emission = emission;
+	intPoint.reflType = refl;
+	intPoint.color = color;
+
+	return true;
 }
 
 Vec GTriangle::getCentroid() const

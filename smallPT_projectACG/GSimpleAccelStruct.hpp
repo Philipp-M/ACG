@@ -10,7 +10,7 @@ class GSimpleAccelStruct : public GAccelStruct
 {
 public:
 	GSimpleAccelStruct(const std::vector<GObject*>& objects_) : objects(objects_) {}
-	const GPrimitiveObject* intersect(const Ray& ray, double& t) const;
+	bool intersect(const Ray &ray, RayIntPt& intPoint) const;
 	virtual ~GSimpleAccelStruct() {}
 private:
 	const std::vector<GObject*>& objects;

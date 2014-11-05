@@ -40,9 +40,19 @@ Refl_t GSphere::getReflectionType() const
 	return refl;
 }
 
-const GPrimitiveObject* GSphere::intersect(const Ray& ray, double& t) const
+bool GSphere::intersect(const Ray &ray, RayIntPt& intPoint) const
 {
-	return (t = intersect(ray)) != 0 ? this : NULL;
+	double t = intersect(ray);
+	if(t == 0)
+		return false;
+	intPoint.distance = t;
+	intPoint.position = ray.origin + ray.direction * t;
+	intPoint.normal = (intPoint.position - position).norm();
+	intPoint.emission = emission;
+	intPoint.reflType = refl;
+	intPoint.color = color;
+
+	return true;
 }
 
 Vec GSphere::getCentroid() const

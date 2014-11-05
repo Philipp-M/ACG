@@ -16,9 +16,9 @@ public:
 	/**
 	 * returns NULL if nothing was hit, else the pointer to the corresponding intersection Object
 	 */
-	const GPrimitiveObject * intersect(const Ray &ray, double& t) const
+	bool intersect(const Ray &ray, RayIntPt& intPoint) const
 	{
-		return accelStruct->intersect(ray, t);
+		return accelStruct->intersect(ray, intPoint);
 	}
 	void addItem(GObject* object, bool update = true);
 private:
