@@ -1,24 +1,26 @@
 #include "GSimpleAccelStruct.hpp"
+#include "DataTypes.hpp"
 #include <cstdlib>
 #include <limits>
 
-const GPrimitiveObject* GSimpleAccelStruct::intersect(const Ray& ray, double& t) const
+bool GSimpleAccelStruct::intersect(const Ray &ray, RayIntPt& intPoint) const
 {
-	t = std::numeric_limits<double>::infinity(); // c++ way to indicate infinity
 	double dis, tmp;
-	const GPrimitiveObject* retVal = NULL;
-	const GPrimitiveObject* tmpObj = NULL;
+	RayIntPt tmpIntPoint;
+	intPoint.distance = std::numeric_limits<double>::infinity(); // c++ way to indicate infinity
+	double dis;
+	bool hit = false;
 	for (int i = int(objects.size() - 1); i >= 0; i--)
 	{
-		if(bboxes[i].intersect(ray,dis, tmp))
+		if(bboxes[i].intersect(ray, dis, tmp))
 		{
-			if (((tmpObj = objects[i]->intersect(ray, dis)) != NULL) && dis < t)
+			if (objects[i]->intersect(ray, tmpIntPoint) && tmpIntPoint.distance < intPoint.distance)
 			{
-				t = dis;
-				retVal = tmpObj;
+				intPoint = tmpIntPoint;
+				hit = true;
 			}
 		}
 	}
-	return t < std::numeric_limits<double>::infinity() ? retVal : NULL;
+	return hit;
 }
 

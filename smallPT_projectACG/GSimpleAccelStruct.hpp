@@ -15,7 +15,7 @@ public:
 		for(const GObject* o : objects)
 			bboxes.push_back(o->createBoundingBox());
 	}
-	const GPrimitiveObject* intersect(const Ray& ray, double& t) const;
+	bool intersect(const Ray &ray, RayIntPt& intPoint) const;
 	virtual ~GSimpleAccelStruct() {}
 private:
 	std::vector<GBoundingBox> bboxes;

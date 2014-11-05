@@ -31,7 +31,7 @@ struct GSphere: public GPrimitiveObject , public GObject
 	/**
 	 * for simplicity the sphere is also a "normal" Object
 	 */
-	const GPrimitiveObject* intersect(const Ray& ray, double& t) const;
+	bool intersect(const Ray &ray, RayIntPt& intPoint) const;
 	Vec getCentroid() const;
 	GBoundingBox createBoundingBox() const;
 };

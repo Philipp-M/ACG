@@ -16,7 +16,7 @@ public:
 	GPolygonObject(const std::vector<GTriangle>& triangles) : faces(triangles), accelStruct(NULL) { updateGeometry(); }
 
 	/***** implementations of GObject *****/
-	const GPrimitiveObject* intersect(const Ray& ray, double& t) const;
+	bool intersect(const Ray &ray, RayIntPt& intPoint) const;
 	Vec getCentroid() const;
 	GBoundingBox createBoundingBox() const;
 	/***** custom methods *****/

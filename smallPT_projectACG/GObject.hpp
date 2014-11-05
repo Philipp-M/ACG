@@ -8,7 +8,7 @@
 class GObject
 {
 public:
-	virtual const GPrimitiveObject* intersect(const Ray& ray, double& t) const = 0;
+	virtual bool intersect(const Ray &ray, RayIntPt& intPoint) const = 0;
 	virtual Vec getCentroid() const = 0;
 	virtual GBoundingBox createBoundingBox() const = 0;
 	virtual ~GObject() {};

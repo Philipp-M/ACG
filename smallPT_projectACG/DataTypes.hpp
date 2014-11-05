@@ -127,4 +127,14 @@ private:
 	Vec min, max; // 2 coordinates are enough for describing a Bounding Box
 };
 
+struct RayIntPt
+{
+	Vec position;
+	Vec normal;
+	Vec color;
+	Vec emission;
+	double distance;
+	Refl_t reflType;
+};
+
 #endif // DATATYPES_HPP
