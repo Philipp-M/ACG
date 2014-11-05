@@ -8,7 +8,6 @@ bool GSimpleAccelStruct::intersect(const Ray &ray, RayIntPt& intPoint) const
 	double dis, tmp;
 	RayIntPt tmpIntPoint;
 	intPoint.distance = std::numeric_limits<double>::infinity(); // c++ way to indicate infinity
-	double dis;
 	bool hit = false;
 	for (int i = int(objects.size() - 1); i >= 0; i--)
 	{
