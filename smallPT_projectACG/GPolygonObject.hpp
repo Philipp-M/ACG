@@ -13,6 +13,7 @@ class GPolygonObject : public GObject
 public:
 	GPolygonObject() : accelStruct(NULL) { updateGeometry(); }
 	GPolygonObject(const std::vector<GTriangle>& triangles) : faces(triangles), accelStruct(NULL) { updateGeometry(); }
+	GPolygonObject(const GPolygonObject &other); // TODO: implement the constructor
 
 	/***** implementations of GObject *****/
 	bool intersect(const Ray &ray, RayIntPt& intPoint) const;

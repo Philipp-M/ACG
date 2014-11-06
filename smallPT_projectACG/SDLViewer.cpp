@@ -122,21 +122,25 @@ int SDLViewer::renderThreadF(void* data)
 	sceneObj = ObjLoader::loadOfFile("scenes/cornell.obj", "./scenes/");
 	
 	//TODO: Create multiple scenes in time
-	
+	std::cout << "Start consctructiong scenes" << std::endl;
+
 	for( int j = 0; j < viewer->timeSteps; j++ ) {
 		//compute the scene objects  (hardcoded at the moment)
 		sceneObj[2]->translate(Vec(0.5, 0.5, 0.5)*j);
 		sceneObj[0]->translate(Vec(-0.5, -0.5, 0.5)*j);
 		sceneObj[3]->translate(Vec(0.5, -0.5, 0.5)*j);
-		sceneObj[1]->translate(Vec(0.5, 0.5, -0.5)*j);
+		sceneObj[1]->translate(Vec(0.5, 0.5, -0.5)*j);		
+	
 
+		//TODO: THIS WILL CRASH THE APP, make a copy constructor for GPolygonObject!
 
 		//put timeStep into vector
 		GScene scene;
 		for( size_t i = 0; i < sceneObj.size(); i++ )
 			scene.addItem(sceneObj[i]);
-		
+
 		scenes.push_back(scene);
+	
 	}
 
 	std::cerr << "time needed for building the scene: " <<(double)(SDL_GetTicks() - viewer->timeElapsed) / 1000.0 << " s\n\n"; // print progress
