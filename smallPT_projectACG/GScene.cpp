@@ -1,5 +1,6 @@
 #include "GScene.hpp"
 #include "GSimpleAccelStruct.hpp"
+#include "GBVHAccelStruct.hpp"
 
 GScene::GScene()
 {

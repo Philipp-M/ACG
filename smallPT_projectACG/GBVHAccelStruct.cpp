@@ -2,6 +2,7 @@
 #include "GObject.hpp"
 #include <iostream>
 #include <queue>
+#include <limits>
 /**
  * following Octree is just needed for building up the hierarchy.
  * Although the octree is also an aproach for an acceleration structure(not as good as the BVH in most cases btw.),
@@ -68,7 +69,7 @@ public:
 	{
 		const OctreeNode *node; // octree node held by this node in the tree
 		double t; // used as key
-		QueueElement(const OctreeNode *n, float thit) : node(n), t(thit) {}
+		QueueElement(const OctreeNode *n, double thit) : node(n), t(thit) {}
 		// comparator is > instead of < so priority_queue behaves like a min-heap
 		friend bool operator < (const QueueElement &a, const QueueElement &b) { return a.t > b.t; }
 	};
@@ -170,18 +171,55 @@ GBVHAccelStruct::GBVHAccelStruct(const std::vector<GObject*>& objects_)
 	for (size_t i = 0; i < objects_.size(); i++)
 		octree->insert(objects_[i]);
 	octree->build();
-	octree->print();
+	//octree->print();
 }
 
 bool GBVHAccelStruct::intersect(const Ray& ray, RayIntPt& intPoint) const
 {
-	//todo ... a ... lottzzz....
-	double tNear,tFar;
-	octree->root.bbox.intersect(ray, tNear, tFar);
+	double tNear = std::numeric_limits<double>::infinity(),tFar = std::numeric_limits<double>::infinity();
+	if (!octree->root.bbox.intersect(ray, tNear, tFar) || tFar < 0)
+		return false;
 	double tMin = tFar;
-
-	return true;
-
+	std::priority_queue<Octree::QueueElement> queue;
+	queue.push(Octree::QueueElement(&octree->root, 0));
+	while (!queue.empty() && queue.top().t < tMin)
+	{
+		const OctreeNode *node = queue.top().node;
+		queue.pop();
+		if (node->isLeaf)
+		{
+			RayIntPt isectDataCurrent;
+			if (node->data->intersect(ray, isectDataCurrent))
+			{
+				if (isectDataCurrent.distance < tMin)
+				{
+					if(isectDataCurrent.emission.dot(isectDataCurrent.emission) != 0)
+						std::cout << isectDataCurrent << std::endl;
+					tMin = isectDataCurrent.distance;
+					intPoint = isectDataCurrent;
+				}
+			}
+		}
+		else
+		{
+			for (size_t i = 0; i < 8; ++i)
+			{
+				if (node->child[i] != NULL)
+				{
+					double tNearChild = std::numeric_limits<double>::infinity(), tFarChild = tFar;
+					if (node->child[i]->bbox.intersect(ray,tNearChild,tFarChild))
+					{
+						double t = (tNearChild < 0 && tFarChild >= 0) ? tFarChild : tNearChild;
+						queue.push(Octree::QueueElement(node->child[i], t));
+					}
+				}
+			}
+		}
+	}
+	if(tMin < std::numeric_limits<double>::infinity())
+		return true;
+	else
+		return false;
 }
 
 GBoundingBox GBVHAccelStruct::calculateBoundingBox(const std::vector<GBoundingBox>& bboxes)
