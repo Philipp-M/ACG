@@ -22,4 +22,6 @@ int main(int argc, char *argv[])
 		samplePerStep = std::stoi(argv[3]);
 	SDLViewer view(w,h, samplePerStep);
 	view.display();
+
+	return 0;
 }
