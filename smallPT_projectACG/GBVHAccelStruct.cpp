@@ -11,8 +11,38 @@ struct OctreeNode
 	bool isLeaf;
 	OctreeNode *child[8];
 	const GObject* data;
-	OctreeNode() : isLeaf(true), data(NULL) { for(size_t i = 0; i < 8; i++) child[i] = NULL; }
+	GBoundingBox bbox;
+	OctreeNode() : isLeaf(true), data(NULL), bbox(Vec(),Vec()) { for(size_t i = 0; i < 8; i++) child[i] = NULL; }
 	~OctreeNode() { for (uint8_t i = 0; i < 8; ++i) if (child[i] != NULL) delete child[i]; }
+	/**
+	 * builds the bounding box, based on the child nodes(which also will be build.
+	 * should only be executed of the root node
+	 */
+	void buildBoundingBox() { bbox = buildBB(this); }
+private:
+	const GBoundingBox& buildBB(OctreeNode* node)
+	{
+		if(node->isLeaf)
+		{
+			node->bbox = node->data->createBoundingBox();
+			return node->bbox; // should always be not NULL, if so the program has to crash!
+		}
+		else
+		{
+			for(size_t i = 0; i < 8; i++)
+			{
+				if(node->child[i] != NULL)
+				{
+					if(node->bbox.isEmpty())
+						node->bbox = buildBB(node->child[i]);
+					else
+						node->bbox = node->bbox + buildBB(node->child[i]);
+				}
+			}
+			return node->bbox;
+		}
+	}
+
 };
 class Octree
 {
@@ -22,6 +52,10 @@ public:
 	{
 		insert(&root, obj, obj->getCentroid(), min, max);
 	}
+	void build()
+	{
+		root.buildBoundingBox();
+	}
 	// for debugging:
 	void print()
 	{
@@ -30,11 +64,17 @@ public:
 private:
 	void print(OctreeNode* node, int depth)
 	{
+		if(node->isLeaf)
+			std::cout << "child at depth " << depth << " has " << node->bbox << " and data: " << node->data << std::endl;
+		else
 		for(size_t i = 0; i < 8; i++)
 		{
-			std::cout << "node " << i << " at depth " << depth << " isLeaf: " << node->isLeaf << " has data: " << node->data << std::endl;
 			if(node->child[i] != NULL)
+			{
+
+				std::cout << i << " node at depth " << depth+1 << " has " << node->child[i]->bbox << std::endl;
 				print(node->child[i], depth+1);
+			}
 		}
 	}
 	void insert(OctreeNode* node, const GObject* obj, const Vec& centroid, const Vec& minBB, const Vec& maxBB)
@@ -46,10 +86,7 @@ private:
 		if (node->isLeaf)
 		{
 			if (node->data == NULL)
-			{
 				node->data = obj;
-
-			}
 			else
 			{
 				// todo:
@@ -121,6 +158,7 @@ GBVHAccelStruct::GBVHAccelStruct(const std::vector<GObject*>& objects_)
 	Octree octree(bbox.getMin(), bbox.getMax());
 	for (size_t i = 0; i < objects_.size(); i++)
 		octree.insert(objects_[i]);
+	octree.build();
 	octree.print();
 }
 
