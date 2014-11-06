@@ -1,6 +1,7 @@
 #include "GBVHAccelStruct.hpp"
 #include "GObject.hpp"
 #include <iostream>
+#include <queue>
 /**
  * following Octree is just needed for building up the hierarchy.
  * Although the octree is also an aproach for an acceleration structure(not as good as the BVH in most cases btw.),
@@ -47,6 +48,8 @@ private:
 class Octree
 {
 public:
+	OctreeNode root;
+
 	Octree(const Vec& minBB, const Vec& maxBB) : min(minBB), max(maxBB) {}
 	void insert(const GObject* obj)
 	{
@@ -61,6 +64,14 @@ public:
 	{
 		print(&root, 0);
 	}
+	struct QueueElement
+	{
+		const OctreeNode *node; // octree node held by this node in the tree
+		double t; // used as key
+		QueueElement(const OctreeNode *n, float thit) : node(n), t(thit) {}
+		// comparator is > instead of < so priority_queue behaves like a min-heap
+		friend bool operator < (const QueueElement &a, const QueueElement &b) { return a.t > b.t; }
+	};
 private:
 	void print(OctreeNode* node, int depth)
 	{
@@ -135,7 +146,6 @@ private:
 
 		}
 	}
-	OctreeNode root;
 	Vec min;
 	Vec max;
 };
@@ -143,6 +153,7 @@ private:
 
 GBVHAccelStruct::~GBVHAccelStruct()
 {
+	delete octree;
 }
 
 GBVHAccelStruct::GBVHAccelStruct(const std::vector<GObject*>& objects_)
@@ -155,11 +166,22 @@ GBVHAccelStruct::GBVHAccelStruct(const std::vector<GObject*>& objects_)
 		for (size_t i = 1; i < objects_.size(); i++)
 			bbox = bbox + objects_[i]->createBoundingBox();
 	}
-	Octree octree(bbox.getMin(), bbox.getMax());
+	octree = new Octree(bbox.getMin(), bbox.getMax());
 	for (size_t i = 0; i < objects_.size(); i++)
-		octree.insert(objects_[i]);
-	octree.build();
-	octree.print();
+		octree->insert(objects_[i]);
+	octree->build();
+	octree->print();
+}
+
+bool GBVHAccelStruct::intersect(const Ray& ray, RayIntPt& intPoint) const
+{
+	//todo ... a ... lottzzz....
+	double tNear,tFar;
+	octree->root.bbox.intersect(ray, tNear, tFar);
+	double tMin = tFar;
+
+	return true;
+
 }
 
 GBoundingBox GBVHAccelStruct::calculateBoundingBox(const std::vector<GBoundingBox>& bboxes)
