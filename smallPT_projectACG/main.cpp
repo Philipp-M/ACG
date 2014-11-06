@@ -13,6 +13,7 @@ int main(int argc, char *argv[])
 {
 	int w = 512, h = 512; // image size
 	int samplePerStep = 4;
+	int timeSteps = 10;
 	if(argc > 2)
 	{
 		w = std::stoi(argv[1]);
@@ -20,7 +21,7 @@ int main(int argc, char *argv[])
 	}
 	if(argc > 3)
 		samplePerStep = std::stoi(argv[3]);
-	SDLViewer view(w,h, samplePerStep);
+	SDLViewer view(w,h, samplePerStep, timeSteps);
 	view.display();
 
 	

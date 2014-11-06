@@ -42,11 +42,12 @@ void SDLViewer::display()
 	SDL_WaitThread(renderThread, NULL);
 }
 
-SDLViewer::SDLViewer(int w, int h, int sampleStep) :
+SDLViewer::SDLViewer(int w, int h, int sampleStep,int timeSteps) :
 		curSPP(0), sampleStep(sampleStep), quit(false)
 {
 	if (this->sampleStep < 4)
 		this->sampleStep = 4;
+	this->timeSteps = timeSteps;
 	initSDL(w, h);
 }
 
@@ -116,11 +117,28 @@ int SDLViewer::renderThreadF(void* data)
 	int samps = viewer->sampleStep / 4;
 	/********** create the scene *************/
 	viewer->timeElapsed = SDL_GetTicks();
-	GScene scene;
+	std::vector<GScene> scenes;
 	std::vector<GPolygonObject*> sceneObj;
 	sceneObj = ObjLoader::loadOfFile("scenes/cornell.obj", "./scenes/");
-	for (size_t i = 0; i < sceneObj.size(); i++)
-		scene.addItem(sceneObj[i]);
+	
+	//TODO: Create multiple scenes in time
+	
+	for( int j = 0; j < viewer->timeSteps; j++ ) {
+		//compute the scene objects  (hardcoded at the moment)
+		sceneObj[2]->translate(Vec(0.5, 0.5, 0.5)*j);
+		sceneObj[0]->translate(Vec(-0.5, -0.5, 0.5)*j);
+		sceneObj[3]->translate(Vec(0.5, -0.5, 0.5)*j);
+		sceneObj[1]->translate(Vec(0.5, 0.5, -0.5)*j);
+
+
+		//put timeStep into vector
+		GScene scene;
+		for( size_t i = 0; i < sceneObj.size(); i++ )
+			scene.addItem(sceneObj[i]);
+		
+		scenes.push_back(scene);
+	}
+
 	std::cerr << "time needed for building the scene: " <<(double)(SDL_GetTicks() - viewer->timeElapsed) / 1000.0 << " s\n\n"; // print progress
 	viewer->timeElapsed = SDL_GetTicks();
 	while (!viewer->quit)
@@ -144,7 +162,11 @@ int SDLViewer::renderThreadF(void* data)
 							double r1 = 2 * erand48(Xi), dx = r1 < 1 ? sqrt(r1) - 1 : 1 - sqrt(2 - r1);
 							double r2 = 2 * erand48(Xi), dy = r2 < 1 ? sqrt(r2) - 1 : 1 - sqrt(2 - r2);
 							Vec d = cx * (((sx + .5 + dx) / 2 + x) / w - .5) + cy * (((sy + .5 + dy) / 2 + y) / h - .5) + cam.direction;
-							r = r + SmallPT::radiance(Ray(cam.origin + d * 140, d.norm()), &scene, 0, Xi) * (1. / samps);
+
+							//TODO: sample over scenes in time and add multiple sampling techniques
+							int p = erand48(Xi)*(viewer->timeSteps-1);
+
+							r = r + SmallPT::radiance(Ray(cam.origin + d * 140, d.norm()), &scenes[p], 0, Xi) * (1. / samps);
 						} // Camera rays are pushed ^^^^^ forward to start in interior
 						c[i] = c[i] + Vec(r.x, r.y, r.z) * .25;
 					}

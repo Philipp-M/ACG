@@ -8,7 +8,7 @@ class SDLViewer
 {
 public:
 	void display();
-	SDLViewer(int w, int h, int sampleStep = 4);
+	SDLViewer(int w, int h, int sampleStep = 4,int timeSteps = 10);
 	virtual ~SDLViewer();
 private:
 	void initSDL(int w, int h);
@@ -28,6 +28,7 @@ private:
 	Vec* rawSamplesData;
 	int curSPP;
 	int sampleStep;
+	int timeSteps;
 	bool imageNeedsRefresh;
 	bool quit;
 	long timeElapsed;
