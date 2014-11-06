@@ -2,6 +2,7 @@
 #define DATATYPES_HPP
 
 #include <cmath>
+#include <iostream>
 /* Basic Data types: Vec - 2D Vector and all the standard operations
  *                   Ray - a Ray with an origin and a direction(unit) vector
  *                   Refl_t - an enum, describing the Reflection type
@@ -45,6 +46,10 @@ struct Vec
 	{
 		return Vec(y * b.z - z * b.y, z * b.x - x * b.z, x * b.y - y * b.x);
 	}
+	friend std::ostream& operator<<(std::ostream &out, const Vec& v)
+	{
+		return out << "(" << v.x << ", " << v.y << ", " << v.z << ")";
+	}
 };
 // Ray STRUCTURE
 struct Ray
@@ -53,6 +58,10 @@ struct Ray
 	Ray(Vec origin_, Vec direction_) :
 			origin(origin_), direction(direction_)
 	{
+	}
+	friend std::ostream& operator<<(std::ostream &out, const Ray& r)
+	{
+		return out << "(origin: " << r.origin << ", direction: " << r.direction << ")";
 	}
 };
 // ENUM OF MATERIAL TYPES USED IN radiance FUNCTION
@@ -69,5 +78,11 @@ struct RayIntPt
 	Vec emission;
 	double distance;
 	Refl_t reflType;
+	friend std::ostream& operator<<(std::ostream &out, const RayIntPt& i)
+	{
+		return out 	<< "(position: " << i.position << ", normal: " << i.normal << ", distance: "
+					<< i.distance << ", color: " << i.color << ", emission: " << i.emission
+					<< ", reflType: " << i.reflType << ")";
+	}
 };
 #endif // DATATYPES_HPP
