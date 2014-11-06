@@ -132,6 +132,11 @@ public:
 	}
 	const Vec& getMax() const { return max; }
 	const Vec& getMin() const { return min; }
+	bool isEmpty() { return (((((min.x == min.y) == min.z) == max.x) == max.y) == max.z); } // ( aren't necesssary but compiler...
+	friend std::ostream& operator<<(std::ostream &out, const GBoundingBox& b)
+	{
+		return out 	<< "(BBox: min:" << b.min << ", max: " << b.max << ")";
+	}
 private:
 	Vec min, max; // 2 coordinates are enough for describing a Bounding Box
 };
