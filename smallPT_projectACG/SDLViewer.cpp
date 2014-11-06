@@ -6,6 +6,7 @@
 #include "GScene.hpp"
 #include "ObjLoader.hpp"
 #include "GPolygonObject.hpp"
+
 void SDLViewer::display()
 {
 	// Event handler

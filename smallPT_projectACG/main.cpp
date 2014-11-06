@@ -7,6 +7,7 @@
 #include "SDLViewer.hpp"
 #include <cstdlib>
 #include <cstdio>
+#include <string>
 
 int main(int argc, char *argv[])
 {
