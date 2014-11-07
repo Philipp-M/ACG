@@ -41,3 +41,16 @@ void GPolygonObject::translateAcc(Vec t, double acc, long time) {
 		f.translateAcc(t, acc, time);
 	updateGeometry();
 }
+
+GBoundingBox GPolygonObject::createBoundingBox() const
+{
+	if(!faces.empty())
+	{
+		GBoundingBox bbox = faces[0].createBoundingBox();
+		for(size_t i = 1; i < faces.size(); i++)
+			bbox = bbox + faces[i].createBoundingBox();
+		return bbox;
+	}
+	else
+		return GBoundingBox(Vec(),Vec());
+}

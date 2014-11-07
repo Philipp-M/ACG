@@ -24,6 +24,5 @@ int main(int argc, char *argv[])
 	SDLViewer view(w,h, samplePerStep, timeSteps);
 	view.display();
 
-	
 	return 0;
 }

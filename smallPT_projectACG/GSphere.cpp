@@ -60,6 +60,7 @@ Vec GSphere::getCentroid() const
 	return position;
 }
 
+<<<<<<< HEAD
 
 //simple translation operatoins
 void GSphere::translate(const Vec& t) {
@@ -92,4 +93,10 @@ void GSphere::translateAcc(Vec t, double acc, long time) {
 
 	t = t + v;	//simple linear accelaration wrt to time in seconds
 	position = position + t;
+}
+
+GBoundingBox GSphere::createBoundingBox() const
+{
+	// todo
+	return GBoundingBox(Vec(),Vec());
 }

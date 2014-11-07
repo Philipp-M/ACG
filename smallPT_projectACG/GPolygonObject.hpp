@@ -7,6 +7,7 @@
 #include "GTriangle.hpp"
 #include "GAccelStruct.hpp"
 #include "GSimpleAccelStruct.hpp"
+#include "GBVHAccelStruct.hpp"
 
 class GPolygonObject : public GObject
 {
@@ -18,7 +19,7 @@ public:
 	/***** implementations of GObject *****/
 	bool intersect(const Ray &ray, RayIntPt& intPoint) const;
 	Vec getCentroid() const;
-
+	GBoundingBox createBoundingBox() const;
 	/***** custom methods *****/
 	void addFace(const GTriangle& triangle) { faces.push_back(triangle); updateGeometry(); }
 	std::vector<GTriangle> getFaces() { return faces; }
@@ -46,7 +47,8 @@ private:
 		// for now just the simple AccelStruct...
 		if (accelStruct != NULL)
 			delete accelStruct;
-		accelStruct = new GSimpleAccelStruct(accelObjs);
+		accelStruct = new GBVHAccelStruct(accelObjs);
+		GBVHAccelStruct bvh(accelObjs);
 	}
 
 	void rotation(float rad, Vec dir);

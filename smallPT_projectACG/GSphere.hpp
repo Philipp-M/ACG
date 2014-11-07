@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include "DataTypes.hpp"
+#include "GBVHAccelStruct.hpp"
 #include "GPrimitiveObject.hpp"
 #include "GObject.hpp"
 
@@ -43,6 +44,7 @@ class GSphere: public GPrimitiveObject , public GObject
 	void translateAcc(Vec t, double acc, long time);
 
 	void rotation(float rad, const Vec& dir);
+	GBoundingBox createBoundingBox() const;
 };
 
 #endif //GSPHERE_HPP
