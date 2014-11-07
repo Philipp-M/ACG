@@ -193,8 +193,6 @@ bool GBVHAccelStruct::intersect(const Ray& ray, RayIntPt& intPoint) const
 			{
 				if (isectDataCurrent.distance < tMin)
 				{
-					if(isectDataCurrent.emission.dot(isectDataCurrent.emission) != 0)
-						std::cout << isectDataCurrent << std::endl;
 					tMin = isectDataCurrent.distance;
 					intPoint = isectDataCurrent;
 				}
@@ -206,12 +204,9 @@ bool GBVHAccelStruct::intersect(const Ray& ray, RayIntPt& intPoint) const
 			{
 				if (node->child[i] != NULL)
 				{
-					double tNearChild = std::numeric_limits<double>::infinity(), tFarChild = tFar;
+					double tNearChild, tFarChild;
 					if (node->child[i]->bbox.intersect(ray,tNearChild,tFarChild))
-					{
-						double t = (tNearChild < 0 && tFarChild >= 0) ? tFarChild : tNearChild;
-						queue.push(Octree::QueueElement(node->child[i], t));
-					}
+						queue.push(Octree::QueueElement(node->child[i], tNearChild));
 				}
 			}
 		}

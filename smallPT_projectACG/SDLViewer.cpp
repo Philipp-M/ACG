@@ -119,7 +119,7 @@ int SDLViewer::renderThreadF(void* data)
 	viewer->timeElapsed = SDL_GetTicks();
 	GScene scene;
 	std::vector<GPolygonObject*> sceneObj;
-	sceneObj = ObjLoader::loadOfFile("scenes/cornell.obj", "./scenes/");
+	sceneObj = ObjLoader::loadOfFile("scenes/cornell8Hihi.obj", "./scenes/");
 	for (size_t i = 0; i < sceneObj.size(); i++)
 		scene.addItem(sceneObj[i]);
 	std::cerr << "time needed for building the scene: " <<(double)(SDL_GetTicks() - viewer->timeElapsed) / 1000.0 << " s\n\n"; // print progress
@@ -235,7 +235,7 @@ SDL_Surface* SDLViewer::toneMap(Uint32* pixels)
 	{
 		for (int i = 0; i < w * h; i++)
 		{
-			Vec pix = rawSamplesData[i] * (1.0 / (curSPP / 4));
+			Vec pix = rawSamplesData[i] * (1.0 / (curSPP / sampleStep));
 			pixels[i] = 0xFF000000 | (SmallPT::toInt(SmallPT::clamp(pix.x)) << 16) | (SmallPT::toInt(SmallPT::clamp(pix.y)) << 8)
 					| SmallPT::toInt(SmallPT::clamp(pix.z));
 		}

@@ -20,6 +20,6 @@ void GScene::addItem(GObject* object, bool update)
 	if(update)
 	{
 		delete accelStruct;
-		accelStruct = new GSimpleAccelStruct(objects);
+		accelStruct = new GBVHAccelStruct(objects);
 	}
 }

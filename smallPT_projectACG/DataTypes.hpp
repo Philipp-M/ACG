@@ -80,12 +80,21 @@ class GBoundingBox
 public:
 	GBoundingBox(const Vec& min, const Vec& max)
 	{
-		this->min.x = std::min(max.x, min.x);
-		this->min.y = std::min(max.y, min.y);
-		this->min.z = std::min(max.z, min.z);
-		this->max.x = std::max(max.x, min.x);
-		this->max.y = std::max(max.y, min.y);
-		this->max.z = std::max(max.z, min.z);
+		double eps = 0.00000762939453125; // binary value 1/(1<<17), I hope it helps, because a decimal value 1e-6 is not possible(garbage render)
+		if((((((min.x) == min.y) == min.z) == max.x) == max.y) == max.z)
+		{
+			this->min = Vec();
+			this->max = Vec();
+		}
+		else
+		{
+			this->min.x = std::min(max.x, min.x) - eps;
+			this->min.y = std::min(max.y, min.y) - eps;
+			this->min.z = std::min(max.z, min.z) - eps;
+			this->max.x = std::max(max.x, min.x) + eps;
+			this->max.y = std::max(max.y, min.y) + eps;
+			this->max.z = std::max(max.z, min.z) + eps;
+		}
 	}
 	~GBoundingBox()
 	{

@@ -37,7 +37,7 @@ private:
 		// for now just the simple AccelStruct...
 		if (accelStruct != NULL)
 			delete accelStruct;
-		accelStruct = new GSimpleAccelStruct(accelObjs);
+		accelStruct = new GBVHAccelStruct(accelObjs);
 		GBVHAccelStruct bvh(accelObjs);
 	}
 	std::vector<GTriangle> faces;
