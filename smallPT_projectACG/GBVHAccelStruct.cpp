@@ -17,17 +17,17 @@ struct OctreeNode
 	OctreeNode() : isLeaf(true), data(NULL), bbox(Vec(),Vec()) { for(size_t i = 0; i < 8; i++) child[i] = NULL; }
 	~OctreeNode() { for (uint8_t i = 0; i < 8; ++i) if (child[i] != NULL) delete child[i]; }
 	/**
-	 * builds the bounding box, based on the child nodes(which also will be build.
+	 * builds the bounding box, based on the child nodes(which also will be build).
 	 * should only be executed of the root node
 	 */
-	void buildBoundingBox() { bbox = buildBB(this); }
+	void buildBoundingBox() { buildBB(this); }
 private:
 	const GBoundingBox& buildBB(OctreeNode* node)
 	{
 		if(node->isLeaf)
 		{
 			node->bbox = node->data->createBoundingBox();
-			return node->bbox; // should always be not NULL, if so the program has to crash!
+			return node->bbox; // should never be NULL, if so the program has to crash!
 		}
 		else
 		{
@@ -71,28 +71,22 @@ public:
 private:
 	void insert(OctreeNode* node, const GObject* obj, const Vec& centroid, const Vec& minBB, const Vec& maxBB)
 	{
-		if (node == NULL || obj == NULL || minBB.x > centroid.x || minBB.y > centroid.y || minBB.z > centroid.z ||
-			maxBB.x < centroid.x || maxBB.y < centroid.y || maxBB.z < centroid.z)
-			return; // this should not happen...
-		//doing some other checks here...
 		if (node->isLeaf)
 		{
 			if (node->data == NULL)
 				node->data = obj;
 			else
 			{
-				// todo:
-				// what happens if two objects centroids are the same, it would happen in endless recursion, it has to be handled
 				node->isLeaf = false;
 				if(node->data != NULL) // should always be not NULL, but just to be safe, its not that expensive
 				{
 					Vec centroid_d = node->data->getCentroid();
-					double e = 1e-3;
+					double e = 1e-6;
 					if(centroid.x <= centroid_d.x*(1+e) && centroid.x >= centroid_d.x*(1-e) &&
 							centroid.y <= centroid_d.y*(1+e) && centroid.y >= centroid_d.y*(1-e) &&
 							centroid.z <= centroid_d.z*(1+e) && centroid.z >= centroid_d.z*(1-e))
 					{
-						centroid_d = centroid*0.9999;
+						centroid_d = centroid*0.999999; // if two centroids are almost the same, recompute the centroid, else this ends in endless recursion
 						insert(node, node->data, centroid_d, minBB, maxBB); // insert old object in subnode
 					}
 					else
