@@ -235,7 +235,7 @@ SDL_Surface* SDLViewer::toneMap(Uint32* pixels)
 	{
 		for (int i = 0; i < w * h; i++)
 		{
-			Vec pix = rawSamplesData[i] * (1.0 / (curSPP / 4));
+			Vec pix = rawSamplesData[i] * (1.0 / (curSPP / sampleStep));
 			pixels[i] = 0xFF000000 | (SmallPT::toInt(SmallPT::clamp(pix.x)) << 16) | (SmallPT::toInt(SmallPT::clamp(pix.y)) << 8)
 					| SmallPT::toInt(SmallPT::clamp(pix.z));
 		}
