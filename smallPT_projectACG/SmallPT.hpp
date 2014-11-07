@@ -30,42 +30,29 @@ public:
 	{
 		return int(pow(clamp(x), 1 / 2.2) * 255 + .5);
 	}
-//	inline bool intersect(const Ray &r, double &t, int &id)
-//	{
-//		double n = sizeof(spheres) / sizeof(Sphere), d, inf = t = 1e20;
-//		for (int i = int(n); i--;)
-//			if ((d = spheres[i].intersect(r)) && d < t)
-//			{
-//				t = d;
-//				id = i;
-//			}
-//		return t < inf;
-//	}
 	static Vec radiance(const Ray &ray, GScene* scene, int depth, unsigned short *Xi)
 	{
 		RayIntPt intPoint;
 		if (!scene->intersect(ray, intPoint))
 			return Vec(); // if miss, return black
-//		//const Sphere &object = spheres[id];        // the hit object
-//		Vec x = ray.origin + ray.direction * t;
-//		Vec n = intPoint->getNorm(x);
+		if(intPoint.color.x == 0 && intPoint.color.y == 0 && intPoint.color.z == 0 &&
+			intPoint.emission.x == 0 && intPoint.emission.y == 0 && intPoint.emission.z == 0)
+			return Vec(); // if completely absorbs, return black
 		Vec nl = intPoint.normal.dot(ray.direction) < 0 ? intPoint.normal : intPoint.normal * -1;
-//		Vec f = intPoint->getColor(x);
-//		Vec emission = intPoint->getEmission(x);
-//		Refl_t refl = intPoint->getReflectionType();
-		if(intPoint.emission.x > 0 || intPoint.emission.y > 0 || intPoint.emission.z > 0) // stop when there is light,
-															   // because there can be the case, that the ray is bouncing over the recursion limit...
+
+		if(intPoint.emission.x > 0 || intPoint.emission.y > 0 || intPoint.emission.z > 0) // stop when there is light
 			return intPoint.emission;
+
 		if (++depth > 5)
 		{
 			double p = intPoint.color.x > intPoint.color.y && intPoint.color.x > intPoint.color.z ? intPoint.color.x : intPoint.color.y > intPoint.color.z ? intPoint.color.y : intPoint.color.z; // max refl
 			if (erand48(Xi) < p)
 				intPoint.color = intPoint.color * (1 / p);
 			else
-				return intPoint.emission; //R.R.
+				return intPoint.emission; //Russian Roulette
 		}
-		if (intPoint.reflType == DIFF)
-		{                  // Ideal DIFFUSE reflection
+		if (intPoint.reflType == DIFF)   // Ideal DIFFUSE reflection
+		{
 			double r1 = 2 * M_PI * erand48(Xi), r2 = erand48(Xi), r2s = sqrt(r2);
 			Vec w = nl, u = ((fabs(w.x) > .1 ? Vec(0, 1) : Vec(1)) % w).norm(), v = w % u;
 			Vec d = (u * cos(r1) * r2s + v * sin(r1) * r2s + w * sqrt(1 - r2)).norm();
@@ -83,11 +70,15 @@ public:
 		Vec tdir = (ray.direction * nnt - intPoint.normal * ((into ? 1 : -1) * (ddn * nnt + sqrt(cos2t)))).norm();
 		double a = nt - nc, b = nt + nc, R0 = a * a / (b * b), c = 1 - (into ? -ddn : tdir.dot(intPoint.normal));
 		double Re = R0 + (1 - R0) * c * c * c * c * c, Tr = 1 - Re, P = .25 + .5 * Re, RP = Re / P, TP = Tr / (1 - P);
-		double densityFactor = intPoint.color.dot(intPoint.color);
-		Vec fn = intPoint.color * (1.0/densityFactor); //f.norm();
+
 		if(into)
-			densityFactor = 0;
-		intPoint.color = Vec(exp(-intPoint.distance*densityFactor*(1-fn.x)),exp(-intPoint.distance*densityFactor*(1-fn.y)),exp(-intPoint.distance*densityFactor*(1-fn.z)));
+			intPoint.color = Vec(0.999,0.999,0.999); // usually white reflection, maybe a specular color will be implemented some time
+		else
+		{
+			double densityFactor = sqrt(intPoint.color.dot(intPoint.color));
+			Vec fn = intPoint.color * (1.0/densityFactor); //intPoint.color.norm();
+			intPoint.color = Vec(exp(-intPoint.distance*densityFactor*(1-fn.x)),exp(-intPoint.distance*densityFactor*(1-fn.y)),exp(-intPoint.distance*densityFactor*(1-fn.z)));
+		}
 		return intPoint.emission + intPoint.color.mult(depth > 2 ? (erand48(Xi) < P ?   // Russian roulette
 				radiance(reflRay, scene, depth, Xi) * RP : radiance(Ray(intPoint.position, tdir), scene, depth, Xi) * TP) :
 																			radiance(reflRay, scene, depth, Xi) * Re + radiance(Ray(intPoint.position, tdir), scene, depth, Xi) * Tr);
