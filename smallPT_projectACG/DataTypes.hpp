@@ -80,7 +80,7 @@ class GBoundingBox
 public:
 	GBoundingBox(const Vec& min, const Vec& max)
 	{
-		double eps = 0.00000762939453125; // binary value 1/(1<<17), I hope it helps, because a decimal value 1e-6 is not possible(garbage render)
+		double eps = 0.00000000023283064365386962891; // binary value 1/(1<<32)
 		if((((((min.x) == min.y) == min.z) == max.x) == max.y) == max.z)
 		{
 			this->min = Vec();
@@ -102,15 +102,15 @@ public:
 
 	bool intersect(const Ray& ray, double& tmin, double& tmax) const
 	{
-		float t1 = (min.x - ray.origin.x)*ray.invdir.x;
-		float t2 = (max.x - ray.origin.x)*ray.invdir.x;
-		float t3 = (min.y - ray.origin.y)*ray.invdir.y;
-		float t4 = (max.y - ray.origin.y)*ray.invdir.y;
-		float t5 = (min.z - ray.origin.z)*ray.invdir.z;
-		float t6 = (max.z - ray.origin.z)*ray.invdir.z;
+		double t1 = (min.x - ray.origin.x)*ray.invdir.x;
+		double t2 = (max.x - ray.origin.x)*ray.invdir.x;
+		double t3 = (min.y - ray.origin.y)*ray.invdir.y;
+		double t4 = (max.y - ray.origin.y)*ray.invdir.y;
+		double t5 = (min.z - ray.origin.z)*ray.invdir.z;
+		double t6 = (max.z - ray.origin.z)*ray.invdir.z;
 
-		float tmin_ = std::max(std::max(std::min(t1, t2), std::min(t3, t4)), std::min(t5, t6));
-		float tmax_ = std::min(std::min(std::max(t1, t2), std::max(t3, t4)), std::max(t5, t6));
+		double tmin_ = std::max(std::max(std::min(t1, t2), std::min(t3, t4)), std::min(t5, t6));
+		double tmax_ = std::min(std::min(std::max(t1, t2), std::max(t3, t4)), std::max(t5, t6));
 		// if tmax < 0, ray (line) is intersecting AABB, but whole AABB is behing us
 		if (tmax_ < 0)
 		{
@@ -125,6 +125,38 @@ public:
 		}
 		tmax = tmax_;
 		tmin = tmin_;
+		return true;
+	}
+	bool intersect(const Ray& ray, double& t) const
+	{
+		double t1 = (min.x - ray.origin.x) * ray.invdir.x;
+		double t2 = (max.x - ray.origin.x) * ray.invdir.x;
+		double t3 = (min.y - ray.origin.y) * ray.invdir.y;
+		double t4 = (max.y - ray.origin.y) * ray.invdir.y;
+		double t5 = (min.z - ray.origin.z) * ray.invdir.z;
+		double t6 = (max.z - ray.origin.z) * ray.invdir.z;
+
+		t = std::max(std::max(std::min(t1, t2), std::min(t3, t4)), std::min(t5, t6));
+		double tmax = std::min(std::min(std::max(t1, t2), std::max(t3, t4)), std::max(t5, t6));
+		// if tmax < 0, ray (line) is intersecting AABB, but whole AABB is behing us
+		if (tmax < 0 || t > tmax)
+			return false;
+		return true;
+	}
+	bool intersect(const Ray& ray) const
+	{
+		double t1 = (min.x - ray.origin.x) * ray.invdir.x;
+		double t2 = (max.x - ray.origin.x) * ray.invdir.x;
+		double t3 = (min.y - ray.origin.y) * ray.invdir.y;
+		double t4 = (max.y - ray.origin.y) * ray.invdir.y;
+		double t5 = (min.z - ray.origin.z) * ray.invdir.z;
+		double t6 = (max.z - ray.origin.z) * ray.invdir.z;
+
+		double tmin = std::max(std::max(std::min(t1, t2), std::min(t3, t4)), std::min(t5, t6));
+		double tmax = std::min(std::min(std::max(t1, t2), std::max(t3, t4)), std::max(t5, t6));
+		// if tmax < 0, ray (line) is intersecting AABB, but whole AABB is behing us
+		if (tmax < 0 || tmin > tmax)
+			return false;
 		return true;
 	}
 	GBoundingBox operator+(const GBoundingBox &b) const

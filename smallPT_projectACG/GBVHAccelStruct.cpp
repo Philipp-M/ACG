@@ -60,11 +60,6 @@ public:
 	{
 		root.buildBoundingBox();
 	}
-	// for debugging:
-	void print()
-	{
-		print(&root, 0);
-	}
 	struct QueueElement
 	{
 		const OctreeNode *node; // octree node held by this node in the tree
@@ -74,21 +69,6 @@ public:
 		friend bool operator < (const QueueElement &a, const QueueElement &b) { return a.t > b.t; }
 	};
 private:
-	void print(OctreeNode* node, int depth)
-	{
-		if(node->isLeaf)
-			std::cout << "child at depth " << depth << " has " << node->bbox << " and data: " << node->data << std::endl;
-		else
-		for(size_t i = 0; i < 8; i++)
-		{
-			if(node->child[i] != NULL)
-			{
-
-				std::cout << i << " node at depth " << depth+1 << " has " << node->child[i]->bbox << std::endl;
-				print(node->child[i], depth+1);
-			}
-		}
-	}
 	void insert(OctreeNode* node, const GObject* obj, const Vec& centroid, const Vec& minBB, const Vec& maxBB)
 	{
 		if (node == NULL || obj == NULL || minBB.x > centroid.x || minBB.y > centroid.y || minBB.z > centroid.z ||
@@ -171,24 +151,22 @@ GBVHAccelStruct::GBVHAccelStruct(const std::vector<GObject*>& objects_)
 	for (size_t i = 0; i < objects_.size(); i++)
 		octree->insert(objects_[i]);
 	octree->build();
-	//octree->print();
 }
 
 bool GBVHAccelStruct::intersect(const Ray& ray, RayIntPt& intPoint) const
 {
-	double tNear = std::numeric_limits<double>::infinity(),tFar = std::numeric_limits<double>::infinity();
-	if (!octree->root.bbox.intersect(ray, tNear, tFar) || tFar < 0)
+	if (!octree->root.bbox.intersect(ray))
 		return false;
-	double tMin = tFar;
+	double tMin = std::numeric_limits<double>::infinity();
 	std::priority_queue<Octree::QueueElement> queue;
 	queue.push(Octree::QueueElement(&octree->root, 0));
+	RayIntPt isectDataCurrent;
 	while (!queue.empty() && queue.top().t < tMin)
 	{
 		const OctreeNode *node = queue.top().node;
 		queue.pop();
 		if (node->isLeaf)
 		{
-			RayIntPt isectDataCurrent;
 			if (node->data->intersect(ray, isectDataCurrent))
 			{
 				if (isectDataCurrent.distance < tMin)
@@ -200,13 +178,13 @@ bool GBVHAccelStruct::intersect(const Ray& ray, RayIntPt& intPoint) const
 		}
 		else
 		{
-			for (size_t i = 0; i < 8; ++i)
+			for (uint8_t i = 0; i < 8; ++i)
 			{
 				if (node->child[i] != NULL)
 				{
-					double tNearChild, tFarChild;
-					if (node->child[i]->bbox.intersect(ray,tNearChild,tFarChild))
-						queue.push(Octree::QueueElement(node->child[i], tNearChild));
+					double tChild;
+					if (node->child[i]->bbox.intersect(ray,tChild))
+						queue.push(Octree::QueueElement(node->child[i], tChild));
 				}
 			}
 		}
