@@ -28,20 +28,18 @@ private:
 	void updateGeometry()
 	{
 		Vec tmp;
+		std::vector<GObject*> accelObjs;
 		for (size_t i = 0; i < faces.size(); i++)
 			tmp = tmp + faces[i].getCentroid();
 		centroid = tmp * (1.0 / faces.size());
-		accelObjs.clear();
 		for (size_t i = 0; i < faces.size(); i++)
 			accelObjs.push_back((GObject*) &faces[i]);
 		// for now just the simple AccelStruct...
 		if (accelStruct != NULL)
 			delete accelStruct;
 		accelStruct = new GBVHAccelStruct(accelObjs);
-		GBVHAccelStruct bvh(accelObjs);
 	}
 	std::vector<GTriangle> faces;
-	std::vector<GObject*> accelObjs; // temporarily for the simple accel Struct...
 	Vec centroid;
 	GAccelStruct* accelStruct;
 
