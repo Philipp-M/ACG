@@ -60,8 +60,6 @@ Vec GSphere::getCentroid() const
 	return position;
 }
 
-<<<<<<< HEAD
-
 //simple translation operatoins
 void GSphere::translate(const Vec& t) {
 	position = position + t;
