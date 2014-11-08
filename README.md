@@ -8,6 +8,7 @@ An Example Image rendered with 10000 spp of the original cornell box:
 ![CornellBox](https://raw.githubusercontent.com/Philipp-M/ACG/master/smallPT_projectACG/images/cornell10000spp.jpg)
 
 The transparent chinese dragon in the cornell box(rendered with 7500 spp) showing the new implemented features: Beer-Lambert-Law and the acceleration technique: Bounding Volume Hierarchy:
+
 ![CornellDragonBox](https://raw.githubusercontent.com/Philipp-M/ACG/master/smallPT_projectACG/images/cornelldragon7500spp.jpg)
 
 License
