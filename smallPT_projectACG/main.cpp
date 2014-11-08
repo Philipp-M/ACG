@@ -13,14 +13,18 @@ int main(int argc, char *argv[])
 {
 	int w = 512, h = 512; // image size
 	int samplePerStep = 4;
-	if(argc > 2)
-	{
-		w = std::stoi(argv[1]);
-		h = std::stoi(argv[2]);
-	}
+	std::string pathToScene = "cornell.obj";
+	if(argc > 1)
+		pathToScene = argv[1];
 	if(argc > 3)
-		samplePerStep = std::stoi(argv[3]);
-	SDLViewer view(w,h, samplePerStep);
+	{
+		w = std::stoi(argv[2]);
+		h = std::stoi(argv[3]);
+	}
+
+	if(argc > 4)
+		samplePerStep = std::stoi(argv[4]);
+	SDLViewer view(w,h, pathToScene ,samplePerStep);
 	view.display();
 
 	return 0;

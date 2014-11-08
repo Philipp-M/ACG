@@ -43,8 +43,8 @@ void SDLViewer::display()
 	SDL_WaitThread(renderThread, NULL);
 }
 
-SDLViewer::SDLViewer(int w, int h, int sampleStep) :
-		curSPP(0), sampleStep(sampleStep), quit(false)
+SDLViewer::SDLViewer(int w, int h, std::string pathToScene, int sampleStep) :
+		curSPP(0), pathToScene(pathToScene), sampleStep(sampleStep), quit(false)
 {
 	if (this->sampleStep < 4)
 		this->sampleStep = 4;
@@ -119,7 +119,7 @@ int SDLViewer::renderThreadF(void* data)
 	viewer->timeElapsed = SDL_GetTicks();
 	GScene scene;
 	std::vector<GPolygonObject*> sceneObj;
-	sceneObj = ObjLoader::loadOfFile("scenes/cornell8Hi.obj", "./scenes/");
+	sceneObj = ObjLoader::loadOfFile(((std::string)"scenes/").append(viewer->pathToScene).c_str(), "./scenes/");
 	for (size_t i = 0; i < sceneObj.size(); i++)
 		scene.addItem(sceneObj[i]);
 	std::cerr << "time needed for building the scene: " <<(double)(SDL_GetTicks() - viewer->timeElapsed) / 1000.0 << " s\n\n"; // print progress
