@@ -15,10 +15,10 @@ debug: CXXFLAGS += -g -O0 -Wall -Wextra
 debug: clean $(EXECUTABLE_DEBUG)
 
 $(EXECUTABLE): $(OBJECTS) $(DEPENDENCIES)
-	$(CXX) $(LDFLAGS) $(OBJECTS) -o $@
+	$(CXX) $(OBJECTS) $(LDFLAGS) -o $@
 	
 $(EXECUTABLE_DEBUG): $(OBJECTS) $(DEPENDENCIES)
-	$(CXX) $(LDFLAGS) $(OBJECTS) -o $@
+	$(CXX) $(OBJECTS) $(LDFLAGS) -o $@
 
 .cpp.o: $(DEPENDENCIES)
 	$(CC) $(INCLUDES) $(CXXFLAGS) $< -o $@
