@@ -15,6 +15,17 @@ public:
 	{
 		updateGeometry();
 	}
+	GTriangle(const GTriangle& other)
+	{
+		v0 = other.v0;
+		v1 = other.v1;
+		v2 = other.v2;
+		normal = other.normal;
+		color = other.color;
+		emission = other.emission;
+		refl = other.refl;
+	}
+
 	/***** implementations of GPrimitiveObject *****/
 	/*
 	 * implemented intersection method of a triangle
