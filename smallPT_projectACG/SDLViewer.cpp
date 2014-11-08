@@ -118,28 +118,29 @@ int SDLViewer::renderThreadF(void* data)
 	int samps = viewer->sampleStep / 4;
 	/********** create the scene *************/
 	viewer->timeElapsed = SDL_GetTicks();
-	std::vector<GScene> scenes;
+	std::vector<GScene*> scenes;
 	std::vector<GPolygonObject*> sceneObj;
 	sceneObj = ObjLoader::loadOfFile("scenes/cornell8Hi.obj", "./scenes/");
 	
 	//TODO: Create multiple scenes in time
 	std::cout << "Start consctructiong scenes" << std::endl;
 
-	for( int j = 0; j < viewer->timeSteps; j++ ) {
-		//compute the scene objects  (hardcoded at the moment)
-		sceneObj[1]->translate(Vec(0.5, 0.5, 0.5)*j); // Icosphere
-		sceneObj[0]->translate(Vec(-0.5, -0.5, 0.5)*j); // Monkey
-		sceneObj[9]->translate(Vec(0.5, -0.5, 0.5)*j); // large Box
+	for( int j = 0; j < viewer->timeSteps; j++ )
+	{
+		std::vector<GPolygonObject*> sceneObjT;
+		for(GPolygonObject* obj : sceneObj)
+			sceneObjT.push_back(new GPolygonObject(*obj));
 
-		//TODO: THIS WILL CRASH THE APP, make a copy constructor for GPolygonObject!
+		//compute the scene objects  (hardcoded at the moment)
+		sceneObjT[1]->translate(Vec(0.5, 0.5, 0.5)*j*10); // Icosphere
+		sceneObjT[0]->translate(Vec(-0.5, -0.5, 0.5)*j*10); // Monkey
+		sceneObjT[9]->translate(Vec(0.5, -0.5, 0.5)*j*10); // large Box
 
 		//put timeStep into vector
-		GScene scene;
-		for( size_t i = 0; i < sceneObj.size(); i++ )
-			scene.addItem(sceneObj[i]);
-
+		GScene* scene = new GScene();
+		for(GPolygonObject* obj : sceneObjT)
+			scene->addItem(obj);
 		scenes.push_back(scene);
-	
 	}
 	std::cerr << "time needed for building the scene: " <<(double)(SDL_GetTicks() - viewer->timeElapsed) / 1000.0 << " s\n\n"; // print progress
 	viewer->timeElapsed = SDL_GetTicks();
@@ -168,7 +169,7 @@ int SDLViewer::renderThreadF(void* data)
 							//TODO: sample over scenes in time and add multiple sampling techniques
 							int p = erand48(Xi)*(viewer->timeSteps-1);
 
-							r = r + SmallPT::radiance(Ray(cam.origin + d * 140, d.norm()), &scenes[p], 0, Xi) * (1. / samps);
+							r = r + SmallPT::radiance(Ray(cam.origin + d * 140, d.norm()), scenes[p], 0, Xi) * (1. / samps);
 						} // Camera rays are pushed ^^^^^ forward to start in interior
 						c[i] = c[i] + Vec(r.x, r.y, r.z) * .25;
 					}
@@ -188,6 +189,8 @@ int SDLViewer::renderThreadF(void* data)
 
 	}
 	std::cerr << "\n\ntime needed for rendering: " <<(double)(SDL_GetTicks() - viewer->timeElapsed) / 1000.0 << " s\n"; // print progress
+	for(GScene* scene : scenes)
+		delete scene;
 	return 0;
 }
 
