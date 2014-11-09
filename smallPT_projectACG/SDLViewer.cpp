@@ -124,24 +124,27 @@ int SDLViewer::renderThreadF(void* data)
 	
 	//TODO: Create multiple scenes in time
 	std::cout << "Start consctructiong scenes" << std::endl;
-
-	for( int j = 0; j < viewer->timeSteps; j++ )
-	{
+	
+	for( int j = 0; j < viewer->timeSteps; j++ ){
 		std::vector<GPolygonObject*> sceneObjT;
 		for(GPolygonObject* obj : sceneObj)
 			sceneObjT.push_back(new GPolygonObject(*obj));
-
+		
 		//compute the scene objects  (hardcoded at the moment)
-		sceneObjT[1]->translate(Vec(0.5, 0.5, 0.5)*j*10); // Icosphere
-		sceneObjT[0]->translate(Vec(-0.5, -0.5, 0.5)*j*10); // Monkey
-		sceneObjT[9]->translate(Vec(0.5, -0.5, 0.5)*j*10); // large Box
+		sceneObjT[1]->translate(Vec(0.1, 0.1, 0.1)*j); // Icosphere
+		sceneObjT[0]->translate(Vec(-0.1, -0.1, 0.1)*j); // Monkey
+		sceneObjT[9]->translate(Vec(0.1, -0.1, 0.1)*j); // large Box
 
 		//put timeStep into vector
 		GScene* scene = new GScene();
-		for(GPolygonObject* obj : sceneObjT)
+		for( GPolygonObject* obj : sceneObjT ) {
 			scene->addItem(obj);
+
+		}
 		scenes.push_back(scene);
 	}
+	
+
 	std::cerr << "time needed for building the scene: " <<(double)(SDL_GetTicks() - viewer->timeElapsed) / 1000.0 << " s\n\n"; // print progress
 	viewer->timeElapsed = SDL_GetTicks();
 	while (!viewer->quit)
@@ -167,8 +170,8 @@ int SDLViewer::renderThreadF(void* data)
 							Vec d = cx * (((sx + .5 + dx) / 2 + x) / w - .5) + cy * (((sy + .5 + dy) / 2 + y) / h - .5) + cam.direction;
 
 							//TODO: sample over scenes in time and add multiple sampling techniques
-							int p = erand48(Xi)*(viewer->timeSteps-1);
-
+							int p = erand48(Xi) * (viewer->timeSteps - 1);
+	
 							r = r + SmallPT::radiance(Ray(cam.origin + d * 140, d.norm()), scenes[p], 0, Xi) * (1. / samps);
 						} // Camera rays are pushed ^^^^^ forward to start in interior
 						c[i] = c[i] + Vec(r.x, r.y, r.z) * .25;

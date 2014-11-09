@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
 {
 	int w = 512, h = 512; // image size
 	int samplePerStep = 4;
-	int timeSteps = 10;
+	int timeSteps = 20;
 	if(argc > 2)
 	{
 		w = std::stoi(argv[1]);

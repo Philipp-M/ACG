@@ -14,15 +14,7 @@ class GPolygonObject : public GObject
 public:
 	GPolygonObject() : accelStruct(NULL) { updateGeometry(); }
 	GPolygonObject(const std::vector<GTriangle>& triangles) : faces(triangles), accelStruct(NULL) { updateGeometry(); }
-	GPolygonObject(const GPolygonObject &other)
-	{
-		faces = other.faces; // does not work for unknown reason...
-		centroid = other.centroid;
-		std::vector<GObject*> accelObjs;
-		for (size_t i = 0; i < faces.size(); i++)
-			accelObjs.push_back(&faces[i]);
-		accelStruct = new GBVHAccelStruct(accelObjs);
-	}
+	GPolygonObject(const GPolygonObject &other);
 
 	/***** implementations of GObject *****/
 	bool intersect(const Ray &ray, RayIntPt& intPoint) const;
