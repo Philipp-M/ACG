@@ -44,7 +44,7 @@ void SDLViewer::display()
 }
 
 SDLViewer::SDLViewer(int w, int h, std::string pathToScene, int sampleStep) :
-		curSPP(0), pathToScene(pathToScene), sampleStep(sampleStep), quit(false)
+		pathToScene(pathToScene), curSPP(0), sampleStep(sampleStep), quit(false)
 {
 	if (this->sampleStep < 4)
 		this->sampleStep = 4;
@@ -123,9 +123,9 @@ int SDLViewer::renderThreadF(void* data)
 	for (size_t i = 0; i < sceneObj.size(); i++)
 		scene.addItem(sceneObj[i]);
 	std::cerr << "time needed for building the scene: " <<(double)(SDL_GetTicks() - viewer->timeElapsed) / 1000.0 << " s\n\n"; // print progress
-	viewer->timeElapsed = SDL_GetTicks();
 	while (!viewer->quit)
 	{
+		viewer->timeElapsed = SDL_GetTicks();
 		Vec *c = new Vec[w * h]; // stack would be better, but can be exceeded, which causes a Segmention Fault...
 		unsigned int seed = SDL_GetTicks();
 #pragma omp parallel for schedule(dynamic, 1) private(r) // OpenMP
@@ -161,7 +161,7 @@ int SDLViewer::renderThreadF(void* data)
 		}
 		SDL_UnlockMutex(viewer->mutex);
 		delete[] c;
-		std::cerr << "\rRendering (" << viewer->curSPP << " spp, " <<((double)viewer->curSPP*w*h) / (double)(SDL_GetTicks() - viewer->timeElapsed) << "k sp/s)"; // print progress
+		std::cerr << "\rRendering (" << viewer->curSPP << " spp, " <<((double)viewer->sampleStep*w*h) / (double)(SDL_GetTicks() - viewer->timeElapsed) << "k sp/s)"; // print progress
 
 	}
 	std::cerr << "\n\ntime needed for rendering: " <<(double)(SDL_GetTicks() - viewer->timeElapsed) / 1000.0 << " s\n"; // print progress
