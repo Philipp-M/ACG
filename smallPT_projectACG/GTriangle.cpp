@@ -1,7 +1,27 @@
 #include "GTriangle.hpp"
 #include <cstdio>
 
-double GTriangle::intersect(const Ray& ray) const
+Vec GTriangle::getNorm() const
+{
+	return normal;
+}
+
+Vec GTriangle::getColor() const
+{
+	return color;
+}
+
+Vec GTriangle::getEmission() const
+{
+	return emission;
+}
+
+Refl_t GTriangle::getReflectionType() const
+{
+	return refl;
+}
+
+bool GTriangle::intersect(const Ray &ray, RayIntPt& intPoint) const
 {
 	Vec edge1 = v1 - v0;
 	Vec edge2 = v2 - v0;
@@ -22,33 +42,8 @@ double GTriangle::intersect(const Ray& ray) const
 	if (v < 0 || u + v > 1)
 		return 0;
 	double t = edge2.dot(qvec) * invDet;
-	return t > 0 ? t : 0;
-}
 
-Vec GTriangle::getNorm(const Vec& position) const
-{
-	return normal;
-}
-
-Vec GTriangle::getColor(const Vec& position) const
-{
-	return color;
-}
-
-Vec GTriangle::getEmission(const Vec& position) const
-{
-	return emission;
-}
-
-Refl_t GTriangle::getReflectionType() const
-{
-	return refl;
-}
-
-bool GTriangle::intersect(const Ray &ray, RayIntPt& intPoint) const
-{
-	double t = intersect(ray);
-	if(t == 0)
+	if(t <= 0)
 		return false;
 	intPoint.distance = t;
 	intPoint.normal = normal;

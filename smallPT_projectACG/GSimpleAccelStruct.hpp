@@ -3,7 +3,6 @@
 
 #include "GAccelStruct.hpp"
 #include "GBVHAccelStruct.hpp"
-#include "GPrimitiveObject.hpp"
 #include "GObject.hpp"
 #include <vector>
 

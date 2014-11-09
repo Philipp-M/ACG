@@ -2,7 +2,6 @@
 #define GACCELSTRUCT_HPP
 
 #include "DataTypes.hpp"
-#include "GPrimitiveObject.hpp"
 
 class GAccelStruct
 {

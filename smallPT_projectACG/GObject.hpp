@@ -1,7 +1,6 @@
 #ifndef GOBJECT_HPP
 #define GOBJECT_HPP
 #include "DataTypes.hpp"
-#include "GPrimitiveObject.hpp"
 /**
  * interface for more complex Objects, then primitves
  */

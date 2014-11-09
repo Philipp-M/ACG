@@ -4,10 +4,9 @@
 #include <iostream>
 #include "DataTypes.hpp"
 #include "GBVHAccelStruct.hpp"
-#include "GPrimitiveObject.hpp"
 #include "GObject.hpp"
 
-struct GSphere: public GPrimitiveObject , public GObject
+struct GSphere: public GObject
 {
 	double radius;       // radius
 	Vec position, emission, color;      // position, emission, color
@@ -18,14 +17,9 @@ struct GSphere: public GPrimitiveObject , public GObject
 	}
 	~GSphere() {};
 
-	/***** implementations of GPrimitiveObject *****/
-	/*
-	 * implemented intersection method of a sphere
-	 */
-	double intersect(const Ray &ray) const;
 	Vec getNorm(const Vec& position) const;
-	Vec getColor(const Vec& position) const;
-	Vec getEmission(const Vec& position) const;
+	Vec getColor() const;
+	Vec getEmission() const;
 	Refl_t getReflectionType() const;
 	/***** implementations of GObject *****/
 	/**
