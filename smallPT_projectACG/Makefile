@@ -21,7 +21,7 @@ $(EXECUTABLE_DEBUG): $(OBJECTS) $(DEPENDENCIES)
 	$(CXX) $(OBJECTS) $(LDFLAGS) -o $@
 
 .cpp.o: $(DEPENDENCIES)
-	$(CC) $(INCLUDES) $(CXXFLAGS) $< -o $@
+	$(CXX) $(INCLUDES) $(CXXFLAGS) $< -o $@
 	
 .PHONY: clean
 clean:
