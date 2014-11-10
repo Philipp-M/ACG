@@ -41,12 +41,11 @@ public:
 		return viewBottomLeft;
 	}
 
-	Vec colorOnePixel(int x, int y, GScene* scene, int depth, unsigned short *Xi) const;
+	Ray generateRay(int x, int y) const;
 
 private:
 	void initCamera();
-	double generateRandomeNumber(double min, double max) const;
-	Ray generateRay(int x, int y) const;
+	double generateRandomNumber(double min, double max) const;
 
 	Vec camPosition, camDirection;
 	Vec camLookAt, u, v;
