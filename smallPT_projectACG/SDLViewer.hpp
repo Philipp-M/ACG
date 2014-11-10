@@ -4,11 +4,11 @@
 #include <SDL2/SDL.h>
 #include "DataTypes.hpp"
 
-class SDLViewer
-{
+class SDLViewer {
 public:
 	void display();
-	SDLViewer(int w, int h, int sampleStep = 4,int timeSteps = 10);
+
+	SDLViewer(int w, int h, std::string pathToScene = "cornell.obj", int sampleStep = 4, int timeSteps = 10);
 	virtual ~SDLViewer();
 private:
 	void initSDL(int w, int h);
@@ -26,6 +26,7 @@ private:
 	SDL_Surface* gButtonPressed;
 	SDL_Surface* gButtonHover;
 	Vec* rawSamplesData;
+	std::string pathToScene;
 	int curSPP;
 	int sampleStep;
 	int timeSteps;

@@ -4,7 +4,6 @@
 #include <vector>
 #include <iostream>
 #include "DataTypes.hpp"
-#include "GPrimitiveObject.hpp"
 #include "GObject.hpp"
 #include "GAccelStruct.hpp"
 

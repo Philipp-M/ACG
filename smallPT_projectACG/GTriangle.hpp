@@ -4,9 +4,8 @@
 #include "DataTypes.hpp"
 #include "GBVHAccelStruct.hpp"
 #include "GObject.hpp"
-#include "GPrimitiveObject.hpp"
 
-class GTriangle: public GPrimitiveObject, public GObject
+class GTriangle: public GObject
 {
 public:
 
@@ -26,15 +25,9 @@ public:
 		refl = other.refl;
 	}
 
-	/***** implementations of GPrimitiveObject *****/
-	/*
-	 * implemented intersection method of a triangle
-	 */
-	double intersect(const Ray &ray) const;
-
-	Vec getNorm(const Vec& position) const;
-	Vec getColor(const Vec& position) const;
-	Vec getEmission(const Vec& position) const;
+	Vec getNorm() const;
+	Vec getColor() const;
+	Vec getEmission() const;
 	Refl_t getReflectionType() const;
 
 	/***** implementations of GObject *****/
