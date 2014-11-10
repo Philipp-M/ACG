@@ -6,6 +6,7 @@
  */
 
 #include "CameraModel.hpp"
+#include "SmallPT.hpp"
 #include <math.h>
 
 CameraModel::CameraModel(Vec _camPosition, Vec _camDirection, double _fov, double _focalDistance, double _apertureRadius, unsigned int _width, unsigned int _height):
@@ -32,19 +33,37 @@ void CameraModel::initCamera() {
 	apertureY = v * apertureRadius;
 }
 
-double CameraModel::generateRandomeNumber(double min, double max) {
+double CameraModel::generateRandomeNumber(double min, double max) const {
 	double r;
 	srand(time(NULL));
 	r = (double) rand() / RAND_MAX;
 	return min + r * (max - min);
 }
 
-Ray CameraModel::generateRay(int x, int y) {
+Ray CameraModel::generateRay(int x, int y) const {
 	double r1 = generateRandomeNumber(-1.0, 1.0);
 	double r2 = generateRandomeNumber(-1.0, 1.0);
 	Vec viewPoint = viewBottomLeft + cx*x + cy*y;
 	Vec newCamPosition = camPosition + (apertureX * r1) + (apertureY * r2);
 	return Ray(newCamPosition, (viewPoint - newCamPosition).norm());
+}
+
+Vec CameraModel::colorOnePixel(int x, int y, GScene* scene, int depth, unsigned short *Xi) const {
+	bool limitReached = false;
+	double limit = 0.001;
+	Vec color = Vec();
+	Vec tmpColor = Vec();
+	int i=0;
+	while(!limitReached && i < 10) {
+		tmpColor = color;
+		color = tmpColor + SmallPT::radiance(generateRay(x, y), scene, depth, Xi);
+		++i;
+		if((tmpColor.x - color.x < limit) && (tmpColor.y - color.y < limit) && (tmpColor.z - color.z < limit)) {
+			limitReached = true;
+		}
+	}
+
+	return color / (i + 1);
 }
 
 CameraModel::~CameraModel() {

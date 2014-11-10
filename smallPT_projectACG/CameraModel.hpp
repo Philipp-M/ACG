@@ -9,12 +9,11 @@
 #define CAMERAMODEL_HPP_
 
 #include "DataTypes.hpp"
+#include "GScene.hpp"
 
 class CameraModel {
 public:
 	CameraModel(Vec _camPosition, Vec _camDirection, double _fov, double _focalDistance, double _apertureRadius, unsigned int _width, unsigned int _height);
-
-	Ray generateRay(int x, int y);
 
 	virtual ~CameraModel();
 
@@ -42,9 +41,12 @@ public:
 		return viewBottomLeft;
 	}
 
+	Vec colorOnePixel(int x, int y, GScene* scene, int depth, unsigned short *Xi) const;
+
 private:
 	void initCamera();
-	double generateRandomeNumber(double min, double max);
+	double generateRandomeNumber(double min, double max) const;
+	Ray generateRay(int x, int y) const;
 
 	Vec camPosition, camDirection;
 	Vec camLookAt, u, v;
