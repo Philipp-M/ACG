@@ -43,7 +43,7 @@ Ray CameraModel::generateRay(int x, int y) {
 	double r1 = generateRandomeNumber(-1.0, 1.0);
 	double r2 = generateRandomeNumber(-1.0, 1.0);
 	Vec viewPoint = viewBottomLeft + cx*x + cy*y;
-	Vec newCamPosition = camPosition + r1 * apertureX + r2 * apertureY;
+	Vec newCamPosition = camPosition + (apertureX * r1) + (apertureY * r2);
 	return Ray(newCamPosition, (viewPoint - newCamPosition).norm());
 }
 
