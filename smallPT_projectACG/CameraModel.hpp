@@ -41,11 +41,11 @@ public:
 		return viewBottomLeft;
 	}
 
-	Ray generateRay(int x, int y) const;
+	Ray generateRay(int x, int y, int sx, int sy, double dx, double dy) const;
 
 private:
 	void initCamera();
-	double generateRandomNumber(double min, double max) const;
+	double generateRandomNumber() const;
 
 	Vec camPosition, camDirection;
 	Vec camLookAt, u, v;

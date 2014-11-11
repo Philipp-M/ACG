@@ -6,6 +6,7 @@
 #include "GScene.hpp"
 #include "ObjLoader.hpp"
 #include "GPolygonObject.hpp"
+#include "CameraModel.hpp"
 
 void SDLViewer::display()
 {
@@ -110,9 +111,11 @@ int SDLViewer::renderThreadF(void* data)
 	SDLViewer* viewer = reinterpret_cast<SDLViewer*>(data);
 	int w = viewer->gScreenSurface->w;
 	int h = viewer->gScreenSurface->h;
-	Ray cam(Vec(50, 50, 230), Vec(0, 0, -1).norm()); // camera pos, dir
+/*	Ray cam(Vec(50, 50, 230), Vec(0, 0, -1).norm()); // camera pos, dir
 	Vec cx = Vec(w * .7135 / h); // x direction increment (uses implicit 0 for y, z)
 	Vec cy = (cx % cam.direction).norm() * .7135; // y direction increment (note cross product)
+*/
+	CameraModel camera = CameraModel(Vec(50, 50, 140), Vec(0, 0, -1).norm(), 80, 70, 20, w, h);
 	Vec r; // used for colors of samples
 	int samps = viewer->sampleStep / 4;
 	/********** create the scene *************/
@@ -145,8 +148,9 @@ int SDLViewer::renderThreadF(void* data)
 							// I BELIEVE THIS PRODUCES A TENT FILTER
 							double r1 = 2 * erand48(Xi), dx = r1 < 1 ? sqrt(r1) - 1 : 1 - sqrt(2 - r1);
 							double r2 = 2 * erand48(Xi), dy = r2 < 1 ? sqrt(r2) - 1 : 1 - sqrt(2 - r2);
-							Vec d = cx * (((sx + .5 + dx) / 2 + x) / w - .5) + cy * (((sy + .5 + dy) / 2 + y) / h - .5) + cam.direction;
-							r = r + SmallPT::radiance(Ray(cam.origin + d * 140, d.norm()), &scene, 0, Xi) * (1. / samps);
+							//Vec d = cx * (((sx + .5 + dx) / 2 + x) / w - .5) + cy * (((sy + .5 + dy) / 2 + y) / h - .5) + cam.direction;
+							//r = r + SmallPT::radiance(Ray(cam.origin + d * 140, d.norm()), &scene, 0, Xi) * (1. / samps);
+							r = r + SmallPT::radiance(camera.generateRay(x, y, sx, sy, dx, dy), &scene, 0, Xi) * (1. / samps);
 						} // Camera rays are pushed ^^^^^ forward to start in interior
 						c[i] = c[i] + Vec(r.x, r.y, r.z) * .25;
 					}
