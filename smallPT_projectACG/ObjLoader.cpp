@@ -3,13 +3,13 @@
 #include "tiny_obj_loader.hpp"
 #include "GTriangle.hpp"
 #include <iostream>
-std::vector<GPolygonObject*> ObjLoader::loadOfFile(const char* filename, const char* MatPath)
+std::vector<GPolygonObject<GTriangle>*> ObjLoader::loadOfFile(const char* filename, const char* MatPath)
 {
 	std::vector<tinyobj::shape_t> shapes;
 	std::vector<tinyobj::material_t> materials;
 	std::string err = tinyobj::LoadObj(shapes, materials, filename, MatPath);
 	std::vector<GTriangle> faces;
-	std::vector<GPolygonObject*> retObjs;
+	std::vector<GPolygonObject<GTriangle>*> retObjs;
 	if (!err.empty())
 	{
 		std::cerr << err << std::endl;
@@ -49,7 +49,7 @@ std::vector<GPolygonObject*> ObjLoader::loadOfFile(const char* filename, const c
 			else
 				faces.push_back(GTriangle(v0, v1, v2, Vec(), Vec(1, 1, 1) * 0.999, DIFF)); // for default a white diffuse material
 		}
-		retObjs.push_back(new GPolygonObject(faces));
+		retObjs.push_back(new GPolygonObject<GTriangle>(faces));
 	}
 	return retObjs;
 }
