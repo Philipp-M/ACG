@@ -34,10 +34,13 @@ void CameraModel::initCamera() {
 }
 
 double CameraModel::generateRandomNumber(double min, double max) const {
-	double r;
+	unsigned short Xi[3];
+	double r = erand48(Xi);
 	srand(time(NULL));
-	r = (double) rand() / RAND_MAX;
-	return min + r * (max - min);
+	if(rand()%2 == 0) {
+		return (-1) * r;
+	}
+	return r;
 }
 
 Ray CameraModel::generateRay(int x, int y) const {
