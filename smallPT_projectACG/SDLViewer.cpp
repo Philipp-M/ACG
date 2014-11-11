@@ -115,7 +115,7 @@ int SDLViewer::renderThreadF(void* data)
 	Vec cx = Vec(w * .7135 / h); // x direction increment (uses implicit 0 for y, z)
 	Vec cy = (cx % cam.direction).norm() * .7135; // y direction increment (note cross product)
 */
-	CameraModel camera = CameraModel(Vec(50, 50, 140), Vec(0, 0, -1).norm(), 80, 70, 3, w, h);
+	CameraModel camera = CameraModel(Vec(50, 50, 230), Vec(0, 0, -1).norm(), 40.88, 150, 3, w, h);
 	Vec r; // used for colors of samples
 	int samps = viewer->sampleStep / 4;
 	/********** create the scene *************/

@@ -21,7 +21,7 @@ void CameraModel::initCamera() {
 	u = (camDirection % Vec(0.0, 1.0, 0.0)).norm();
 	v = (u % camDirection).norm();
 
-	double viewHalfWidth = focalDistance * tan((fov) / 2.0);
+	double viewHalfWidth = focalDistance * tan((fov)*M_PI / 180 / 2.0);
 	double aspectRatio = height / width;
 	double viewHalfHeight = aspectRatio * viewHalfWidth;
 
