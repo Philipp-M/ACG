@@ -17,31 +17,7 @@ public:
 
 	virtual ~CameraModel();
 
-	const Vec& getCamDirection() const {
-		return camDirection;
-	}
-
-	const Vec& getCamLookAt() const {
-		return camLookAt;
-	}
-
-	const Vec& getCamPosition() const {
-		return camPosition;
-	}
-
-	const Vec& getCx() const {
-		return cx;
-	}
-
-	const Vec& getCy() const {
-		return cy;
-	}
-
-	const Vec& getViewBottomLeft() const {
-		return viewBottomLeft;
-	}
-
-	Ray generateRay(int x, int y, int sx, int sy, double dx, double dy) const;
+	Ray generateRay(int x, int y, int sx, int sy, double dx, double dy, unsigned short *Xi) const;
 
 private:
 	void initCamera();

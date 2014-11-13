@@ -38,11 +38,13 @@ double CameraModel::generateRandomNumber() const {
 	return (2.0 * erand48(Xi) - 1.0);
 }
 
-Ray CameraModel::generateRay(int x, int y, int sx, int sy, double dx, double dy) const {
-	double r1 = generateRandomNumber();
-	double r2 = generateRandomNumber();
+Ray CameraModel::generateRay(int x, int y, int sx, int sy, double dx, double dy, unsigned short *Xi) const {
+
+	double r = apertureRadius*erand48(Xi);
+	double phi = 2*M_PI*erand48(Xi);
+
 	Vec viewPoint = viewBottomLeft + cx * (((sx + .5 + dx) / 2 + x)) + cy * (((sy + .5 + dy) / 2 + y));
-	Vec newCamPosition = camPosition + (apertureX * r1) + (apertureY * r2);
+	Vec newCamPosition = camPosition + u*(r*cos(phi)) + v*(r*sin(phi));
 	//Vec d = cx * (((sx + .5 + dx) / 2 + x) / w - .5) + cy * (((sy + .5 + dy) / 2 + y) / h - .5) + cam.direction;
 	return Ray(newCamPosition, (viewPoint - newCamPosition).norm());
 }
