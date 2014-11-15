@@ -5,10 +5,10 @@ LDFLAGS= -lpthread -lSDL2 -fopenmp
 #INCLUDES= -I./SDL2/include
 SOURCES=main.cpp GScene.cpp GSphere.cpp GTriangle.cpp GSimpleAccelStruct.cpp \
 	GPolygonObject.cpp ObjLoader.cpp tiny_obj_loader.cpp SDLViewer.cpp GBVHAccelStruct.cpp \
-	GDisplacedTriangle.cpp
+	GDisplacedTriangle.cpp TextureManager.cpp
 DEPENDENCIES=SmallPT.hpp GScene.hpp GObject.hpp GSphere.hpp DataTypes.hpp GTriangle.hpp \
 	GAccelStruct.hpp GSimpleAccelStruct.hpp GPolygonObject.hpp ObjLoader.hpp tiny_obj_loader.hpp \
-	SDLViewer.hpp GBVHAccelStruct.hpp GDisplacedTriangle.hpp
+	SDLViewer.hpp GBVHAccelStruct.hpp GDisplacedTriangle.hpp TextureManager.hpp
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=aSmallPt
 EXECUTABLE_DEBUG=aSmallPt_debug
