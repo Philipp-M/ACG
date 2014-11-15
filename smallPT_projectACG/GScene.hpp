@@ -20,7 +20,7 @@ public:
 		return accelStruct->intersect(ray, intPoint);
 	}
 	void addItem(GObject* object, bool update = true);
-private:
+
 	GAccelStruct* accelStruct;
 	std::vector<GObject*> objects;
 };

@@ -8,7 +8,7 @@ class SDLViewer {
 public:
 	void display();
 
-	SDLViewer(int w, int h, std::string pathToScene = "cornell.obj", int sampleStep = 4, int timeSteps = 10);
+	SDLViewer(int w, int h, std::string pathToScene = "scenes/cornell.obj", int sampleStep = 4, int timeSteps = 10);
 	virtual ~SDLViewer();
 private:
 	void initSDL(int w, int h);

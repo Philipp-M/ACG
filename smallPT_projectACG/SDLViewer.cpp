@@ -114,16 +114,16 @@ int SDLViewer::renderThreadF(void* data) {
 	//TODO: Create multiple scenes in time
 	std::cout << "Start consctructiong scenes" << std::endl;
 
+
 	for( int j = 0; j < viewer->timeSteps; j++ ) {
 		std::vector<GPolygonObject*> sceneObjT;
 		for( GPolygonObject* obj : sceneObj )
 			sceneObjT.push_back(new GPolygonObject(*obj));
 
-		//compute the scene objects  (hardcoded at the moment)
-		sceneObjT[1]->translate(Vec(0.1, 0.1, 0.1)*j); // Icosphere
-		sceneObjT[0]->translate(Vec(-0.1, -0.1, 0.1)*j); // Monkey
-		sceneObjT[9]->translate(Vec(0.1, -0.1, 0.1)*j); // large Box
-
+		//compute the scene objects  (hardcoded at the moment
+		sceneObjT[4]->translate(Vec(-0.2, -0.2, 0.2)*j); // Monkey
+		
+		sceneObjT[6]->translate(Vec(1, -1, 1)*j); // large Box
 		//put timeStep into vector
 		GScene* scene = new GScene();
 		for( GPolygonObject* obj : sceneObjT ) {
@@ -131,8 +131,9 @@ int SDLViewer::renderThreadF(void* data) {
 
 		}
 		scenes.push_back(scene);
-	}
+	
 
+	}
 
 	std::cerr << "time needed for building the scene: " << (double)(SDL_GetTicks() - viewer->timeElapsed) / 1000.0 << " s\n\n"; // print progress
 	viewer->timeElapsed = SDL_GetTicks();

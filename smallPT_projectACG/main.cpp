@@ -13,7 +13,7 @@ int main(int argc, char *argv[]) {
 	int w = 512, h = 512; // image size
 	int samplePerStep = 4;
 	int timeSteps = 20;
-	std::string pathToScene = "cornell.obj";
+	std::string pathToScene = "scenes/cornell.obj";
 	if( argc > 1 )
 		pathToScene = argv[1];
 	if( argc > 3 ) {
