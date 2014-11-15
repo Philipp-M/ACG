@@ -16,7 +16,7 @@ public:
 	 * @param point the resulting calculated point, based on u and v
 	 * @param intPoint used for material description, only color, emission and reflType are used
 	 */
-	virtual void getPoint(const double& u, const  double& v, Vec& point, RayIntPt& intPoint) const = 0;
+	virtual void getPoint(const double& u, const  double& v, Vec3& point, RayIntPt& intPoint) const = 0;
 
 	virtual ~TriangleDisplacementFunction() {};
 };
