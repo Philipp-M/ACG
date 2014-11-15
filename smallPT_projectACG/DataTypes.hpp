@@ -56,6 +56,47 @@ struct Vec3
 		return out << "(" << v.x << ", " << v.y << ", " << v.z << ")";
 	}
 };
+struct Vec2
+{
+	double x, y;
+	Vec2(double x_ = 0, double y_ = 0)
+	{
+		x = x_;
+		y = y_;
+	}
+	Vec2 operator+(const Vec2 &b) const
+	{
+		return Vec2(x + b.x, y + b.y);
+	}
+	Vec2 operator-(const Vec2 &b) const
+	{
+		return Vec2(x - b.x, y - b.y);
+	}
+	Vec2 operator*(double b) const
+	{
+		return Vec2(x * b, y * b);
+	}
+	Vec2 operator/(double b) const
+	{
+		return Vec2(x / b, y / b);
+	}
+	Vec2 mult(const Vec2 &b) const
+	{
+		return Vec2(x * b.x, y * b.y);
+	}
+	Vec2& norm()
+	{
+		return *this = *this * (1 / sqrt(x * x + y * y));
+	}
+	double dot(const Vec3 &b) const
+	{
+		return x * b.x + y * b.y;
+	}
+	friend std::ostream& operator<<(std::ostream &out, const Vec2& v)
+	{
+		return out << "(" << v.x << ", " << v.y << ")";
+	}
+};
 // Ray STRUCTURE
 struct Ray
 {
