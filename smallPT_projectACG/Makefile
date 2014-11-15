@@ -8,7 +8,7 @@ SOURCES=main.cpp GScene.cpp GSphere.cpp GTriangle.cpp GSimpleAccelStruct.cpp \
 	GDisplacedTriangle.cpp TextureManager.cpp
 DEPENDENCIES=SmallPT.hpp GScene.hpp GObject.hpp GSphere.hpp DataTypes.hpp GTriangle.hpp \
 	GAccelStruct.hpp GSimpleAccelStruct.hpp GPolygonObject.hpp ObjLoader.hpp tiny_obj_loader.hpp \
-	SDLViewer.hpp GBVHAccelStruct.hpp GDisplacedTriangle.hpp TextureManager.hpp
+	SDLViewer.hpp GBVHAccelStruct.hpp GDisplacedTriangle.hpp TextureManager.hpp TriangleDisplacementFunction.hpp
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=aSmallPt
 EXECUTABLE_DEBUG=aSmallPt_debug

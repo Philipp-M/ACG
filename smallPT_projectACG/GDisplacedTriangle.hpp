@@ -2,6 +2,7 @@
 #define GDISPLACEDTRIANGLE_HPP_
 
 #include "GObject.hpp"
+#include "TriangleDisplacementFunction.hpp"
 
 class GDisplacedTriangle: public GObject
 {
