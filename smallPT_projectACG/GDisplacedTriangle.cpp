@@ -1,7 +1,40 @@
 #include "GDisplacedTriangle.hpp"
 
+inline bool triangleIntersect(const Ray& ray, const Vec3& v0,const Vec3& v1,const Vec3& v2)
+{
+	Vec3 edge1 = v1 - v0;
+	Vec3 edge2 = v2 - v0;
+	Vec3 dir = ray.direction;
+	Vec3 orig = ray.origin;
+	Vec3 pvec = dir%edge2;
+	float det = edge1.dot(pvec);
+	if (det == 0)
+		return false;
+	float invDet = 1.0f / det;
+	Vec3 tvec = orig - v0;
+	double u = tvec.dot(pvec) * invDet;
+	if (u < 0 || u > 1)
+		return false;
+	Vec3 qvec = tvec%edge1;
+	double v = dir.dot(qvec) * invDet;
+
+	if (v < 0 || u + v > 1)
+		return false;
+	double t = edge2.dot(qvec) * invDet;
+
+	if(t <= 0)
+		return false;
+	return true;
+}
 bool GDisplacedTriangle::intersect(const Ray& ray, RayIntPt& intPoint) const
 {
+	GBoundingBox bbox = createBoundingBox();
+	double tFar,tNear;
+	if(!bbox.intersect(ray,tNear,tFar))
+		return false;
+
+	return true;
+
 }
 
 Vec3 GDisplacedTriangle::getCentroid() const

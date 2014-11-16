@@ -7,8 +7,8 @@
 class GDisplacedTriangle: public GObject
 {
 public:
-	GDisplacedTriangle(TriangleDisplacementFunction* dispFunc, double maxHeight, Vec3 v0_, Vec3 v1_, Vec3 v2_, Vec3 emission_, Vec3 color_, Refl_t refl_) :
-			maxHeight(maxHeight), v0(v0_), v1(v1_), v2(v2_), emission(emission_), color(color_), refl(refl_), dFunc(dispFunc)
+	GDisplacedTriangle(TriangleDisplacementFunction* dispFunc, double maxHeight, uint16_t subdivisionAmount, Vec3 v0_, Vec3 v1_, Vec3 v2_, Vec3 emission_, Vec3 color_, Refl_t refl_) :
+			maxHeight(maxHeight), subdivisionAmount(subdivisionAmount), v0(v0_), v1(v1_), v2(v2_), emission(emission_), color(color_), refl(refl_), dFunc(dispFunc)
 	{
 		updateGeometry();
 	}
@@ -41,6 +41,7 @@ public:
 private:
 	void updateGeometry() {	normal = ((v1 - v0)%(v2 - v0)).norm(); }
 	double maxHeight;
+	uint16_t subdivisionAmount;
 	Vec3 v0;
 	Vec3 v1;
 	Vec3 v2;
