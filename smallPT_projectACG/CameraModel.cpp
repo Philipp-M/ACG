@@ -21,35 +21,25 @@ void CameraModel::initCamera() {
 	u = (camDirection % Vec(0.0, 1.0, 0.0)).norm();
 	v = (u % camDirection).norm();
 
-	double viewHalfWidth = focalDistance * tan((fov)*M_PI / 180 / 2.0);
+	double viewHalfWidth = focalDistance * tan((fov) / 2.0);
 	double aspectRatio = height / width;
 	double viewHalfHeight = aspectRatio * viewHalfWidth;
 
 	viewBottomLeft = camLookAt - (v * viewHalfHeight) - (u * viewHalfWidth);
 	cx = (u*2*viewHalfWidth)/width;
 	cy = (v*2*viewHalfHeight)/height;
-
-	apertureX = u * apertureRadius;
-	apertureY = v * apertureRadius;
-}
-
-double CameraModel::generateRandomNumber() const {
-	unsigned short Xi[3];
-	return (2.0 * erand48(Xi) - 1.0);
 }
 
 Ray CameraModel::generateRay(int x, int y, int sx, int sy, double dx, double dy, unsigned short *Xi) const {
-
 	double r = apertureRadius*erand48(Xi);
 	double phi = 2*M_PI*erand48(Xi);
 
 	Vec viewPoint = viewBottomLeft + cx * (((sx + .5 + dx) / 2 + x)) + cy * (((sy + .5 + dy) / 2 + y));
 	Vec newCamPosition = camPosition + u*(r*cos(phi)) + v*(r*sin(phi));
-	//Vec d = cx * (((sx + .5 + dx) / 2 + x) / w - .5) + cy * (((sy + .5 + dy) / 2 + y) / h - .5) + cam.direction;
+
 	return Ray(newCamPosition, (viewPoint - newCamPosition).norm());
 }
 
 CameraModel::~CameraModel() {
-	// TODO Auto-generated destructor stub
 }
 
