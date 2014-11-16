@@ -93,7 +93,7 @@ void SDLViewer::initSDL(int w, int h)
 		exit(-1);
 	}
 	/******** init Renderer ********/
-	rawSamplesData = new Vec[gScreenSurface->w * gScreenSurface->h];
+	rawSamplesData = new Vec3[gScreenSurface->w * gScreenSurface->h];
 	mutex = SDL_CreateMutex();
 	renderThread = SDL_CreateThread(this->renderThreadF, "render Thread", this);
 }
@@ -110,10 +110,10 @@ int SDLViewer::renderThreadF(void* data)
 	SDLViewer* viewer = reinterpret_cast<SDLViewer*>(data);
 	int w = viewer->gScreenSurface->w;
 	int h = viewer->gScreenSurface->h;
-	Ray cam(Vec(50, 50, 230), Vec(0, 0, -1).norm()); // camera pos, dir
-	Vec cx = Vec(w * .7135 / h); // x direction increment (uses implicit 0 for y, z)
-	Vec cy = (cx % cam.direction).norm() * .7135; // y direction increment (note cross product)
-	Vec r; // used for colors of samples
+	Ray cam(Vec3(50, 50, 230), Vec3(0, 0, -1).norm()); // camera pos, dir
+	Vec3 cx = Vec3(w * .7135 / h); // x direction increment (uses implicit 0 for y, z)
+	Vec3 cy = (cx % cam.direction).norm() * .7135; // y direction increment (note cross product)
+	Vec3 r; // used for colors of samples
 	int samps = viewer->sampleStep / 4;
 	/********** create the scene *************/
 	viewer->timeElapsed = SDL_GetTicks();
@@ -127,7 +127,7 @@ int SDLViewer::renderThreadF(void* data)
 	while (!viewer->quit)
 	{
 		unsigned long timeDeltaElapsed = SDL_GetTicks();
-		Vec *c = new Vec[w * h]; // stack would be better, but can be exceeded, which causes a Segmention Fault...
+		Vec3 *c = new Vec3[w * h]; // stack would be better, but can be exceeded, which causes a Segmention Fault...
 		unsigned int seed = SDL_GetTicks();
 #pragma omp parallel for schedule(dynamic, 1) private(r) // OpenMP
 		for (unsigned short y = 0; y < h; y++)
@@ -138,17 +138,17 @@ int SDLViewer::renderThreadF(void* data)
 				// FOR EACH PIXEL DO 2x2 SUBSAMPLES, AND samps SAMPLES PER SUBSAMPLE
 				for (int sy = 0, i = (h - y - 1) * w + x; sy < 2; sy++)     // 2x2 subpixel rows
 				{
-					for (int sx = 0; sx < 2; sx++, r = Vec())
+					for (int sx = 0; sx < 2; sx++, r = Vec3())
 					{        // 2x2 subpixel cols
 						for (int s = 0; s < samps; s++)
 						{
 							// I BELIEVE THIS PRODUCES A TENT FILTER
 							double r1 = 2 * erand48(Xi), dx = r1 < 1 ? sqrt(r1) - 1 : 1 - sqrt(2 - r1);
 							double r2 = 2 * erand48(Xi), dy = r2 < 1 ? sqrt(r2) - 1 : 1 - sqrt(2 - r2);
-							Vec d = cx * (((sx + .5 + dx) / 2 + x) / w - .5) + cy * (((sy + .5 + dy) / 2 + y) / h - .5) + cam.direction;
+							Vec3 d = cx * (((sx + .5 + dx) / 2 + x) / w - .5) + cy * (((sy + .5 + dy) / 2 + y) / h - .5) + cam.direction;
 							r = r + SmallPT::radiance(Ray(cam.origin + d * 140, d.norm()), &scene, 0, Xi) * (1. / samps);
 						} // Camera rays are pushed ^^^^^ forward to start in interior
-						c[i] = c[i] + Vec(r.x, r.y, r.z) * .25;
+						c[i] = c[i] + Vec3(r.x, r.y, r.z) * .25;
 					}
 				}
 			}
@@ -236,7 +236,7 @@ SDL_Surface* SDLViewer::toneMap(Uint32* pixels)
 	{
 		for (int i = 0; i < w * h; i++)
 		{
-			Vec pix = rawSamplesData[i] * (1.0 / (curSPP / sampleStep));
+			Vec3 pix = rawSamplesData[i] * (1.0 / (curSPP / sampleStep));
 			pixels[i] = 0xFF000000 | (SmallPT::toInt(SmallPT::clamp(pix.x)) << 16) | (SmallPT::toInt(SmallPT::clamp(pix.y)) << 8)
 					| SmallPT::toInt(SmallPT::clamp(pix.z));
 		}

@@ -1,17 +1,17 @@
 #include "GSphere.hpp"
 
 
-Vec GSphere::getNorm(const Vec& position) const
+Vec3 GSphere::getNorm(const Vec3& position) const
 {
 	return (position - this->position).norm();
 }
 
-Vec GSphere::getColor() const
+Vec3 GSphere::getColor() const
 {
 	return color;
 }
 
-Vec GSphere::getEmission() const
+Vec3 GSphere::getEmission() const
 {
 	return emission;
 }
@@ -23,7 +23,7 @@ Refl_t GSphere::getReflectionType() const
 
 bool GSphere::intersect(const Ray &ray, RayIntPt& intPoint) const
 {
-	Vec op = position - ray.origin; // Solve t^2*d.d + 2*t*(o-p).d + (o-p).(o-p)-R^2 = 0
+	Vec3 op = position - ray.origin; // Solve t^2*d.d + 2*t*(o-p).d + (o-p).(o-p)-R^2 = 0
 	double t, eps = 1e-10, b = op.dot(ray.direction), det = b * b - op.dot(op) + radius * radius;
 	if (det < 0)
 		return 0;
@@ -42,7 +42,7 @@ bool GSphere::intersect(const Ray &ray, RayIntPt& intPoint) const
 	return true;
 }
 
-Vec GSphere::getCentroid() const
+Vec3 GSphere::getCentroid() const
 {
 	return position;
 }
@@ -50,5 +50,5 @@ Vec GSphere::getCentroid() const
 GBoundingBox GSphere::createBoundingBox() const
 {
 	// todo
-	return GBoundingBox(Vec(),Vec());
+	return GBoundingBox(Vec3(),Vec3());
 }
