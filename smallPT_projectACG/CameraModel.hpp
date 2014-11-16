@@ -15,15 +15,15 @@ class CameraModel {
 public:
 	/*
 	 * Constructor for the CameraModel:
-	 * Vec _camPosition			point where the camera is
-	 * Vec _camDirection		vector where the camera is looking to
+	 * Vec3 _camPosition			point where the camera is
+	 * Vec3 _camDirection		vector where the camera is looking to
 	 * double _fov				horizontal angle (radiant) defining the field of view
 	 * double _focalDistance	distance to focal point from camPostion
 	 * double _apertureRadius	radius for the size of the aperture
 	 * unsigned int _width		width of the image
 	 * unsigned int _height		height of the image
 	 */
-	CameraModel(Vec _camPosition, Vec _camDirection, double _fov, double _focalDistance, double _apertureRadius, unsigned int _width, unsigned int _height);
+	CameraModel(Vec3 _camPosition, Vec3 _camDirection, double _fov, double _focalDistance, double _apertureRadius, unsigned int _width, unsigned int _height);
 
 	virtual ~CameraModel();
 
@@ -45,10 +45,10 @@ private:
 	 */
 	void initCamera();
 
-	Vec camPosition, camDirection;
-	Vec camLookAt, u, v;
-	Vec viewBottomLeft;
-	Vec cx, cy;
+	Vec3 camPosition, camDirection;
+	Vec3 camLookAt, u, v;
+	Vec3 viewBottomLeft;
+	Vec3 cx, cy;
 	double fov, focalDistance, apertureRadius;
 	unsigned int width, height;
 };

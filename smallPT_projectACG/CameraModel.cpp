@@ -9,7 +9,7 @@
 #include "SmallPT.hpp"
 #include <math.h>
 
-CameraModel::CameraModel(Vec _camPosition, Vec _camDirection, double _fov, double _focalDistance, double _apertureRadius, unsigned int _width, unsigned int _height):
+CameraModel::CameraModel(Vec3 _camPosition, Vec3 _camDirection, double _fov, double _focalDistance, double _apertureRadius, unsigned int _width, unsigned int _height):
 	camPosition(_camPosition), camDirection(_camDirection), fov(_fov), focalDistance(_focalDistance), apertureRadius(_apertureRadius), width(_width), height(_height)
 {
 	initCamera();
@@ -18,7 +18,7 @@ CameraModel::CameraModel(Vec _camPosition, Vec _camDirection, double _fov, doubl
 void CameraModel::initCamera() {
 	camLookAt = camPosition + camDirection * focalDistance;
 
-	u = (camDirection % Vec(0.0, 1.0, 0.0)).norm();
+	u = (camDirection % Vec3(0.0, 1.0, 0.0)).norm();
 	v = (u % camDirection).norm();
 
 	double viewHalfWidth = focalDistance * tan((fov) / 2.0);
@@ -34,8 +34,8 @@ Ray CameraModel::generateRay(int x, int y, int sx, int sy, double dx, double dy,
 	double r = apertureRadius*erand48(Xi);
 	double phi = 2*M_PI*erand48(Xi);
 
-	Vec viewPoint = viewBottomLeft + cx * (((sx + .5 + dx) / 2 + x)) + cy * (((sy + .5 + dy) / 2 + y));
-	Vec newCamPosition = camPosition + u*(r*cos(phi)) + v*(r*sin(phi));
+	Vec3 viewPoint = viewBottomLeft + cx * (((sx + .5 + dx) / 2 + x)) + cy * (((sy + .5 + dy) / 2 + y));
+	Vec3 newCamPosition = camPosition + u*(r*cos(phi)) + v*(r*sin(phi));
 
 	return Ray(newCamPosition, (viewPoint - newCamPosition).norm());
 }

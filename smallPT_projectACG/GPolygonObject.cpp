@@ -5,7 +5,7 @@ bool GPolygonObject::intersect(const Ray &ray, RayIntPt& intPoint) const
 	return accelStruct->intersect(ray, intPoint);
 }
 
-Vec GPolygonObject::getCentroid() const
+Vec3 GPolygonObject::getCentroid() const
 {
 	return centroid;
 }
@@ -20,5 +20,5 @@ GBoundingBox GPolygonObject::createBoundingBox() const
 		return bbox;
 	}
 	else
-		return GBoundingBox(Vec(),Vec());
+		return GBoundingBox(Vec3(),Vec3());
 }

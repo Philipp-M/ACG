@@ -1,17 +1,17 @@
 #include "GTriangle.hpp"
 #include <cstdio>
 
-Vec GTriangle::getNorm() const
+Vec3 GTriangle::getNorm() const
 {
 	return normal;
 }
 
-Vec GTriangle::getColor() const
+Vec3 GTriangle::getColor() const
 {
 	return color;
 }
 
-Vec GTriangle::getEmission() const
+Vec3 GTriangle::getEmission() const
 {
 	return emission;
 }
@@ -23,24 +23,24 @@ Refl_t GTriangle::getReflectionType() const
 
 bool GTriangle::intersect(const Ray &ray, RayIntPt& intPoint) const
 {
-	Vec edge1 = v1 - v0;
-	Vec edge2 = v2 - v0;
-	Vec dir = ray.direction;
-	Vec orig = ray.origin;
-	Vec pvec = dir%edge2;
-	float det = edge1.dot(pvec);
+	Vec3 edge1 = v1 - v0;
+	Vec3 edge2 = v2 - v0;
+	Vec3 dir = ray.direction;
+	Vec3 orig = ray.origin;
+	Vec3 pvec = dir%edge2;
+	double det = edge1.dot(pvec);
 	if (det == 0)
-		return 0;
-	float invDet = 1.0f / det;
-	Vec tvec = orig - v0;
+		return false;
+	double invDet = 1.0f / det;
+	Vec3 tvec = orig - v0;
 	double u = tvec.dot(pvec) * invDet;
 	if (u < 0 || u > 1)
-		return 0;
-	Vec qvec = tvec%edge1;
+		return false;
+	Vec3 qvec = tvec%edge1;
 	double v = dir.dot(qvec) * invDet;
 
 	if (v < 0 || u + v > 1)
-		return 0;
+		return false;
 	double t = edge2.dot(qvec) * invDet;
 
 	if(t <= 0)
@@ -55,7 +55,7 @@ bool GTriangle::intersect(const Ray &ray, RayIntPt& intPoint) const
 	return true;
 }
 
-Vec GTriangle::getCentroid() const
+Vec3 GTriangle::getCentroid() const
 {
 	return (v0 + v1 + v2)*0.33333333333333333333;
 }
@@ -67,7 +67,7 @@ GTriangle::~GTriangle()
 
 GBoundingBox GTriangle::createBoundingBox() const
 {
-	Vec min, max;
+	Vec3 min, max;
 //	min.x = v0.x <= v1.x ? v1.x <= v2.x ? v0.x : v0.x <= v2.x ? v0.x : v2.x : v1.x <= v2.x ? v1.x : v2.x;
 //	min.y = v0.y <= v1.y ? v1.y <= v2.y ? v0.y : v0.y <= v2.y ? v0.y : v2.y : v1.y <= v2.y ? v1.y : v2.y;
 //	min.z = v0.z <= v1.z ? v1.z <= v2.z ? v0.z : v0.z <= v2.z ? v0.z : v2.z : v1.z <= v2.z ? v1.z : v2.z;
