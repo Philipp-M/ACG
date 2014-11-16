@@ -32,7 +32,7 @@ bool GTriangle::intersect(const Ray &ray, RayIntPt& intPoint) const
 	double det = edge1.dot(pvec);
 	if (det == 0)
 		return false;
-	double invDet = 1.0f / det;
+	double invDet = 1.0 / det;
 	Vec3 tvec = orig - v0;
 	double u = tvec.dot(pvec) * invDet;
 	if (u < 0 || u > 1)
@@ -44,7 +44,7 @@ bool GTriangle::intersect(const Ray &ray, RayIntPt& intPoint) const
 		return false;
 	double t = edge2.dot(qvec) * invDet;
 
-	if(t <= 0)
+	if(t <= 0.00000001)
 		return false;
 	intPoint.distance = t;
 	intPoint.normal = normal;
