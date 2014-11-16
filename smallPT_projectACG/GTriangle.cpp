@@ -28,19 +28,19 @@ bool GTriangle::intersect(const Ray &ray, RayIntPt& intPoint) const
 	Vec3 dir = ray.direction;
 	Vec3 orig = ray.origin;
 	Vec3 pvec = dir%edge2;
-	float det = edge1.dot(pvec);
+	double det = edge1.dot(pvec);
 	if (det == 0)
-		return 0;
-	float invDet = 1.0f / det;
+		return false;
+	double invDet = 1.0f / det;
 	Vec3 tvec = orig - v0;
 	double u = tvec.dot(pvec) * invDet;
 	if (u < 0 || u > 1)
-		return 0;
+		return false;
 	Vec3 qvec = tvec%edge1;
 	double v = dir.dot(qvec) * invDet;
 
 	if (v < 0 || u + v > 1)
-		return 0;
+		return false;
 	double t = edge2.dot(qvec) * invDet;
 
 	if(t <= 0)
