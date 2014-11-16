@@ -25,7 +25,7 @@ private:
 	SDL_Surface* gButtonDefault;
 	SDL_Surface* gButtonPressed;
 	SDL_Surface* gButtonHover;
-	Vec* rawSamplesData;
+	Vec3* rawSamplesData;
 	std::string pathToScene;
 	int curSPP;
 	int sampleStep;

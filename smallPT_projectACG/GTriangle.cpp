@@ -10,17 +10,17 @@ namespace glm
 }
 #endif
 
-Vec GTriangle::getNorm() const
+Vec3 GTriangle::getNorm() const
 {
 	return normal;
 }
 
-Vec GTriangle::getColor() const
+Vec3 GTriangle::getColor() const
 {
 	return color;
 }
 
-Vec GTriangle::getEmission() const
+Vec3 GTriangle::getEmission() const
 {
 	return emission;
 }
@@ -32,24 +32,24 @@ Refl_t GTriangle::getReflectionType() const
 
 bool GTriangle::intersect(const Ray &ray, RayIntPt& intPoint) const
 {
-	Vec edge1 = v1 - v0;
-	Vec edge2 = v2 - v0;
-	Vec dir = ray.direction;
-	Vec orig = ray.origin;
-	Vec pvec = dir%edge2;
-	float det = edge1.dot(pvec);
+	Vec3 edge1 = v1 - v0;
+	Vec3 edge2 = v2 - v0;
+	Vec3 dir = ray.direction;
+	Vec3 orig = ray.origin;
+	Vec3 pvec = dir%edge2;
+	double det = edge1.dot(pvec);
 	if (det == 0)
-		return 0;
-	float invDet = 1.0f / det;
-	Vec tvec = orig - v0;
+		return false;
+	double invDet = 1.0f / det;
+	Vec3 tvec = orig - v0;
 	double u = tvec.dot(pvec) * invDet;
 	if (u < 0 || u > 1)
-		return 0;
-	Vec qvec = tvec%edge1;
+		return false;
+	Vec3 qvec = tvec%edge1;
 	double v = dir.dot(qvec) * invDet;
 
 	if (v < 0 || u + v > 1)
-		return 0;
+		return false;
 	double t = edge2.dot(qvec) * invDet;
 
 	if(t <= 0)
@@ -64,33 +64,33 @@ bool GTriangle::intersect(const Ray &ray, RayIntPt& intPoint) const
 	return true;
 }
 
-Vec GTriangle::getCentroid() const
+Vec3 GTriangle::getCentroid() const
 {
 	return (v0 + v1 + v2)*0.33333333333333333333;
 }
 
 
-void GTriangle::translate(const Vec& t) {
+void GTriangle::translate(const Vec3& t) {
 	v0 = v0 + t;  
 	v1 = v1 + t; 
 	v2 = v2 + t;
 }
 
 void GTriangle::rotationX(float rad) {
-	rotation(rad, Vec(1, 0, 0));
+	rotation(rad, Vec3(1, 0, 0));
 }
 void GTriangle::rotationY(float rad) {
-	rotation(rad, Vec(0, 1, 0));
+	rotation(rad, Vec3(0, 1, 0));
 }
 void GTriangle::rotationZ(float rad) {
-	rotation(rad, Vec(0, 0, 1));
+	rotation(rad, Vec3(0, 0, 1));
 }
 
-void GTriangle::rotation(float rad, const Vec& dir) {
+void GTriangle::rotation(float rad, const Vec3& dir) {
 	rotationCentroid(getCentroid(), rad, dir);
 }
 
-void GTriangle::rotationCentroid(Vec centroid, float rad, const Vec& dir)
+void GTriangle::rotationCentroid(Vec3 centroid, float rad, const Vec3& dir)
 {
 	glm::mat4 translateCentroid = glm::translate(glm::mat4(1.0), glm::vec3(centroid.x, centroid.y, centroid.z));
 	glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), glm::radians(rad), glm::vec3(dir.x, dir.y, dir.z));
@@ -107,15 +107,15 @@ void GTriangle::rotationCentroid(Vec centroid, float rad, const Vec& dir)
 	vec1 = rotation * vec1;
 	vec2 = rotation * vec2;
 
-	v0 = Vec(vec0.x, vec0.y, vec0.z);
-	v1 = Vec(vec1.x, vec1.y, vec1.z);
-	v2 = Vec(vec2.x, vec2.y, vec2.z);
+	v0 = Vec3(vec0.x, vec0.y, vec0.z);
+	v1 = Vec3(vec1.x, vec1.y, vec1.z);
+	v2 = Vec3(vec2.x, vec2.y, vec2.z);
 	updateGeometry();
 }
 
-void GTriangle::translateAcc(Vec t, double acc, long time)
+void GTriangle::translateAcc(Vec3 t, double acc, long time)
 {
-	Vec v = Vec(t.x*acc*time, t.y*acc*time, t.z*acc*time);
+	Vec3 v = Vec3(t.x*acc*time, t.y*acc*time, t.z*acc*time);
 
 	v0 = v0 + v;
 	v1 = v1 + v;
@@ -130,7 +130,7 @@ GTriangle::~GTriangle()
 
 GBoundingBox GTriangle::createBoundingBox() const
 {
-	Vec min, max;
+	Vec3 min, max;
 //	min.x = v0.x <= v1.x ? v1.x <= v2.x ? v0.x : v0.x <= v2.x ? v0.x : v2.x : v1.x <= v2.x ? v1.x : v2.x;
 //	min.y = v0.y <= v1.y ? v1.y <= v2.y ? v0.y : v0.y <= v2.y ? v0.y : v2.y : v1.y <= v2.y ? v1.y : v2.y;
 //	min.z = v0.z <= v1.z ? v1.z <= v2.z ? v0.z : v0.z <= v2.z ? v0.z : v2.z : v1.z <= v2.z ? v1.z : v2.z;

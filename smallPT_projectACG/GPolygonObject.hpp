@@ -18,26 +18,26 @@ public:
 
 	/***** implementations of GObject *****/
 	bool intersect(const Ray &ray, RayIntPt& intPoint) const;
-	Vec getCentroid() const;
+	Vec3 getCentroid() const;
 	GBoundingBox createBoundingBox() const;
 	/***** custom methods *****/
 	void addFace(const GTriangle& triangle) { faces.push_back(triangle); updateGeometry(); }
 	std::vector<GTriangle> getFaces() { return faces; }
 
 	//simple translation operatoins
-	void translate(const Vec& t);
+	void translate(const Vec3& t);
 	void rotationX(float rad);
 	void rotationY(float rad);
 	void rotationZ(float rad);
 
 	//very simple liner acceleration
-	void translateAcc(Vec t, double acc, long time);
+	void translateAcc(Vec3 t, double acc, long time);
 
 	~GPolygonObject() { }
 private:
 	void updateGeometry()
 	{
-		Vec tmp;
+		Vec3 tmp;
 		std::vector<GObject*> accelObjs;
 		for (size_t i = 0; i < faces.size(); i++)
 			tmp = tmp + faces[i].getCentroid();
@@ -50,10 +50,10 @@ private:
 		accelStruct = new GBVHAccelStruct(accelObjs);
 	}
 
-	void rotation(float rad, Vec dir);
+	void rotation(float rad, Vec3 dir);
 
 	std::vector<GTriangle> faces;
-	Vec centroid;
+	Vec3 centroid;
 	GAccelStruct* accelStruct;
 
 };

@@ -21,13 +21,13 @@ bool GPolygonObject::intersect(const Ray &ray, RayIntPt& intPoint) const
 	return accelStruct->intersect(ray, intPoint);
 }
 
-Vec GPolygonObject::getCentroid() const
+Vec3 GPolygonObject::getCentroid() const
 {
 	return centroid;
 }
 
 //simple translation operatoins
-void GPolygonObject::translate(const Vec& t) {
+void GPolygonObject::translate(const Vec3& t) {
 
 	for( int i = 0; i < faces.size(); i++ )
 		faces[i].translate(t);
@@ -36,24 +36,24 @@ void GPolygonObject::translate(const Vec& t) {
 }
 void GPolygonObject::rotationX(float rad) {
 	for( int i = 0; i < faces.size(); i++ )
-		faces[i].rotationCentroid(centroid, rad, Vec(1, 0, 0));
+		faces[i].rotationCentroid(centroid, rad, Vec3(1, 0, 0));
 	updateGeometry();
 }
 
 void GPolygonObject::rotationY(float rad) {
 	for( int i = 0; i < faces.size(); i++ )
-		faces[i].rotationCentroid(centroid, rad, Vec(0, 1, 0));
+		faces[i].rotationCentroid(centroid, rad, Vec3(0, 1, 0));
 	updateGeometry();
 }
 
 void GPolygonObject::rotationZ(float rad) {
 	for( int i = 0; i < faces.size(); i++ )
-		faces[i].rotationCentroid(centroid, rad, Vec(0, 0, 1));
+		faces[i].rotationCentroid(centroid, rad, Vec3(0, 0, 1));
 	updateGeometry();
 }
 
 //very simple liner acceleration
-void GPolygonObject::translateAcc(Vec t, double acc, long time) {
+void GPolygonObject::translateAcc(Vec3 t, double acc, long time) {
 	for( int i = 0; i < faces.size(); i++ )
 		faces[i].translateAcc(t, acc, time);
 	updateGeometry();
@@ -69,5 +69,5 @@ GBoundingBox GPolygonObject::createBoundingBox() const
 		return bbox;
 	}
 	else
-		return GBoundingBox(Vec(),Vec());
+		return GBoundingBox(Vec3(),Vec3());
 }

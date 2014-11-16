@@ -10,17 +10,17 @@ namespace glm
 #endif
 
 
-Vec GSphere::getNorm(const Vec& position) const
+Vec3 GSphere::getNorm(const Vec3& position) const
 {
 	return (position - this->position).norm();
 }
 
-Vec GSphere::getColor() const
+Vec3 GSphere::getColor() const
 {
 	return color;
 }
 
-Vec GSphere::getEmission() const
+Vec3 GSphere::getEmission() const
 {
 	return emission;
 }
@@ -32,7 +32,7 @@ Refl_t GSphere::getReflectionType() const
 
 bool GSphere::intersect(const Ray &ray, RayIntPt& intPoint) const
 {
-	Vec op = position - ray.origin; // Solve t^2*d.d + 2*t*(o-p).d + (o-p).(o-p)-R^2 = 0
+	Vec3 op = position - ray.origin; // Solve t^2*d.d + 2*t*(o-p).d + (o-p).(o-p)-R^2 = 0
 	double t, eps = 1e-10, b = op.dot(ray.direction), det = b * b - op.dot(op) + radius * radius;
 	if (det < 0)
 		return 0;
@@ -51,39 +51,39 @@ bool GSphere::intersect(const Ray &ray, RayIntPt& intPoint) const
 	return true;
 }
 
-Vec GSphere::getCentroid() const
+Vec3 GSphere::getCentroid() const
 {
 	return position;
 }
 
 //simple translation operatoins
-void GSphere::translate(const Vec& t) {
+void GSphere::translate(const Vec3& t) {
 	position = position + t;
 }
 void GSphere::rotationX(float rad) {
-	rotation(rad, Vec(1, 0, 0));
+	rotation(rad, Vec3(1, 0, 0));
 }
 void GSphere::rotationY(float rad) {
-	rotation(rad, Vec(0, 1, 0));
+	rotation(rad, Vec3(0, 1, 0));
 }
 void GSphere::rotationZ(float rad) {
-	rotation(rad, Vec(0, 0, 1));
+	rotation(rad, Vec3(0, 0, 1));
 }
 
 
-void GSphere::rotation(float rad, const Vec& dir) {
+void GSphere::rotation(float rad, const Vec3& dir) {
 	glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), glm::radians(rad), glm::vec3(dir.x, dir.y, dir.z));
 	
 	glm::vec4  pos = glm::vec4(position.x, position.y, position.z, 1.0);
 	
 	pos = rotation * pos;
 
-	position = Vec(pos.x, pos.y, pos.z);
+	position = Vec3(pos.x, pos.y, pos.z);
 }
 
 //very simple liner acceleration
-void GSphere::translateAcc(Vec t, double acc, long time) {
-	Vec v = Vec(acc*time, acc*time, acc*time);
+void GSphere::translateAcc(Vec3 t, double acc, long time) {
+	Vec3 v = Vec3(acc*time, acc*time, acc*time);
 
 	t = t + v;	//simple linear accelaration wrt to time in seconds
 	position = position + t;
@@ -92,5 +92,5 @@ void GSphere::translateAcc(Vec t, double acc, long time) {
 GBoundingBox GSphere::createBoundingBox() const
 {
 	// todo
-	return GBoundingBox(Vec(),Vec());
+	return GBoundingBox(Vec3(),Vec3());
 }

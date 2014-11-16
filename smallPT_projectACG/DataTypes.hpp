@@ -10,56 +10,98 @@
  */
 
 // Vec STRUCTURE ACTS AS POINTS, COLORS, VECTORS
-struct Vec
+struct Vec3
 {        // Usage: time ./smallpt 5000 && xv image.ppm
 	double x, y, z;                  // position, also color (r,g,b)
-	Vec(double x_ = 0, double y_ = 0, double z_ = 0)
+	Vec3(double x_ = 0, double y_ = 0, double z_ = 0)
 	{
 		x = x_;
 		y = y_;
 		z = z_;
 	}
-	Vec operator+(const Vec &b) const
+	Vec3 operator+(const Vec3 &b) const
 	{
-		return Vec(x + b.x, y + b.y, z + b.z);
+		return Vec3(x + b.x, y + b.y, z + b.z);
 	}
-	Vec operator-(const Vec &b) const
+	Vec3 operator-(const Vec3 &b) const
 	{
-		return Vec(x - b.x, y - b.y, z - b.z);
+		return Vec3(x - b.x, y - b.y, z - b.z);
 	}
-	Vec operator*(double b) const
+	Vec3 operator*(double b) const
 	{
-		return Vec(x * b, y * b, z * b);
+		return Vec3(x * b, y * b, z * b);
 	}
-	Vec operator/(double b) const {
-		return Vec(x / b, y / b, z / b);
-	}
-	Vec mult(const Vec &b) const
+	Vec3 operator/(double b) const
 	{
-		return Vec(x * b.x, y * b.y, z * b.z);
+		return Vec3(x / b, y / b, z / b);
 	}
-	Vec& norm()
+	Vec3 mult(const Vec3 &b) const
+	{
+		return Vec3(x * b.x, y * b.y, z * b.z);
+	}
+	Vec3& norm()
 	{
 		return *this = *this * (1 / sqrt(x * x + y * y + z * z));
 	}
-	double dot(const Vec &b) const
+	double dot(const Vec3 &b) const
 	{
 		return x * b.x + y * b.y + z * b.z;
 	} // cross:
-	Vec operator%(const Vec& b) const
+	Vec3 operator%(const Vec3& b) const
 	{
-		return Vec(y * b.z - z * b.y, z * b.x - x * b.z, x * b.y - y * b.x);
+		return Vec3(y * b.z - z * b.y, z * b.x - x * b.z, x * b.y - y * b.x);
 	}
-	friend std::ostream& operator<<(std::ostream &out, const Vec& v)
+	friend std::ostream& operator<<(std::ostream &out, const Vec3& v)
 	{
 		return out << "(" << v.x << ", " << v.y << ", " << v.z << ")";
+	}
+};
+struct Vec2
+{
+	double x, y;
+	Vec2(double x_ = 0, double y_ = 0)
+	{
+		x = x_;
+		y = y_;
+	}
+	Vec2 operator+(const Vec2 &b) const
+	{
+		return Vec2(x + b.x, y + b.y);
+	}
+	Vec2 operator-(const Vec2 &b) const
+	{
+		return Vec2(x - b.x, y - b.y);
+	}
+	Vec2 operator*(double b) const
+	{
+		return Vec2(x * b, y * b);
+	}
+	Vec2 operator/(double b) const
+	{
+		return Vec2(x / b, y / b);
+	}
+	Vec2 mult(const Vec2 &b) const
+	{
+		return Vec2(x * b.x, y * b.y);
+	}
+	Vec2& norm()
+	{
+		return *this = *this * (1 / sqrt(x * x + y * y));
+	}
+	double dot(const Vec3 &b) const
+	{
+		return x * b.x + y * b.y;
+	}
+	friend std::ostream& operator<<(std::ostream &out, const Vec2& v)
+	{
+		return out << "(" << v.x << ", " << v.y << ")";
 	}
 };
 // Ray STRUCTURE
 struct Ray
 {
-	Vec origin, direction, invdir;
-	Ray(Vec origin_, Vec direction_) :
+	Vec3 origin, direction, invdir;
+	Ray(Vec3 origin_, Vec3 direction_) :
 			origin(origin_), direction(direction_)
 	{
 		invdir.x = 1.0/direction_.x;
@@ -81,13 +123,13 @@ enum Refl_t
 class GBoundingBox
 {
 public:
-	GBoundingBox(const Vec& min, const Vec& max)
+	GBoundingBox(const Vec3& min, const Vec3& max)
 	{
 		double eps = 0.00000000023283064365386962891; // binary value 1/(1<<32)
 		if((((((min.x) == min.y) == min.z) == max.x) == max.y) == max.z)
 		{
-			this->min = Vec();
-			this->max = Vec();
+			this->min = Vec3();
+			this->max = Vec3();
 		}
 		else
 		{
@@ -164,7 +206,7 @@ public:
 	}
 	GBoundingBox operator+(const GBoundingBox &b) const
 	{
-		Vec minNew, maxNew;
+		Vec3 minNew, maxNew;
 		minNew.x = std::min(this->min.x, b.min.x);
 		minNew.y = std::min(this->min.y, b.min.y);
 		minNew.z = std::min(this->min.z, b.min.z);
@@ -174,23 +216,23 @@ public:
 		maxNew.z = std::max(this->max.z, b.max.z);
 		return GBoundingBox(minNew,maxNew);
 	}
-	const Vec& getMax() const { return max; }
-	const Vec& getMin() const { return min; }
+	const Vec3& getMax() const { return max; }
+	const Vec3& getMin() const { return min; }
 	bool isEmpty() { return (((((min.x == min.y) == min.z) == max.x) == max.y) == max.z); } // ( aren't necesssary but compiler...
 	friend std::ostream& operator<<(std::ostream &out, const GBoundingBox& b)
 	{
 		return out 	<< "(BBox: min:" << b.min << ", max: " << b.max << ")";
 	}
 private:
-	Vec min, max; // 2 coordinates are enough for describing a Bounding Box
+	Vec3 min, max; // 2 coordinates are enough for describing a Bounding Box
 };
 
 struct RayIntPt
 {
-	Vec position;
-	Vec normal;
-	Vec color;
-	Vec emission;
+	Vec3 position;
+	Vec3 normal;
+	Vec3 color;
+	Vec3 emission;
 	double distance;
 	Refl_t reflType;
 	friend std::ostream& operator<<(std::ostream &out, const RayIntPt& i)

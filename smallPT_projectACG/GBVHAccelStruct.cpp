@@ -16,7 +16,7 @@ struct OctreeNode
 	OctreeNode *child[8];
 	const GObject* data;
 	GBoundingBox bbox;
-	OctreeNode() : isLeaf(true), data(NULL), bbox(Vec(),Vec()) { for(size_t i = 0; i < 8; i++) child[i] = NULL; }
+	OctreeNode() : isLeaf(true), data(NULL), bbox(Vec3(),Vec3()) { for(size_t i = 0; i < 8; i++) child[i] = NULL; }
 	~OctreeNode() { for (uint8_t i = 0; i < 8; ++i) if (child[i] != NULL) delete child[i]; }
 	/**
 	 * builds the bounding box, based on the child nodes(which also will be build).
@@ -53,7 +53,7 @@ class Octree
 public:
 	OctreeNode root;
 
-	Octree(const Vec& minBB, const Vec& maxBB) : min(minBB), max(maxBB) {}
+	Octree(const Vec3& minBB, const Vec3& maxBB) : min(minBB), max(maxBB) {}
 	void insert(const GObject* obj)
 	{
 		insert(&root, obj, obj->getCentroid(), min, max);
@@ -71,7 +71,7 @@ public:
 		friend bool operator < (const QueueElement &a, const QueueElement &b) { return a.t > b.t; }
 	};
 private:
-	void insert(OctreeNode* node, const GObject* obj, const Vec& centroid, const Vec& minBB, const Vec& maxBB)
+	void insert(OctreeNode* node, const GObject* obj, const Vec3& centroid, const Vec3& minBB, const Vec3& maxBB)
 	{
 		if (node->isLeaf)
 		{
@@ -82,7 +82,7 @@ private:
 				node->isLeaf = false;
 				if(node->data != NULL) // should always be not NULL, but just to be safe, its not that expensive
 				{
-					Vec centroid_d = node->data->getCentroid();
+					Vec3 centroid_d = node->data->getCentroid();
 					double e = 1e-6;
 					if(centroid.x <= centroid_d.x*(1+e) && centroid.x >= centroid_d.x*(1-e) &&
 							centroid.y <= centroid_d.y*(1+e) && centroid.y >= centroid_d.y*(1-e) &&
@@ -101,7 +101,7 @@ private:
 		else
 		{
 			uint8_t child_id = 0;
-			Vec nodeCentroid = (minBB + maxBB) * 0.5f;
+			Vec3 nodeCentroid = (minBB + maxBB) * 0.5f;
 			if (nodeCentroid.z < centroid.z)
 				child_id += 4;
 			if (nodeCentroid.y < centroid.y)
@@ -109,8 +109,8 @@ private:
 			if (nodeCentroid.x < centroid.x)
 				child_id++;
 			// compute the childbounds
-			Vec childBoundMin;
-			Vec childBoundMax;
+			Vec3 childBoundMin;
+			Vec3 childBoundMax;
 			childBoundMin.z = (child_id & 4) ? nodeCentroid.z : minBB.z;
 			childBoundMax.z = (child_id & 4) ? maxBB.z : nodeCentroid.z;
 			childBoundMin.y = (child_id & 2) ? nodeCentroid.y : minBB.y;
@@ -123,8 +123,8 @@ private:
 
 		}
 	}
-	Vec min;
-	Vec max;
+	Vec3 min;
+	Vec3 max;
 };
 
 
@@ -135,7 +135,7 @@ GBVHAccelStruct::~GBVHAccelStruct()
 
 GBVHAccelStruct::GBVHAccelStruct(const std::vector<GObject*>& objects_)
 {
-	GBoundingBox bbox = GBoundingBox(Vec(), Vec());
+	GBoundingBox bbox = GBoundingBox(Vec3(), Vec3());
 	// building the Bounding Box of all given objects, for the octree base.
 	if (!objects_.empty())
 	{
@@ -201,5 +201,5 @@ GBoundingBox GBVHAccelStruct::calculateBoundingBox(const std::vector<GBoundingBo
 		return bbox;
 	}
 	else
-		return GBoundingBox(Vec(), Vec()); // should not happen... hopefully
+		return GBoundingBox(Vec3(), Vec3()); // should not happen... hopefully
 }

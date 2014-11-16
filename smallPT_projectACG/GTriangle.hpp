@@ -9,7 +9,7 @@ class GTriangle: public GObject
 {
 public:
 
-	GTriangle(Vec v0_, Vec v1_, Vec v2_, Vec emission_, Vec color_,  Refl_t refl_) :
+	GTriangle(Vec3 v0_, Vec3 v1_, Vec3 v2_, Vec3 emission_, Vec3 color_,  Refl_t refl_) :
 			v0(v0_), v1(v1_), v2(v2_), emission(emission_), color(color_), refl(refl_)
 	{
 		updateGeometry();
@@ -25,9 +25,9 @@ public:
 		refl = other.refl;
 	}
 
-	Vec getNorm() const;
-	Vec getColor() const;
-	Vec getEmission() const;
+	Vec3 getNorm() const;
+	Vec3 getColor() const;
+	Vec3 getEmission() const;
 	Refl_t getReflectionType() const;
 
 	/***** implementations of GObject *****/
@@ -35,31 +35,31 @@ public:
 	 * for simplicity the triangle is also a "normal" Object
 	 */
 	bool intersect(const Ray &ray, RayIntPt& intPoint) const;
-	Vec getCentroid() const;
+	Vec3 getCentroid() const;
 	GBoundingBox createBoundingBox() const;
 
 	/***** custom methods *****/
-	void setV0(const Vec& v) { v0 = v; updateGeometry(); }
-	void setV1(const Vec& v) { v1 = v; updateGeometry(); }
-	void setV2(const Vec& v) { v2 = v; updateGeometry(); }
-	void setV(const Vec& v0_, const Vec& v1_, const Vec& v2_) { v0 = v0_; v1 = v1_; v2 = v2_; updateGeometry(); }
-	Vec getV0() const { return v0; }
-	Vec getV1() const { return v1; }
-	Vec getV2() const { return v2; }
+	void setV0(const Vec3& v) { v0 = v; updateGeometry(); }
+	void setV1(const Vec3& v) { v1 = v; updateGeometry(); }
+	void setV2(const Vec3& v) { v2 = v; updateGeometry(); }
+	void setV(const Vec3& v0_, const Vec3& v1_, const Vec3& v2_) { v0 = v0_; v1 = v1_; v2 = v2_; updateGeometry(); }
+	Vec3 getV0() const { return v0; }
+	Vec3 getV1() const { return v1; }
+	Vec3 getV2() const { return v2; }
 
 	//simple translation operatoins
-	void translate(const Vec& t);
+	void translate(const Vec3& t);
 	void rotationX(float rad);
 	void rotationY(float rad);
 	void rotationZ(float rad);
 
 	//very simple liner acceleration
-	void translateAcc(Vec t, double acc, long time);
+	void translateAcc(Vec3 t, double acc, long time);
 
-	void rotation(float rad, const Vec& dir);
+	void rotation(float rad, const Vec3& dir);
 
 	//for GPolyObject
-	void rotationCentroid(Vec centroid,float rad, const Vec& dir);
+	void rotationCentroid(Vec3 centroid,float rad, const Vec3& dir);
 
 	virtual ~GTriangle();
 private:
@@ -70,12 +70,12 @@ private:
 	 */
 	void updateGeometry() {	normal = ((v1 - v0)%(v2 - v0)).norm(); }
 	/***** attributes *****/
-	Vec v0;
-	Vec v1;
-	Vec v2;
-	Vec emission;
-	Vec color;
-	Vec normal;
+	Vec3 v0;
+	Vec3 v1;
+	Vec3 v2;
+	Vec3 emission;
+	Vec3 color;
+	Vec3 normal;
 	Refl_t refl;
 
 };

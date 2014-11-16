@@ -1,5 +1,5 @@
-#include "Motion.h"
-#include "MotionType.h"
+#include "Motion.hpp"
+#include "MotionType.hpp"
 #include <map>
 
 
@@ -10,7 +10,7 @@ Motion::~Motion() {
 
 }
 
-bool Motion::assign_motion(int id, Vec goal) {			// translation to a goal
+bool Motion::assign_motion(int id, Vec3 goal) {			// translation to a goal
 	if( scene.size() <= id )
 		return false;
 	else 	
@@ -24,7 +24,7 @@ bool Motion::assign_motion(int id, float rad, Dir d) {	//rotation
 		assigned_motion[id] = MotionType(Rotation, rad, d);
 	return true;
 }
-bool Motion::assign_motion(int id, Vec t, double acc) {	//accelerated translation
+bool Motion::assign_motion(int id, Vec3 t, double acc) {	//accelerated translation
 	if( scene.size() <= id )
 		return false;
 	else
