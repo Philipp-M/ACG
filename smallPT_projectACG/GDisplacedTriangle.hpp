@@ -7,7 +7,22 @@
 class GDisplacedTriangle: public GObject
 {
 public:
-	GDisplacedTriangle() { }
+	GDisplacedTriangle(TriangleDisplacementFunction* dispFunc, double maxHeight, Vec3 v0_, Vec3 v1_, Vec3 v2_, Vec3 emission_, Vec3 color_, Refl_t refl_) :
+			maxHeight(maxHeight), v0(v0_), v1(v1_), v2(v2_), emission(emission_), color(color_), refl(refl_), dFunc(dispFunc)
+	{
+		updateGeometry();
+	}
+	GDisplacedTriangle(const GDisplacedTriangle& other)
+	{
+		maxHeight = other.maxHeight;
+		v0 = other.v0;
+		v1 = other.v1;
+		v2 = other.v2;
+		normal = other.normal;
+		color = other.color;
+		emission = other.emission;
+		refl = other.refl;
+	}
 	virtual ~GDisplacedTriangle() { }
 
 	/***** implementations of GObject *****/
@@ -25,10 +40,16 @@ public:
 	Vec3 getV2() const { return v2; }
 private:
 	void updateGeometry() {	normal = ((v1 - v0)%(v2 - v0)).norm(); }
+	double maxHeight;
 	Vec3 v0;
 	Vec3 v1;
 	Vec3 v2;
 	Vec3 normal;
+	Vec3 emission;
+	Vec3 color;
+	Refl_t refl;
+
+	TriangleDisplacementFunction* dFunc;
 };
 
 #endif /* GDISPLACEDTRIANGLE_HPP_ */
