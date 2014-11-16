@@ -115,13 +115,11 @@ void GTriangle::rotationCentroid(Vec centroid, float rad, const Vec& dir)
 
 void GTriangle::translateAcc(Vec t, double acc, long time)
 {
-	Vec v = Vec(acc*time, acc*time, acc*time);
+	Vec v = Vec(t.x*acc*time, t.y*acc*time, t.z*acc*time);
 
-	t = t + v;	//simple linear accelaration wrt to time in seconds
-
-	v0 = v0 + t;
-	v1 = v1 + t;
-	v2 = v2 + t;
+	v0 = v0 + v;
+	v1 = v1 + v;
+	v2 = v2 + v;
 	//updateGeometry() not necessary, since the normal does not change...
 }
 

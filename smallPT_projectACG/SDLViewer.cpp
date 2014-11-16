@@ -6,6 +6,8 @@
 #include "GScene.hpp"
 #include "ObjLoader.hpp"
 #include "GPolygonObject.hpp"
+#include "Motion.h"
+#include <random>
 
 void SDLViewer::display() {
 	// Event handler
@@ -110,30 +112,20 @@ int SDLViewer::renderThreadF(void* data) {
 	std::vector<GPolygonObject*> sceneObj;
 	sceneObj = ObjLoader::loadOfFile(viewer->pathToScene.c_str(), viewer->pathToScene.substr(0, viewer->pathToScene.find_last_of("/\\") + 1).c_str());
 
-
 	//TODO: Create multiple scenes in time
 	std::cout << "Start consctructiong scenes" << std::endl;
 
+	std::default_random_engine generator;
+	std::uniform_int_distribution<int> distribution(0, (viewer->timeSteps-1));
 
-	for( int j = 0; j < viewer->timeSteps; j++ ) {
-		std::vector<GPolygonObject*> sceneObjT;
-		for( GPolygonObject* obj : sceneObj )
-			sceneObjT.push_back(new GPolygonObject(*obj));
+	Motion motion = Motion(sceneObj, viewer->timeSteps);
 
-		//compute the scene objects  (hardcoded at the moment
-		sceneObjT[4]->translate(Vec(-0.2, -0.2, 0.2)*j); // Monkey
-		
-		sceneObjT[6]->translate(Vec(1, -1, 1)*j); // large Box
-		//put timeStep into vector
-		GScene* scene = new GScene();
-		for( GPolygonObject* obj : sceneObjT ) {
-			scene->addItem(obj);
-
-		}
-		scenes.push_back(scene);
+	if(!(motion.assign_motion(4, Vec(33.25, 66, 35.5)) ))
+		std::cerr << "couldn't move object";
+	if( !motion.assign_motion(1, Vec(25.2361, 23.2917, 65.3056)) )
+		std::wcerr << "couldn't move object";
 	
-
-	}
+	scenes = motion.get_scenes();
 
 	std::cerr << "time needed for building the scene: " << (double)(SDL_GetTicks() - viewer->timeElapsed) / 1000.0 << " s\n\n"; // print progress
 	viewer->timeElapsed = SDL_GetTicks();
@@ -157,8 +149,9 @@ int SDLViewer::renderThreadF(void* data) {
 							Vec d = cx * (((sx + .5 + dx) / 2 + x) / w - .5) + cy * (((sy + .5 + dy) / 2 + y) / h - .5) + cam.direction;
 
 							//TODO: sample over scenes in time and add multiple sampling techniques
-							int p = erand48(Xi) * (viewer->timeSteps - 1);
+						
 
+							int p = distribution(generator);
 							r = r + SmallPT::radiance(Ray(cam.origin + d * 140, d.norm()), scenes[p], 0, Xi) * (1. / samps);
 						} // Camera rays are pushed ^^^^^ forward to start in interior
 						c[i] = c[i] + Vec(r.x, r.y, r.z) * .25;

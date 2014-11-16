@@ -31,6 +31,9 @@ struct Vec
 	{
 		return Vec(x * b, y * b, z * b);
 	}
+	Vec operator/(double b) const {
+		return Vec(x / b, y / b, z / b);
+	}
 	Vec mult(const Vec &b) const
 	{
 		return Vec(x * b.x, y * b.y, z * b.z);
