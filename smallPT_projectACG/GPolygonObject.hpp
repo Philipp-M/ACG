@@ -9,6 +9,7 @@
 #include "GSimpleAccelStruct.hpp"
 #include "GBVHAccelStruct.hpp"
 
+template <class Triangle>
 class GPolygonObject : public GObject
 {
 public:
@@ -48,10 +49,34 @@ private:
 			delete accelStruct;
 		accelStruct = new GBVHAccelStruct(accelObjs);
 	}
-	std::vector<GTriangle> faces;
+	std::vector<Triangle> faces;
 	Vec3 centroid;
 	GAccelStruct* accelStruct;
 
 };
+template <class Triangle>
+bool GPolygonObject<Triangle>::intersect(const Ray &ray, RayIntPt& intPoint) const
+{
+	return accelStruct->intersect(ray, intPoint);
+}
+
+template <class Triangle>
+Vec3 GPolygonObject<Triangle>::getCentroid() const
+{
+	return centroid;
+}
+template <class Triangle>
+GBoundingBox GPolygonObject<Triangle>::createBoundingBox() const
+{
+	if(!faces.empty())
+	{
+		GBoundingBox bbox = faces[0].createBoundingBox();
+		for(size_t i = 1; i < faces.size(); i++)
+			bbox = bbox + faces[i].createBoundingBox();
+		return bbox;
+	}
+	else
+		return GBoundingBox(Vec3(),Vec3());
+}
 
 #endif /* GPOLYGONOBJECT_HPP_ */
