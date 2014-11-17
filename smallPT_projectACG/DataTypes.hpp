@@ -116,7 +116,7 @@ struct Ray
 // ENUM OF MATERIAL TYPES USED IN radiance FUNCTION
 enum Refl_t
 {
-	DIFF, SPEC, REFR
+	DIFF, SPEC, REFR, GLOSS
 };
 
 // Bounding Box Primitive necessary for acceleration structures
@@ -233,6 +233,7 @@ struct RayIntPt
 	Vec3 normal;
 	Vec3 color;
 	Vec3 emission;
+	double glossyRoughness;
 	double distance;
 	Refl_t reflType;
 	friend std::ostream& operator<<(std::ostream &out, const RayIntPt& i)

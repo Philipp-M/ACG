@@ -59,6 +59,18 @@ public:
 
 			return intPoint.emission + intPoint.color.mult(radiance(Ray(intPoint.position, d), scene, depth, Xi));
 		}
+		else if (intPoint.reflType == GLOSS)            // GLOSSY reflection
+		{
+			double r1 = 2 * M_PI * erand48(Xi), r2 = intPoint.glossyRoughness * erand48(Xi), r2s = sqrt(r2);
+			Vec3 w = ray.direction - intPoint.normal * 2 * intPoint.normal.dot(ray.direction);
+			Vec3 u = ((fabs(w.x) > .1 ? Vec3(0, 1) : Vec3(1)) % w).norm(), v = w % u;
+			Vec3 d = (u * cos(r1) * r2s + v * sin(r1) * r2s + w * sqrt(1 - r2)).norm();
+			double orient = intPoint.normal.dot(d);
+			if(orient < 0)
+				return intPoint.emission + intPoint.color.mult(radiance(Ray(intPoint.position, d - w * 2 * w.dot(d)), scene, depth, Xi));
+			else
+				return intPoint.emission + intPoint.color.mult(radiance(Ray(intPoint.position, d), scene, depth, Xi));
+		}
 		else if (intPoint.reflType == SPEC)            // Ideal SPECULAR reflection
 			return intPoint.emission + intPoint.color.mult(radiance(Ray(intPoint.position, ray.direction - intPoint.normal * 2 * intPoint.normal.dot(ray.direction)), scene, depth, Xi));
 		Ray reflRay(intPoint.position, ray.direction - intPoint.normal * 2 * intPoint.normal.dot(ray.direction));     // Ideal dielectric REFRACTION
