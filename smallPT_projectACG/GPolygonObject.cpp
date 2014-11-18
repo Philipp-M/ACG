@@ -29,32 +29,32 @@ Vec3 GPolygonObject::getCentroid() const
 //simple translation operatoins
 void GPolygonObject::translate(const Vec3& t) {
 
-	for( int i = 0; i < faces.size(); i++ )
+	for( size_t i = 0; i < faces.size(); i++ )
 		faces[i].translate(t);
 	updateGeometry();
 	
 }
 void GPolygonObject::rotationX(float rad) {
-	for( int i = 0; i < faces.size(); i++ )
+	for( size_t i = 0; i < faces.size(); i++ )
 		faces[i].rotationCentroid(centroid, rad, Vec3(1, 0, 0));
 	updateGeometry();
 }
 
 void GPolygonObject::rotationY(float rad) {
-	for( int i = 0; i < faces.size(); i++ )
+	for( size_t i = 0; i < faces.size(); i++ )
 		faces[i].rotationCentroid(centroid, rad, Vec3(0, 1, 0));
 	updateGeometry();
 }
 
 void GPolygonObject::rotationZ(float rad) {
-	for( int i = 0; i < faces.size(); i++ )
+	for( size_t i = 0; i < faces.size(); i++ )
 		faces[i].rotationCentroid(centroid, rad, Vec3(0, 0, 1));
 	updateGeometry();
 }
 
 //very simple liner acceleration
 void GPolygonObject::translateAcc(Vec3 t, double acc, long time) {
-	for( int i = 0; i < faces.size(); i++ )
+	for( size_t i = 0; i < faces.size(); i++ )
 		faces[i].translateAcc(t, acc, time);
 	updateGeometry();
 }

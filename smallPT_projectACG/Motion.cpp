@@ -10,21 +10,21 @@ Motion::~Motion() {
 
 }
 
-bool Motion::assign_motion(int id, Vec3 goal) {			// translation to a goal
+bool Motion::assign_motion(uint32_t id, Vec3 goal) {			// translation to a goal
 	if( scene.size() <= id )
 		return false;
 	else 	
 		assigned_motion[id] = MotionType(Translation, goal);
 	return true;
 }
-bool Motion::assign_motion(int id, float rad, Dir d) {	//rotation
+bool Motion::assign_motion(uint32_t id, float rad, Dir d) {	//rotation
 	if( scene.size() <= id )
 		return false;
 	else
 		assigned_motion[id] = MotionType(Rotation, rad, d);
 	return true;
 }
-bool Motion::assign_motion(int id, Vec3 t, double acc) {	//accelerated translation
+bool Motion::assign_motion(uint32_t id, Vec3 t, double acc) {	//accelerated translation
 	if( scene.size() <= id )
 		return false;
 	else
@@ -44,7 +44,7 @@ std::vector<GScene*> Motion::get_scenes() {
 			sceneObjT.push_back(new GPolygonObject(*obj));
 
 		//go over all assigned motions
-		for( int i = 0; i < scene.size(); ++i ) {
+		for( size_t i = 0; i < scene.size(); ++i ) {
 			std::map<int, MotionType>::iterator it = assigned_motion.find(i);
 			
 			if( !( it== assigned_motion.end()) ) {

@@ -116,17 +116,18 @@ int SDLViewer::renderThreadF(void* data) {
 	sceneObj = ObjLoader::loadOfFile(viewer->pathToScene.c_str(), viewer->pathToScene.substr(0, viewer->pathToScene.find_last_of("/\\") + 1).c_str());
 
 	//TODO: Create multiple scenes in time
-	std::cout << "Start consctructiong scenes" << std::endl;
+	std::cout << "Start constructing scenes" << std::endl;
 
 	std::default_random_engine generator;
-	std::uniform_int_distribution<int> distribution(0, (viewer->timeSteps-1));
+	std::uniform_int_distribution<int> distribution(0, 0);
 
-	Motion motion = Motion(sceneObj, viewer->timeSteps);
+	Motion motion = Motion(sceneObj, 1);
+//	Motion motion = Motion(sceneObj, viewer->timeSteps);
 
-	if(!(motion.assign_motion(4, Vec3(33.25, 66, 35.5)) ))
-		std::cerr << "couldn't move object";
-	if( !motion.assign_motion(1, Vec3(25.2361, 23.2917, 65.3056)) )
-		std::wcerr << "couldn't move object";
+//	if(!(motion.assign_motion(4, Vec3(33.25, 66, 35.5)) ))
+//		std::cerr << "couldn't move object";
+//	if( !motion.assign_motion(1, Vec3(25.2361, 23.2917, 65.3056)) )
+//		std::wcerr << "couldn't move object";
 	
 	scenes = motion.get_scenes();
 
