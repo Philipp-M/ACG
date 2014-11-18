@@ -26,7 +26,7 @@ public:
 
 	/***** implementations of GObject *****/
 	bool intersect(const Ray &ray, RayIntPt& intPoint) const;
-	Vec getCentroid() const;
+	Vec3 getCentroid() const;
 	GBoundingBox createBoundingBox() const;
 	/***** custom methods *****/
 	void addFace(const GTriangle& triangle) { faces.push_back(triangle); updateGeometry(); }
@@ -36,7 +36,7 @@ public:
 private:
 	void updateGeometry()
 	{
-		Vec tmp;
+		Vec3 tmp;
 		std::vector<GObject*> accelObjs;
 		for (size_t i = 0; i < faces.size(); i++)
 			tmp = tmp + faces[i].getCentroid();
@@ -49,7 +49,7 @@ private:
 		accelStruct = new GBVHAccelStruct(accelObjs);
 	}
 	std::vector<GTriangle> faces;
-	Vec centroid;
+	Vec3 centroid;
 	GAccelStruct* accelStruct;
 
 };

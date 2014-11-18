@@ -9,24 +9,24 @@
 struct GSphere: public GObject
 {
 	double radius;       // radius
-	Vec position, emission, color;      // position, emission, color
+	Vec3 position, emission, color;      // position, emission, color
 	Refl_t refl;      // reflection type (DIFFuse, SPECular, REFRactive)
-	GSphere(double rad_, Vec p_, Vec e_, Vec c_, Refl_t refl_) :
+	GSphere(double rad_, Vec3 p_, Vec3 e_, Vec3 c_, Refl_t refl_) :
 			radius(rad_), position(p_), emission(e_), color(c_), refl(refl_)
 	{
 	}
 	~GSphere() {};
 
-	Vec getNorm(const Vec& position) const;
-	Vec getColor() const;
-	Vec getEmission() const;
+	Vec3 getNorm(const Vec3& position) const;
+	Vec3 getColor() const;
+	Vec3 getEmission() const;
 	Refl_t getReflectionType() const;
 	/***** implementations of GObject *****/
 	/**
 	 * for simplicity the sphere is also a "normal" Object
 	 */
 	bool intersect(const Ray &ray, RayIntPt& intPoint) const;
-	Vec getCentroid() const;
+	Vec3 getCentroid() const;
 	GBoundingBox createBoundingBox() const;
 };
 
