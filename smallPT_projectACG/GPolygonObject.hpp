@@ -33,6 +33,15 @@ public:
 	void addFace(const Triangle& triangle) { faces.push_back(triangle); updateGeometry(); }
 	std::vector<Triangle> getFaces() { return faces; }
 
+	//simple translation operatoins
+	void translate(const Vec3& t);
+	void rotationX(float rad);
+	void rotationY(float rad);
+	void rotationZ(float rad);
+
+	//very simple liner acceleration
+	void translateAcc(Vec3 t, double acc, long time);
+
 	~GPolygonObject() { }
 private:
 	void updateGeometry()
@@ -49,6 +58,7 @@ private:
 			delete accelStruct;
 		accelStruct = new GBVHAccelStruct(accelObjs);
 	}
+	void rotation(float rad, Vec3 dir);
 	std::vector<Triangle> faces;
 	Vec3 centroid;
 	GAccelStruct* accelStruct;
@@ -79,4 +89,42 @@ GBoundingBox GPolygonObject<Triangle>::createBoundingBox() const
 		return GBoundingBox(Vec3(),Vec3());
 }
 
+//simple translation operatoins
+template <class Triangle>
+void GPolygonObject<Triangle>::translate(const Vec3& t)
+{
+	for( size_t i = 0; i < faces.size(); i++ )
+		faces[i].translate(t);
+	updateGeometry();
+
+}
+template <class Triangle>
+void GPolygonObject<Triangle>::rotationX(float rad)
+{
+	for( size_t i = 0; i < faces.size(); i++ )
+		faces[i].rotationCentroid(centroid, rad, Vec3(1, 0, 0));
+	updateGeometry();
+}
+template <class Triangle>
+void GPolygonObject<Triangle>::rotationY(float rad)
+{
+	for( size_t i = 0; i < faces.size(); i++ )
+		faces[i].rotationCentroid(centroid, rad, Vec3(0, 1, 0));
+	updateGeometry();
+}
+template <class Triangle>
+void GPolygonObject<Triangle>::rotationZ(float rad)
+{
+	for( size_t i = 0; i < faces.size(); i++ )
+		faces[i].rotationCentroid(centroid, rad, Vec3(0, 0, 1));
+	updateGeometry();
+}
+//very simple liner acceleration
+template <class Triangle>
+void GPolygonObject<Triangle>::translateAcc(Vec3 t, double acc, long time)
+{
+	for( size_t i = 0; i < faces.size(); i++ )
+		faces[i].translateAcc(t, acc, time);
+	updateGeometry();
+}
 #endif /* GPOLYGONOBJECT_HPP_ */

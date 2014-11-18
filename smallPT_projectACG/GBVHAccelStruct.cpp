@@ -3,6 +3,8 @@
 #include <iostream>
 #include <queue>
 #include <limits>
+#include <stdint.h>
+
 /**
  * following Octree is just needed for building up the hierarchy.
  * Although the octree is also an aproach for an acceleration structure(not as good as the BVH in most cases btw.),

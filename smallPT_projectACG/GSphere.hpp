@@ -27,6 +27,17 @@ struct GSphere: public GObject
 	 */
 	bool intersect(const Ray &ray, RayIntPt& intPoint) const;
 	Vec3 getCentroid() const;
+
+	//simple translation operatoins
+	void translate(const Vec3& t);
+	void rotationX(float rad);
+	void rotationY(float rad);
+	void rotationZ(float rad);
+
+	//very simple liner acceleration
+	void translateAcc(Vec3 t, double acc, long time);
+
+	void rotation(float rad, const Vec3& dir);
 	GBoundingBox createBoundingBox() const;
 };
 

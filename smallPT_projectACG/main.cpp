@@ -9,22 +9,24 @@
 #include <cstdio>
 #include <string>
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
 	int w = 512, h = 512; // image size
 	int samplePerStep = 4;
+	int timeSteps = 320;
 	std::string pathToScene = "scenes/cornell.obj";
-	if(argc > 1)
+	if( argc > 1 )
 		pathToScene = argv[1];
-	if(argc > 3)
-	{
+	if( argc > 3 ) {
 		w = std::stoi(argv[2]);
 		h = std::stoi(argv[3]);
 	}
 
-	if(argc > 4)
+	if( argc > 4 )
 		samplePerStep = std::stoi(argv[4]);
-	SDLViewer view(w,h, pathToScene ,samplePerStep);
+	if( argc > 5 )
+		timeSteps = std::stoi(argv[5]);
+	SDLViewer view(w, h, pathToScene, samplePerStep, timeSteps);
+
 	view.display();
 
 	return 0;

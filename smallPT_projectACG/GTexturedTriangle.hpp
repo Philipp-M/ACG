@@ -40,6 +40,19 @@ public:
 	Vec3 getV1() const { return v1; }
 	Vec3 getV2() const { return v2; }
 
+	//simple translation operations
+	void translate(const Vec3& t);
+	void rotationX(float rad);
+	void rotationY(float rad);
+	void rotationZ(float rad);
+
+	//very simple liner acceleration
+	void translateAcc(Vec3 t, double acc, long time);
+
+	void rotation(float rad, const Vec3& dir);
+
+	//for GPolyObject
+	void rotationCentroid(Vec3 centroid,float rad, const Vec3& dir);
 	virtual ~GTexturedTriangle() {}
 private:
 	/***** methods *****/
