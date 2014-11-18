@@ -2,20 +2,43 @@
 #include "DataTypes.hpp"
 #include "tiny_obj_loader.hpp"
 #include "GTriangle.hpp"
+#include "GTexturedTriangle.hpp"
+#include "TextureManager.hpp"
 #include <iostream>
-std::vector<GPolygonObject<GTriangle>*> ObjLoader::loadOfFile(const char* filename, const char* MatPath)
+std::vector<GPolygonObject<GTexturedTriangle>*> ObjLoader::loadOfFile(const char* filename, const char* MatPath)
 {
 	std::vector<tinyobj::shape_t> shapes;
 	std::vector<tinyobj::material_t> materials;
+	std::vector<uint16_t> texIDs;
 	std::string err = tinyobj::LoadObj(shapes, materials, filename, MatPath);
-	std::vector<GTriangle> faces;
-	std::vector<GPolygonObject<GTriangle>*> retObjs;
+	std::vector<GTexturedTriangle> faces;
+	std::vector<GPolygonObject<GTexturedTriangle>*> retObjs;
+
+	TextureManager& tm = TextureManager::get();
+
 	if (!err.empty())
 	{
 		std::cerr << err << std::endl;
 		exit(1);
 	}
-
+	/*
+	 * load all textures from the material library
+	 */
+	for (const tinyobj::material_t& mat : materials)
+	{
+		uint16_t tmp = 0xFFFF;
+		if (mat.diffuse_texname.size() > 0)
+			tmp = tm.loadTexture(mat.diffuse_texname);
+		texIDs.push_back(tmp);
+		tmp = 0xFFFF;
+		if (mat.normal_texname.size() > 0)
+			tmp = tm.loadTexture(mat.normal_texname);
+		texIDs.push_back(tmp);
+		tmp = 0xFFFF;
+		if (mat.specular_texname.size() > 0)
+			tmp = tm.loadTexture(mat.specular_texname);
+		texIDs.push_back(tmp);
+	}
 	for (size_t i = 0; i < shapes.size(); i++)
 	{
 		faces.clear();
@@ -37,19 +60,39 @@ std::vector<GPolygonObject<GTriangle>*> ObjLoader::loadOfFile(const char* filena
 				 * the diffuse color will be taken as light source
 				 */
 				const tinyobj::material_t& mat = materials[shapes[i].mesh.material_ids[j]];
+				const Texture* colorMap = NULL;
+				const Texture* normalMap = NULL;
+				const Texture* specularMap = NULL;
+				if (mat.diffuse_texname.size() > 0)
+					colorMap = tm.getByID(texIDs[shapes[i].mesh.material_ids[j] * 3 + 0]);
+				if (mat.normal_texname.size() > 0)
+					normalMap = tm.getByID(texIDs[shapes[i].mesh.material_ids[j] * 3 + 1]);
+				if (mat.specular_texname.size() > 0)
+					specularMap = tm.getByID(texIDs[shapes[i].mesh.material_ids[j] * 3 + 2]);
+				Vec2 u,v,w;
+				if (shapes[i].mesh.texcoords.size() > shapes[i].mesh.indices[j * 3 + 2] * 2 + 1)
+				{
+					u = Vec2(fabs(shapes[i].mesh.texcoords[shapes[i].mesh.indices[j * 3 + 0] * 2 + 0])>1 ? 1.0 :fabs(shapes[i].mesh.texcoords[shapes[i].mesh.indices[j * 3 + 0] * 2 + 0]),
+							fabs(shapes[i].mesh.texcoords[shapes[i].mesh.indices[j * 3 + 0] * 2 + 1])>1 ? 1.0 :fabs(shapes[i].mesh.texcoords[shapes[i].mesh.indices[j * 3 + 0] * 2 + 1]));
+					v = Vec2(fabs(shapes[i].mesh.texcoords[shapes[i].mesh.indices[j * 3 + 1] * 2 + 0])>1 ? 1.0 :fabs(shapes[i].mesh.texcoords[shapes[i].mesh.indices[j * 3 + 1] * 2 + 0]),
+							fabs(shapes[i].mesh.texcoords[shapes[i].mesh.indices[j * 3 + 1] * 2 + 1])>1 ? 1.0 :fabs(shapes[i].mesh.texcoords[shapes[i].mesh.indices[j * 3 + 1] * 2 + 1]));
+					w = Vec2(fabs(shapes[i].mesh.texcoords[shapes[i].mesh.indices[j * 3 + 2] * 2 + 0])>1 ? 1.0 :fabs(shapes[i].mesh.texcoords[shapes[i].mesh.indices[j * 3 + 2] * 2 + 0]),
+							fabs(shapes[i].mesh.texcoords[shapes[i].mesh.indices[j * 3 + 2] * 2 + 1])>1 ? 1.0 :fabs(shapes[i].mesh.texcoords[shapes[i].mesh.indices[j * 3 + 2] * 2 + 1]));
+
+				}
 				if(mat.dissolve < 1)
-					faces.push_back(GTriangle(v0, v1, v2, Vec3(), Vec3(mat.diffuse[0], mat.diffuse[1], mat.diffuse[2]) * 0.999, REFR));
+					faces.push_back(GTexturedTriangle(v0, v1, v2, u, v, w, colorMap, normalMap, specularMap, Vec3(), Vec3(mat.diffuse[0], mat.diffuse[1], mat.diffuse[2]) * 0.999, REFR));
 				else if(mat.diffuse[0] + mat.diffuse[1] + mat.diffuse[2] > 0.01 && mat.specular[0] + mat.specular[1] + mat.specular[2] > 1)
-					faces.push_back(GTriangle(v0, v1, v2, Vec3(mat.diffuse[0], mat.diffuse[1], mat.diffuse[2]), Vec3(), DIFF));
+					faces.push_back(GTexturedTriangle(v0, v1, v2, u, v, w, colorMap, normalMap, specularMap, Vec3(mat.diffuse[0], mat.diffuse[1], mat.diffuse[2]), Vec3(), DIFF));
 				else if(mat.specular[0] + mat.specular[1] + mat.specular[2] > 1)
-					faces.push_back(GTriangle(v0, v1, v2, Vec3(), Vec3(mat.specular[0], mat.specular[1], mat.specular[2]) * 0.999, SPEC));
+					faces.push_back(GTexturedTriangle(v0, v1, v2, u, v, w, colorMap, normalMap, specularMap, Vec3(), Vec3(mat.specular[0], mat.specular[1], mat.specular[2]) * 0.999, SPEC));
 				else
-					faces.push_back(GTriangle(v0, v1, v2, Vec3(), Vec3(mat.diffuse[0], mat.diffuse[1], mat.diffuse[2]) * 0.999, DIFF));
+					faces.push_back(GTexturedTriangle(v0, v1, v2, u, v, w, colorMap, normalMap, specularMap, Vec3(), Vec3(mat.diffuse[0], mat.diffuse[1], mat.diffuse[2]) * 0.999, DIFF));
 			}
 			else
-				faces.push_back(GTriangle(v0, v1, v2, Vec3(), Vec3(1, 1, 1) * 0.999, DIFF)); // for default a white diffuse material
+				faces.push_back(GTexturedTriangle(v0, v1, v2, Vec2(),Vec2(),Vec2(),NULL,NULL,NULL, Vec3(), Vec3(1, 1, 1) * 0.999, DIFF)); // for default a white diffuse material
 		}
-		retObjs.push_back(new GPolygonObject<GTriangle>(faces));
+		retObjs.push_back(new GPolygonObject<GTexturedTriangle>(faces));
 	}
 	return retObjs;
 }

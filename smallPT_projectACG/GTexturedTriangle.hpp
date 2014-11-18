@@ -5,13 +5,12 @@
 #include "GObject.hpp"
 #include "TextureManager.hpp"
 
-class GTexturedTriangle
+class GTexturedTriangle : public GObject
 {
-public:
 public:
 
 	GTexturedTriangle(Vec3 v0_, Vec3 v1_, Vec3 v2_, Vec2 u, Vec2 v, Vec2 w,
-			Texture* colorMap, Texture* normalMap, Texture* specularMap, Vec3 emission_, Vec3 color_, Refl_t refl_) :
+			const Texture* colorMap, const Texture* normalMap, const Texture* specularMap, Vec3 emission_, Vec3 color_, Refl_t refl_) :
 			v0(v0_), v1(v1_), v2(v2_), ut(u), vt(v), wt(w), emission(emission_), color(color_), refl(refl_),
 			colorMap(colorMap),normalMap(normalMap),specularMap(specularMap)
 	{
@@ -60,9 +59,9 @@ private:
 	Vec3 color;
 	Vec3 normal;
 	Refl_t refl;
-	Texture* colorMap;
-	Texture* normalMap;
-	Texture* specularMap;
+	const Texture* colorMap;
+	const Texture* normalMap;
+	const Texture* specularMap;
 };
 
 inline GTexturedTriangle::GTexturedTriangle(const GTexturedTriangle& other)

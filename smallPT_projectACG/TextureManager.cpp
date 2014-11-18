@@ -5,7 +5,7 @@
 
 int TextureManager::loadTexture(const std::string& filename)
 {
-	SDL_Surface* tmpSurface = SDL_LoadBMP("res/saveButton.bmp");
+	SDL_Surface* tmpSurface = SDL_LoadBMP(filename.c_str());
 	if (!tmpSurface)
 	{
 		std::cerr << "Error(0) while loading texture: " << filename << std::endl;
@@ -17,16 +17,14 @@ int TextureManager::loadTexture(const std::string& filename)
 		std::cerr << "Error(0) while loading texture: " << filename << std::endl;
 		exit(-1);
 	}
-	SDL_FreeSurface(tmpSurface);
-
 	Texture tex;
 	tex.name = filename;
 	tex.width = loadedSurface->w;
 	tex.height = loadedSurface->h;
-	tex.height = loadedSurface->h;
 	tex.pixels = new uint8_t[tex.width * tex.height*4];
 
 	memcpy(tex.pixels, loadedSurface->pixels, sizeof(uint8_t) * 4 * tex.width * tex.height);
+	SDL_FreeSurface(tmpSurface);
 	SDL_FreeSurface(loadedSurface);
 	textures.push_back(tex);
 	return textures.size()-1;

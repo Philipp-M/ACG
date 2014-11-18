@@ -48,23 +48,33 @@ bool GTexturedTriangle::intersect(const Ray& ray, RayIntPt& intPoint) const
 
 	if (t <= 0.00000001)
 		return false;
-	Vec2 texCoordinate = (wt + (ut - wt) * u + (vt - wt) * v).mult(Vec2(colorMap->width, colorMap->height)); // normal and specular map should hold the same width/height
-	const uint8_t* pixel = &colorMap->pixels[texCoordinate.y*colorMap->width+texCoordinate.x];
-	intPoint.color = Vec3(pixel[0]*1.0/255.0*0.999, pixel[1]*1.0/255.0*0.999, pixel[2]*1.0/255.0*0.999);
-
-	// todo if(normalMap != NULL)
-
-	if(specularMap != NULL)
+	intPoint.distance = t;
+	intPoint.normal = normal;
+	intPoint.position = ray.origin + ray.direction * t;
+	intPoint.emission = emission;
+	intPoint.reflType = refl;
+	intPoint.color = color;
+	if (colorMap != NULL)
 	{
-		intPoint.glossyRoughness = 1.0-colorMap->pixels[texCoordinate.y*colorMap->width+texCoordinate.x]*1.0/255.0;
-		if(intPoint.glossyRoughness >= 0.999)
-			intPoint.reflType = DIFF;
+		double w = 1.0 - u - v;
+		Vec2 texCoordinate = (ut*w + vt*u + wt*v).mult(Vec2(colorMap->width, colorMap->height)); // normal and specular map should hold the same width/height
+		size_t pixelIndex = (size_t) (colorMap->width*(colorMap->height-1)-((int)(texCoordinate.y - 0.0001)) * colorMap->width + ((int)(texCoordinate.x-0.0001)))*4;
+		const uint8_t* pixel = &colorMap->pixels[pixelIndex];
+		intPoint.color = color.mult(Vec3(((double)pixel[0]) * 1.0 / 255.0 * 0.999, ((double)pixel[1]) * 1.0 / 255.0 * 0.999, ((double)pixel[2]) * 1.0 / 255.0 * 0.999));
+		// todo if(normalMap != NULL)
+
+		if (specularMap != NULL)
+		{
+			intPoint.glossyRoughness = 1.0 - specularMap->pixels[pixelIndex] * 1.0 / 255.0;
+			if (intPoint.glossyRoughness >= 0.999)
+				intPoint.reflType = DIFF;
+			else
+				intPoint.reflType = GLOSS;
+		}
 		else
-			intPoint.reflType = GLOSS;
-	} else
-		intPoint.reflType = DIFF;
-
-
+			intPoint.reflType = DIFF;
+	}
+	return true;
 }
 
 GBoundingBox GTexturedTriangle::createBoundingBox() const

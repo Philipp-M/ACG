@@ -14,8 +14,8 @@ class GPolygonObject : public GObject
 {
 public:
 	GPolygonObject() : accelStruct(NULL) { updateGeometry(); }
-	GPolygonObject(const std::vector<GTriangle>& triangles) : faces(triangles), accelStruct(NULL) { updateGeometry(); }
-	GPolygonObject(const GPolygonObject &other)
+	GPolygonObject(const std::vector<Triangle>& triangles) : faces(triangles), accelStruct(NULL) { updateGeometry(); }
+	GPolygonObject(const GPolygonObject<Triangle> &other)
 	{
 		faces = other.faces; // does not work for unknown reason...
 		centroid = other.centroid;
@@ -30,8 +30,8 @@ public:
 	Vec3 getCentroid() const;
 	GBoundingBox createBoundingBox() const;
 	/***** custom methods *****/
-	void addFace(const GTriangle& triangle) { faces.push_back(triangle); updateGeometry(); }
-	std::vector<GTriangle> getFaces() { return faces; }
+	void addFace(const Triangle& triangle) { faces.push_back(triangle); updateGeometry(); }
+	std::vector<Triangle> getFaces() { return faces; }
 
 	~GPolygonObject() { }
 private:

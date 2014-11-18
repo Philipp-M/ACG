@@ -118,7 +118,7 @@ int SDLViewer::renderThreadF(void* data)
 	/********** create the scene *************/
 	viewer->timeElapsed = SDL_GetTicks();
 	GScene scene;
-	std::vector<GPolygonObject<GTriangle>*> sceneObj;
+	std::vector<GPolygonObject<GTexturedTriangle>*> sceneObj;
 	sceneObj = ObjLoader::loadOfFile(viewer->pathToScene.c_str(), viewer->pathToScene.substr(0,viewer->pathToScene.find_last_of("/\\")+1).c_str());
 	for (size_t i = 0; i < sceneObj.size(); i++)
 		scene.addItem(sceneObj[i]);
