@@ -68,7 +68,10 @@ Innsbruck, \today
 \section{Introduction}
 \label{sec:intro}
 
-For this project we had to implement certain advanced features using the smallPT code as base. Every student in one group had to implement at least one main feature. In our group we chose Motion Blur (by Cem Okulmus), Depth of Field (by Stefan Spiss) and Specular/Texture/Normal Mapping (by Phillip Mildenberger). Additionally in our project certain features were implemented, such as: Acceleration Structures (by Phillip Mildenberger), simple Camera Control (by Stefan Spiss)  
+For this project we had to implement certain advanced features based on smallPT. Every student in one group had to implement at least one main feature. In our group we chose Motion Blur (by Cem Okulmus), Depth of Field (by Stefan Spiss) and Specular/Texture/Normal Mapping (by Philipp Mildenberger). Additionally in our project extra features were implemented, such as: Acceleration Structures (by Philipp Mildenberger), simple Camera Control (by Stefan Spiss).
+
+\section{Technical Overview}
+SmallPT was extended by .obj import and complex geometry now supporting triangle meshes. Additionally a bounding volume hierarchy (BVH) is used to speed up the calculation of complex scenes. Texture-/normal- and specular-mapping is implemented to generate more realistic images. Furthermore to simulate a camera, Depth of Field provides correct blurring of objects that are not in focus. It's now also easy possible to move the camera around, change it's focal distance, it's field of view and it's aperture size. To capture movements in still pictures the effect of Motion Blur is approached by simulating the aperture shutter speed.
 
 \section{Implementation Detail}
 In this section we will give a short explanation on every implemented feature. All of these are extensions of the smallPT code. 
@@ -79,7 +82,7 @@ Since smallPT also uses a distribution over space, only an extension of this was
 The rays are uniformally distributed over time, with equal weight for all time steps. 
 
 \subsection{Depth of Field}
-In standard smallPT the pinhole camera model is used. So everything in the scene is in focus. Normal cameras always have a Depth of Field, which means that only objects in a specific distance are in focus. Everything else is blurred depending on the distance to the focal point. In the project implementation the Thin-Lens model is used. For this the ray direction is changed. We only not from one camera position, but distributed over the aperture circle. As target for the rays, the focal plane is used instead of the image plane. 
+In standard smallPT the pinhole camera model is used. So everything in the scene is in focus. Normal cameras always have a Depth of Field, which means that only objects in a specific distance are in focus. Everything else is blurred depending on the distance to the focal point. In the project implementation the Thin-Lens model is used. For this the ray direction is changed. Rays are shot not only from one camera position, but distributed over the aperture circle. As target for the rays, the focal plane is used instead of the image plane. 
 
 
 \subsection{Specular/Texture/Normal Mapping}
