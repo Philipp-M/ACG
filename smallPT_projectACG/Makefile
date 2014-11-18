@@ -3,8 +3,8 @@ CXXFLAGS=-c -Wall -O3 -fopenmp -std=c++11
 #-L./SDL2/lib -Wall,-rpath,./SDL2/lib -lSDL2 -lpthread -Wall,--no-undefined -lm -ldl -lpthread -lrt
 LDFLAGS= -lpthread -lSDL2 -fopenmp 
 #INCLUDES= -I./SDL2/include
-SOURCES=main.cpp GScene.cpp GSphere.cpp GTriangle.cpp GSimpleAccelStruct.cpp GPolygonObject.cpp ObjLoader.cpp tiny_obj_loader.cpp SDLViewer.cpp GBVHAccelStruct.cpp Motion.cpp MotionType.cpp
-DEPENDENCIES=SmallPT.hpp GScene.hpp GObject.hpp GSphere.hpp DataTypes.hpp GTriangle.hpp GAccelStruct.hpp GSimpleAccelStruct.hpp GPolygonObject.hpp ObjLoader.hpp tiny_obj_loader.hpp SDLViewer.hpp GBVHAccelStruct.hpp Motion.hpp MotionType.hpp
+SOURCES=main.cpp GScene.cpp GSphere.cpp GTriangle.cpp GSimpleAccelStruct.cpp GPolygonObject.cpp ObjLoader.cpp tiny_obj_loader.cpp SDLViewer.cpp GBVHAccelStruct.cpp CameraModel.cpp Motion.cpp MotionType.cpp
+DEPENDENCIES=SmallPT.hpp GScene.hpp GObject.hpp GSphere.hpp DataTypes.hpp GTriangle.hpp GAccelStruct.hpp GSimpleAccelStruct.hpp GPolygonObject.hpp ObjLoader.hpp tiny_obj_loader.hpp SDLViewer.hpp GBVHAccelStruct.hpp CameraModel.hpp Motion.hpp MotionType.hpp
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=aSmallPt
 EXECUTABLE_DEBUG=aSmallPt_debug
