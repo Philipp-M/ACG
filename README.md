@@ -4,12 +4,12 @@ A Path tracer project based on the well known smallPT from Kevin Beason: www.kev
 
 The target of this little project is to implement a few features like displacement mapping, depth of field, BVH, motion blur etc.
 
-An Example Image rendered with 10000 spp of the original cornell box:
-![CornellBox](https://raw.githubusercontent.com/Philipp-M/ACG/master/smallPT_projectACG/images/cornell10000spp.jpg)
+An Example Image rendered with 5000 spp of the original cornell box:
+![CornellBox](https://raw.githubusercontent.com/Philipp-M/ACG/master/smallPT_projectACG/images/cornell5000spp.jpg)
 
-The transparent chinese dragon in the cornell box(rendered with 7500 spp) showing the new implemented features: Beer-Lambert-Law and the acceleration technique: Bounding Volume Hierarchy:
+The transparent chinese dragon in the cornell box(rendered with 1024 spp) showing the new implemented features: Depth of Field, Beer-Lambert-Law and the acceleration technique: Bounding Volume Hierarchy:
 
-![CornellDragonBox](https://raw.githubusercontent.com/Philipp-M/ACG/master/smallPT_projectACG/images/cornelldragon7500spp.jpg)
+![CornellDragonBox](https://raw.githubusercontent.com/Philipp-M/ACG/master/smallPT_projectACG/images/dragon1024spp.jpg)
 
 License
 -------
