@@ -1,5 +1,19 @@
 \begin{thebibliography}{1}
 
+\bibitem{barsky2003camera}
+Brian~A Barsky, Daniel~R Horn, Stanley~A Klein, Jeffrey~A Pang, and Meng Yu.
+\newblock Camera models and optical systems used in computer graphics: part i,
+  object-based techniques.
+\newblock In {\em Computational Science and Its Applications—ICCSA 2003},
+  pages 246--255. Springer, 2003.
+
+\bibitem{barsky2008algorithms}
+Brian~A Barsky and Todd~J Kosloff.
+\newblock Algorithms for rendering depth of field effects in computer graphics.
+\newblock In {\em Proceedings of the 12th WSEAS international conference on
+  Computers}, volume 2008. World Scientific and Engineering Academy and Society
+  (WSEAS), 2008.
+
 \bibitem{Cook:1984}
 Robert~L. Cook, Thomas Porter, and Loren Carpenter.
 \newblock Distributed ray tracing.
@@ -13,16 +27,18 @@ Steve Harvey.
   2012.
 \newblock [Online; accessed 2014-11-19].
 
-\bibitem{seiler:2013}
-M.~Seiler, J.~Spillmann, and M.~Harders.
-\newblock Enriching coarse interactive elastic objects with high-resolution
-  data-driven deformations.
-\newblock In {\em ACM SIGGRAPH/Eurographics Symposium on Computer Animation},
-  pages 9--17, 2013.
+\bibitem{kolb1995realistic}
+Craig Kolb, Don Mitchell, and Pat Hanrahan.
+\newblock A realistic camera model for computer graphics.
+\newblock In {\em Proceedings of the 22nd annual conference on Computer
+  graphics and interactive techniques}, pages 317--324. ACM, 1995.
 
-\bibitem{shirley:2009}
-Peter Shirley.
-\newblock {\em Fundamentals of Computer Graphics}.
-\newblock Taylor \& Francis, 3rd edition, 2009.
+\bibitem{link:scratch}
+Scratchapixel.
+\newblock Lesson 12: Introduction to acceleration structures.
+\newblock
+  \url{http://www.scratchapixel.com/old/lessons/3d-basic-lessons/lesson-12-introduction-to-acceleration-structures/},
+  2012.
+\newblock [Online; accessed 2014-11-19].
 
 \end{thebibliography}
