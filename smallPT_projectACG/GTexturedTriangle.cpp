@@ -80,30 +80,29 @@ bool GTexturedTriangle::intersect(const Ray& ray, RayIntPt& intPoint) const
 			Vec3 dv01 = v1 - v0;
 			Vec3 dv02 = v2 - v0;
 			Vec2 duv01 = vt - ut;
-			Vec2 duv02 = vt - ut;
-			double r = 1.0 / (duv01.x * duv02.y - duv01.y * duv02.x);
-			Vec3 tan = (dv01 * duv02.y - dv02 * duv01.y) * r;
-			Vec3 btan = (dv02 * duv01.x - dv01 * duv02.x) * r;
+			Vec2 duv02 = wt - ut;
+			Vec3 tan = (dv01 * duv02.y - dv02 * duv01.y).norm();
+			Vec3 btan = (dv02 * duv01.x - dv01 * duv02.x).norm()*(-1);
 			Vec3 calcNormal;
 			calcNormal.x = tan.dot(texNormal);
 			calcNormal.y = btan.dot(texNormal);
 			calcNormal.z = normal.dot(texNormal);
-			intPoint.normal = texNormal.norm();
-			//std::cerr << "texNormal is: " << texNormal << " normal is: " << normal << " calculated normal is: " << calcNormal << std::endl;
-
-		}
+			intPoint.calcNormal = calcNormal.norm();
+		} else
+			intPoint.calcNormal = normal;
 		if (specularMap != NULL)
 		{
 			size_t pixelIndex = (size_t) (specularMap->width * (specularMap->height - 1)
 					- ((int) (texCoordinate.y * specularMap->height - 0.00001)) * specularMap->width +
 					((int) (texCoordinate.x * specularMap->width - 0.00001)))* 4;
 			intPoint.glossyRoughness = 1.0 - specularMap->pixels[pixelIndex] * 1.0 / 255.0;
-			if (intPoint.glossyRoughness >= 0.999)
+			if (intPoint.glossyRoughness >= 0.99 && (intPoint.reflType == DIFF || intPoint.reflType == GLOSS))
 				intPoint.reflType = DIFF;
-			else
+			else if(intPoint.reflType == DIFF || intPoint.reflType == GLOSS)
 				intPoint.reflType = GLOSS;
 		}
-	}
+	} else
+		intPoint.calcNormal = normal;
 	return true;
 }
 

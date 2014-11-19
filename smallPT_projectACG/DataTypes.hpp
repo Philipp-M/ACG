@@ -231,6 +231,7 @@ struct RayIntPt
 {
 	Vec3 position;
 	Vec3 normal;
+	Vec3 calcNormal;
 	Vec3 color;
 	Vec3 emission;
 	double glossyRoughness;

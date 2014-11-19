@@ -39,6 +39,7 @@ public:
 			intPoint.emission.x == 0 && intPoint.emission.y == 0 && intPoint.emission.z == 0)
 			return Vec3(); // if completely absorbs, return black
 		Vec3 nl = intPoint.normal.dot(ray.direction) < 0 ? intPoint.normal : intPoint.normal * -1;
+		Vec3 ncl = intPoint.calcNormal.dot(ray.direction) < 0 ? intPoint.calcNormal : intPoint.calcNormal * -1;
 
 		if(intPoint.emission.x > 0 || intPoint.emission.y > 0 || intPoint.emission.z > 0) // stop when there is light
 			return intPoint.emission;
@@ -54,18 +55,22 @@ public:
 		if (intPoint.reflType == DIFF)   // Ideal DIFFUSE reflection
 		{
 			double r1 = 2 * M_PI * erand48(Xi), r2 = erand48(Xi), r2s = sqrt(r2);
-			Vec3 w = nl, u = ((fabs(w.x) > .1 ? Vec3(0, 1) : Vec3(1)) % w).norm(), v = w % u;
+			Vec3 w = ncl, u = ((fabs(w.x) > .1 ? Vec3(0, 1) : Vec3(1)) % w).norm(), v = w % u;
 			Vec3 d = (u * cos(r1) * r2s + v * sin(r1) * r2s + w * sqrt(1 - r2)).norm();
-
-			return intPoint.emission + intPoint.color.mult(radiance(Ray(intPoint.position, d), scene, depth, Xi));
+			double orient = nl.dot(d);
+			if(orient < 0)
+				return intPoint.emission + intPoint.color.mult(radiance(Ray(intPoint.position, d - w * 2 * w.dot(d)), scene, depth, Xi));
+			else
+				return intPoint.emission + intPoint.color.mult(radiance(Ray(intPoint.position, d), scene, depth, Xi));
+			//return intPoint.emission + intPoint.color.mult(radiance(Ray(intPoint.position, d), scene, depth, Xi));
 		}
 		else if (intPoint.reflType == GLOSS)            // GLOSSY reflection
 		{
 			double r1 = 2 * M_PI * erand48(Xi), r2 = intPoint.glossyRoughness * erand48(Xi), r2s = sqrt(r2);
-			Vec3 w = ray.direction - intPoint.normal * 2 * intPoint.normal.dot(ray.direction);
+			Vec3 w = ray.direction - intPoint.calcNormal * 2 * intPoint.calcNormal.dot(ray.direction);
 			Vec3 u = ((fabs(w.x) > .1 ? Vec3(0, 1) : Vec3(1)) % w).norm(), v = w % u;
 			Vec3 d = (u * cos(r1) * r2s + v * sin(r1) * r2s + w * sqrt(1 - r2)).norm();
-			double orient = intPoint.normal.dot(d);
+			double orient = nl.dot(d);
 			if(orient < 0)
 				return intPoint.emission + intPoint.color.mult(radiance(Ray(intPoint.position, d - w * 2 * w.dot(d)), scene, depth, Xi));
 			else

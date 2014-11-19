@@ -44,6 +44,7 @@ bool GSphere::intersect(const Ray &ray, RayIntPt& intPoint) const
 	intPoint.distance = t;
 	intPoint.position = ray.origin + ray.direction * t;
 	intPoint.normal = (intPoint.position - position).norm();
+	intPoint.calcNormal = intPoint.normal;
 	intPoint.emission = emission;
 	intPoint.reflType = refl;
 	intPoint.color = color;

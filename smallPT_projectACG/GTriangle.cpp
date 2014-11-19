@@ -56,6 +56,7 @@ bool GTriangle::intersect(const Ray &ray, RayIntPt& intPoint) const
 		return false;
 	intPoint.distance = t;
 	intPoint.normal = normal;
+	intPoint.calcNormal = normal;
 	intPoint.position = ray.origin + ray.direction * t;
 	intPoint.emission = emission;
 	intPoint.reflType = refl;
