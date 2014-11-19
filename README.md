@@ -11,6 +11,9 @@ The transparent chinese dragon in the cornell box(rendered with 7500 spp) showin
 
 ![CornellDragonBox](https://raw.githubusercontent.com/Philipp-M/ACG/master/smallPT_projectACG/images/cornelldragon7500spp.jpg)
 
+Showing the bumpmapping feature(rendered with 1000spp):
+![CornellStoneFloor](https://raw.githubusercontent.com/Philipp-M/ACG/master/smallPT_projectACG/images/bumbmapped1000spp.jpg)
+
 License
 -------
 see smallPT_projectACG/LICENSE
