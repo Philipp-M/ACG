@@ -3,44 +3,44 @@ Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: EWA_template.aux
 The style file: plain.bst
 Database file #1: EWA_literature.bib
-You've used 2 entries,
+You've used 4 entries,
             2118 wiz_defined-function locations,
-            509 strings with 4301 characters,
-and the built_in function-call counts, 658 in all, are:
-= -- 61
-> -- 25
+            526 strings with 4644 characters,
+and the built_in function-call counts, 1241 in all, are:
+= -- 120
+> -- 50
 < -- 1
-+ -- 10
-- -- 8
-* -- 38
-:= -- 110
-add.period$ -- 6
-call.type$ -- 2
-change.case$ -- 10
++ -- 20
+- -- 16
+* -- 77
+:= -- 208
+add.period$ -- 13
+call.type$ -- 4
+change.case$ -- 20
 chr.to.int$ -- 0
-cite$ -- 2
-duplicate$ -- 31
-empty$ -- 59
-format.name$ -- 8
-if$ -- 142
+cite$ -- 4
+duplicate$ -- 49
+empty$ -- 108
+format.name$ -- 16
+if$ -- 263
 int.to.chr$ -- 0
-int.to.str$ -- 2
-missing$ -- 3
-newline$ -- 13
-num.names$ -- 4
-pop$ -- 16
+int.to.str$ -- 4
+missing$ -- 4
+newline$ -- 24
+num.names$ -- 8
+pop$ -- 28
 preamble$ -- 1
-purify$ -- 8
+purify$ -- 16
 quote$ -- 0
-skip$ -- 20
+skip$ -- 33
 stack$ -- 0
-substring$ -- 29
-swap$ -- 8
+substring$ -- 64
+swap$ -- 10
 text.length$ -- 1
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 6
+type$ -- 14
 warning$ -- 0
-while$ -- 7
-width$ -- 3
-write$ -- 24
+while$ -- 13
+width$ -- 5
+write$ -- 47

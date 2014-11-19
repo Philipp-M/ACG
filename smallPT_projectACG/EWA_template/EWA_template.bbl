@@ -1,5 +1,18 @@
 \begin{thebibliography}{1}
 
+\bibitem{Cook:1984}
+Robert~L. Cook, Thomas Porter, and Loren Carpenter.
+\newblock Distributed ray tracing.
+\newblock {\em SIGGRAPH Comput. Graph.}, 18(3):137--145, January 1984.
+
+\bibitem{link:Harvey}
+Steve Harvey.
+\newblock Ray tracer part six – depth of field.
+\newblock
+  \url{http://steveharveynz.wordpress.com/2012/12/21/ray-tracer-part-5-depth-of-field/},
+  2012.
+\newblock [Online; accessed 2014-11-19].
+
 \bibitem{seiler:2013}
 M.~Seiler, J.~Spillmann, and M.~Harders.
 \newblock Enriching coarse interactive elastic objects with high-resolution
