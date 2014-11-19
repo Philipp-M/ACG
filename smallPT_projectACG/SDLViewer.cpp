@@ -106,7 +106,7 @@ int SDLViewer::renderThreadF(void* data) {
 	Vec cx = Vec(w * .7135 / h); // x direction increment (uses implicit 0 for y, z)
 	Vec cy = (cx % cam.direction).norm() * .7135; // y direction increment (note cross product)
 */
-	CameraModel camera = CameraModel(Vec3(50, 50, 230), Vec3(0, 0, -1).norm(), .7135, 150, 0, w, h);
+	CameraModel camera = CameraModel(Vec3(50, 50, 230), Vec3(0, 0, -1).norm(), .7135, 150, 5, w, h);
 	Vec3 r; // used for colors of samples
 	int samps = viewer->sampleStep / 4;
 	/********** create the scene *************/
@@ -119,15 +119,15 @@ int SDLViewer::renderThreadF(void* data) {
 	std::cout << "Start constructing scenes" << std::endl;
 
 	std::default_random_engine generator;
-	std::uniform_int_distribution<int> distribution(0, viewer->timeSteps-1);
+	std::uniform_int_distribution<int> distribution(0, 0);
 
-//	Motion motion = Motion(sceneObj, 1);
-	Motion motion = Motion(sceneObj, viewer->timeSteps);
-
-	if(!(motion.assign_motion(7, Vec3(0.0, 20.0, 0.0)) ))
-		std::cerr << "couldn't move object";
-	if( !motion.assign_motion(0, Vec3(-20.0, .0, .0)) )
-		std::wcerr << "couldn't move object";
+	Motion motion = Motion(sceneObj, 1);
+//	Motion motion = Motion(sceneObj, viewer->timeSteps);
+//
+//	if(!(motion.assign_motion(7, Vec3(0.0, 20.0, 0.0)) ))
+//		std::cerr << "couldn't move object";
+//	if( !motion.assign_motion(0, Vec3(-20.0, .0, .0)) )
+//		std::wcerr << "couldn't move object";
 	
 	scenes = motion.get_scenes();
 
