@@ -1,0 +1,26 @@
+Short example how much the Bounding Volume Hierarchy helps on complex meshes:
+
+rendered cornell8Hi.obj with 31536 triangles on a Notebook with an Intel Core i7:
+
+With Bounding Volume Hierarchy:
+average of about 310k samples per pixel.
+
+with the simple acceleration structure:
+
+its just 3.77873k samples per pixel,
+
+It scales even a lot stronger with very complex objects, e.g. 1 Million or more triangles.
+it is quite easy to explain, the simple approach scans for every scene or polygon object every subobject(which is in the case of the polygon object the triangle)
+so there will be n intersection checks for n objects inside the Bounding Box.
+
+The Bounding Volume Hierarchy scales logarithmically so for n objects about log(n) tests were made,
+Since it will be build up(in our project at least) with an Octree, the log will have the base 8.
+
+to give a short overview how much impact that has on an object with lets say 10,000,000 faces: 
+
+the simple acceleration structure makes obviously 10,000,000 triangle tests, while the BVH makes in average case log_8(n) which are just about 10 traversal steps(!) and if the object is convex there arent made any further intersection tests.
+Even if the geometry is complex in case of 'concaveness' an average of maybe 50 tests(assumed) will be made in 'worst average case'.
+This clearly shows how fast raytracing can be on very complex geometry, where the memory is starting to be the limit...
+
+(I dont want to handle special cases in this project like an extremly small very detailed part and the rest giant low poly, which are obviously special cases with the Octree building approach...)
+
