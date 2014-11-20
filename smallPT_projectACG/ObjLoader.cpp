@@ -54,10 +54,13 @@ std::vector<GPolygonObject<GTexturedTriangle>*> ObjLoader::loadOfFile(const char
 			if(materials.size() > 0)
 			{
 				/* for now just a very basic material support, because smallPT has not the best material support
-				 * can change maybe in future versions (e.g when displacement mapping will be implemented
+				 * can change maybe in future versions
 				 * Simple hack for lightning, (because blender doesn't support the ambient lighting in an easy way):
 				 * if diffuse lightning and specular color(sum of the 3 components > 1) is defined,
 				 * the diffuse color will be taken as light source
+				 * if alpha(d) is smaller than 1, the material is treated as refractive
+				 * if one(two or all three) of the 3 textures is defined,
+				 * the texture will be loaded and added to the textured triangle (and of course the texture manager)
 				 */
 				const tinyobj::material_t& mat = materials[shapes[i].mesh.material_ids[j]];
 				const Texture* colorMap = NULL;
