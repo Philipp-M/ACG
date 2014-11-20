@@ -57,51 +57,80 @@ bool GTexturedTriangle::intersect(const Ray& ray, RayIntPt& intPoint) const
 	intPoint.emission = emission;
 	intPoint.reflType = refl;
 	intPoint.color = color;
+	/**
+	 * up to here it was mainly the normal triangle intersect method
+	 */
+	// check if any texture map was attached
 	if (colorMap != NULL || normalMap != NULL || specularMap != NULL)
 	{
+		// calculate the euclidean point where it was hit (with barycentric coordinates, which were determined before)
+		// it is now between 0 and 1
 		double w = 1.0 - u - v;
 		Vec2 texCoordinate = ut * w + vt * u + wt * v;
+		// check if color map exists
 		if (colorMap != NULL)
 		{
+			// determine the texture coordinate in the image space(from 'normalized' value(0...1) to 0...width and 0...height)
+			// an epsilon value was used(0.00001), just to be shure it will not get to the width and height value itself(which would result in 'array Out of bounds'
 			size_t pixelIndex = (size_t) (colorMap->width * (colorMap->height - 1) - ((int) (texCoordinate.y * colorMap->height - 0.00001)) * colorMap->width
 					+ ((int) (texCoordinate.x * colorMap->width - 0.00001))) * 4;
 			const uint8_t* pixel = &colorMap->pixels[pixelIndex];
+			// assign the color to the intersection structure, multiplied with the objects color
 			intPoint.color = color.mult(
 					Vec3(((double) pixel[0]) * 1.0 / 255.0 * 0.999, ((double) pixel[1]) * 1.0 / 255.0 * 0.999, ((double) pixel[2]) * 1.0 / 255.0 * 0.999));
 		}
 		if (normalMap != NULL)
 		{
-			// calculate normal of the map
-			size_t pixelIndex = (size_t) (specularMap->width * (specularMap->height - 1)
-					- ((int) (texCoordinate.y * specularMap->height - 0.00001)) * specularMap->width + ((int) (texCoordinate.x * specularMap->width - 0.00001)))
+			// explanation in colormap...
+			size_t pixelIndex = (size_t) (normalMap->width * (normalMap->height - 1)
+					- ((int) (texCoordinate.y * normalMap->height - 0.00001)) * normalMap->width + ((int) (texCoordinate.x * specularMap->width - 0.00001)))
 					* 4;
 			const uint8_t* pixel = &normalMap->pixels[pixelIndex];
+			// get the absolute normal out of the normal map: example the Vector (0,0,1) is mapped to the
+			// RGB values (128, 128, 256) which explains the blueish effect of the normal map, since this would mean:
+			// no change of the surface normal.
 			Vec3 texNormal = Vec3(1.0 / 128 * pixel[0] - 1, 1.0 / 128 * pixel[1] - 1, 1.0 / 128 * pixel[2] - 1).norm();
+			// do some algebraic math to transform the mapped normal(which is in the standard basis)
+			// to the 'basis' of the Triangles normal
+			// this is just a matrix multiplication with the following basis:
+			// the first component is the horizontal axis('x-axis') of the mapped image (here called tan)
+			// the second component is the vertical axis('y-axis') of the mapped image (here called btan)
+			// the third is the normal of the triangles surface('z-axis')
+			// all these calculations were arrived with a system of linear equotions, and are already 'optimized'
+			// thats why it isnt't that obvious, why it works...
+			// every value is normalized, to guarantee that the resulting basis is an orthonormal basis and will not include a bias
 			Vec3 dv01 = v1 - v0;
 			Vec3 dv02 = v2 - v0;
 			Vec2 duv01 = vt - ut;
 			Vec2 duv02 = wt - ut;
 			Vec3 tan = (dv01 * duv02.y - dv02 * duv01.y).norm();
+			// the *(-1) was necessery, because it is in a different orientation
 			Vec3 btan = (dv02 * duv01.x - dv01 * duv02.x).norm()*(-1);
 			Vec3 calcNormal;
+			// following is the matrix transformation, I just used the dot product of the Vec class, since it equals to
+			// a matrix transformation
 			calcNormal.x = tan.dot(texNormal);
 			calcNormal.y = btan.dot(texNormal);
 			calcNormal.z = normal.dot(texNormal);
+			// just to be safe it will be normalized again, speed isn't the issue in this project ;)
 			intPoint.calcNormal = calcNormal.norm();
 		} else
 			intPoint.calcNormal = normal;
 		if (specularMap != NULL)
 		{
+			// explanation in colormap...
 			size_t pixelIndex = (size_t) (specularMap->width * (specularMap->height - 1)
 					- ((int) (texCoordinate.y * specularMap->height - 0.00001)) * specularMap->width +
 					((int) (texCoordinate.x * specularMap->width - 0.00001)))* 4;
+			// the glossy factor will be determined of the red channel(all other should be equal because it's greyscale)
+			// of the specular map. 0 is diffuse and 255 is mirror
 			intPoint.glossyRoughness = 1.0 - specularMap->pixels[pixelIndex] * 1.0 / 255.0;
 			if (intPoint.glossyRoughness >= 0.99 && (intPoint.reflType == DIFF || intPoint.reflType == GLOSS))
 				intPoint.reflType = DIFF;
 			else if(intPoint.reflType == DIFF || intPoint.reflType == GLOSS)
 				intPoint.reflType = GLOSS;
 		}
-	} else
+	} else // if no map is attached the calculated normal will be just the triangle's normal
 		intPoint.calcNormal = normal;
 	return true;
 }

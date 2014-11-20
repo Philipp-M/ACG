@@ -8,7 +8,6 @@
 #include "GPolygonObject.hpp"
 #include "Motion.hpp"
 #include <random>
-#include "CameraModel.hpp"
 
 void SDLViewer::display() {
 	// Event handler
@@ -50,7 +49,7 @@ pathToScene(pathToScene), curSPP(0), sampleStep(sampleStep), timeSteps(timeSteps
 }
 
 SDLViewer::~SDLViewer() {
-	// Deallocate surface
+	// Deallocate surfaces
 	SDL_FreeSurface(gButtonDefault);
 	SDL_FreeSurface(gButtonPressed);
 	SDL_FreeSurface(gButtonHover);
@@ -95,6 +94,7 @@ void SDLViewer::initSDL(int w, int h) {
 * following method is quite dirty, and should be cleaned up after implementing several
 * necessary features like the whole scene(not just the geometric model) or an extra camera class etc.
 * also kinda static...
+* ...no time anymore for that...
 *
 * ugly SDL_thread workaround with "this" pointer was also necessary...
 */
@@ -102,10 +102,6 @@ int SDLViewer::renderThreadF(void* data) {
 	SDLViewer* viewer = reinterpret_cast<SDLViewer*>(data);
 	int w = viewer->gScreenSurface->w;
 	int h = viewer->gScreenSurface->h;
-/*	Ray cam(Vec(50, 50, 230), Vec(0, 0, -1).norm()); // camera pos, dir
-	Vec cx = Vec(w * .7135 / h); // x direction increment (uses implicit 0 for y, z)
-	Vec cy = (cx % cam.direction).norm() * .7135; // y direction increment (note cross product)
-*/
 	CameraModel camera = CameraModel(Vec3(50, 50, 230), Vec3(0, 0, -1).norm(), .7135, 150, 0.001, w, h);
 	Vec3 r; // used for colors of samples
 	int samps = viewer->sampleStep / 4;
@@ -168,7 +164,8 @@ int SDLViewer::renderThreadF(void* data) {
 		}
 		SDL_UnlockMutex(viewer->mutex);
 		delete[] c;
-		std::cerr << "\rRendering (" << viewer->curSPP << " spp, " << ((double)viewer->sampleStep*w*h) / (double)(SDL_GetTicks() - timeDeltaElapsed) << "k sp/s)"; // print progress
+		// print progress
+		std::cerr << "\rRendering (" << viewer->curSPP << " spp, " << ((double)viewer->sampleStep*w*h) / (double)(SDL_GetTicks() - timeDeltaElapsed) << "k sp/s)";
 
 	}
 	std::cerr << "\n\ntime needed for rendering: " << (double)(SDL_GetTicks() - viewer->timeElapsed) / 1000.0 << " s\n"; // print progress
@@ -176,7 +173,6 @@ int SDLViewer::renderThreadF(void* data) {
 		delete scene;
 	return 0;
 }
-
 void SDLViewer::saveImage() {
 	std::string name = "render" + std::to_string(curSPP) + "spp.bmp";
 	Uint32 *pixels = new Uint32[gScreenSurface->w * gScreenSurface->h];
@@ -189,7 +185,6 @@ void SDLViewer::saveImage() {
 	SDL_FreeSurface(renderedImage);
 	delete[] pixels;
 }
-
 void SDLViewer::handleEvents(SDL_Event& events, bool& needsUpdate) {
 	while( SDL_PollEvent(&events) != 0 ) {
 		// User requests quit
@@ -224,7 +219,6 @@ void SDLViewer::handleEvents(SDL_Event& events, bool& needsUpdate) {
 		}
 	}
 }
-
 SDL_Surface* SDLViewer::toneMap(Uint32* pixels) {
 	int w = gScreenSurface->w;
 	int h = gScreenSurface->h;
