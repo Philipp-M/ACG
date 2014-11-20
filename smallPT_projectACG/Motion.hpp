@@ -1,4 +1,5 @@
-#pragma once
+#ifndef MOTION_HPP
+#define MOTION_HPP
 #include <vector>
 #include <map>
 #include "MotionType.hpp"
@@ -29,4 +30,4 @@ public:
 
 
 };
-
+#endif // MOTION_HPP

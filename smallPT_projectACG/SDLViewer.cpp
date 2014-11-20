@@ -120,9 +120,8 @@ int SDLViewer::renderThreadF(void* data) {
 
 	// MotionBlur: Here we assign a motion to each object 
 
-	Motion motion = Motion(sceneObj, 1);
-//	Motion motion = Motion(sceneObj, viewer->timeSteps);
-//
+	Motion motion = Motion(sceneObj, viewer->timeSteps);
+// uncomment for the motions depending on the order of the objects, loaded in the OBJ Loader
 //	if(!(motion.assign_motion(7, Vec3(0.0, 20.0, 0.0)) ))
 //		std::cerr << "couldn't move object";
 //	if( !motion.assign_motion(0, Vec3(-20.0, .0, .0)) )
