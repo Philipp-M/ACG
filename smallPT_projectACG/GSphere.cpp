@@ -57,7 +57,7 @@ Vec3 GSphere::getCentroid() const
 	return position;
 }
 
-//simple translation operatoins
+//simple translation operations
 void GSphere::translate(const Vec3& t) {
 	position = position + t;
 }
@@ -82,7 +82,7 @@ void GSphere::rotation(float rad, const Vec3& dir) {
 	position = Vec3(pos.x, pos.y, pos.z);
 }
 
-//very simple liner acceleration
+//very simple linear acceleration
 void GSphere::translateAcc(Vec3 t, double acc, long time) {
 	Vec3 v = Vec3(acc*time, acc*time, acc*time);
 
@@ -92,6 +92,6 @@ void GSphere::translateAcc(Vec3 t, double acc, long time) {
 
 GBoundingBox GSphere::createBoundingBox() const
 {
-	// todo
-	return GBoundingBox(Vec3(),Vec3());
+	return GBoundingBox(Vec3(position.x-radius, position.y-radius, position.z-radius),
+			Vec3(position.x+radius, position.y+radius, position.z+radius));
 }

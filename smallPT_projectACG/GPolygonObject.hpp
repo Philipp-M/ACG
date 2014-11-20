@@ -9,6 +9,10 @@
 #include "GSimpleAccelStruct.hpp"
 #include "GBVHAccelStruct.hpp"
 
+/**
+ * a template for simply chosing different Triangle types, for now two are implemented: a simple triangle,
+ * and a textured Triangle
+ */
 template <class Triangle>
 class GPolygonObject : public GObject
 {
@@ -17,7 +21,7 @@ public:
 	GPolygonObject(const std::vector<Triangle>& triangles) : faces(triangles), accelStruct(NULL) { updateGeometry(); }
 	GPolygonObject(const GPolygonObject<Triangle> &other)
 	{
-		faces = other.faces; // does not work for unknown reason...
+		faces = other.faces;
 		centroid = other.centroid;
 		std::vector<GObject*> accelObjs;
 		for (size_t i = 0; i < faces.size(); i++)
@@ -33,7 +37,7 @@ public:
 	void addFace(const Triangle& triangle) { faces.push_back(triangle); updateGeometry(); }
 	std::vector<Triangle> getFaces() { return faces; }
 
-	//simple translation operatoins
+	//simple translation operations
 	void translate(const Vec3& t);
 	void rotationX(float rad);
 	void rotationY(float rad);
@@ -44,6 +48,10 @@ public:
 
 	~GPolygonObject() { }
 private:
+	/**
+	 * (re-)calculates the centroid,
+	 * and updates the acceleration structure(simply reinitializing it, since there is no need for dynamic BVH creation)
+	 */
 	void updateGeometry()
 	{
 		Vec3 tmp;
