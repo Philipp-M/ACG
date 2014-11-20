@@ -123,10 +123,10 @@ int SDLViewer::renderThreadF(void* data) {
 
 	Motion motion = Motion(sceneObj, 1);
 //	Motion motion = Motion(sceneObj, viewer->timeSteps);
-
-//	if(!(motion.assign_motion(4, Vec3(33.25, 66, 35.5)) ))
+//
+//	if(!(motion.assign_motion(7, Vec3(0.0, 20.0, 0.0)) ))
 //		std::cerr << "couldn't move object";
-//	if( !motion.assign_motion(1, Vec3(25.2361, 23.2917, 65.3056)) )
+//	if( !motion.assign_motion(0, Vec3(-20.0, .0, .0)) )
 //		std::wcerr << "couldn't move object";
 	
 	scenes = motion.get_scenes();
