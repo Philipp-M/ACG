@@ -1,6 +1,12 @@
 #pragma once
 #include "DataTypes.hpp"
 
+/*
+* Responsible for saving the different motion types that can be assigned
+* At the moment supports: 
+*	- Translation (simple and accelerated)
+*	- Rotation (X,Y,Z axis)
+*/
 
 enum Dir { X, Y, Z };
 enum Type { Translation, Rotation, Acc };
