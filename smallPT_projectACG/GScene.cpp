@@ -2,9 +2,8 @@
 #include "GSimpleAccelStruct.hpp"
 #include "GBVHAccelStruct.hpp"
 
-GScene::GScene()
+GScene::GScene() : accelStruct(NULL)
 {
-	accelStruct = new GSimpleAccelStruct(objects);
 }
 
 GScene::~GScene()

@@ -15,7 +15,7 @@ bool GSimpleAccelStruct::intersect(const Ray &ray, RayIntPt& intPoint) const
 	 * there is just one difference, because more complex Objects are introduced, a bounding box speeds up the
 	 * intersection check a quite a bit
 	 */
-	for (int i = int(objects.size() - 1); i >= 0; i--)
+	for (size_t i = 0; i < objects.size(); i++)
 	{
 		if(bboxes[i].intersect(ray, dis, tmp))
 		{
