@@ -9,6 +9,12 @@ bool GSimpleAccelStruct::intersect(const Ray &ray, RayIntPt& intPoint) const
 	RayIntPt tmpIntPoint;
 	intPoint.distance = std::numeric_limits<double>::infinity(); // c++ way to indicate infinity
 	bool hit = false;
+
+	/**
+	 * following is mainly the approach, that smallPT chose,
+	 * there is just one difference, because more complex Objects are introduced, a bounding box speeds up the
+	 * intersection check a quite a bit
+	 */
 	for (int i = int(objects.size() - 1); i >= 0; i--)
 	{
 		if(bboxes[i].intersect(ray, dis, tmp))

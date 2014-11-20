@@ -7,6 +7,9 @@
 #include <algorithm>
 #include <vector>
 
+/**
+ * just a definition, the whole implementation is in the cpp file
+ */
 class Octree;
 
 class GBVHAccelStruct : public GAccelStruct
@@ -16,7 +19,6 @@ public:
 	bool intersect(const Ray &ray, RayIntPt& intPoint) const;
 	virtual ~GBVHAccelStruct();
 private:
-	GBoundingBox calculateBoundingBox(const std::vector<GBoundingBox>& bboxes);
 	Octree* octree;
 };
 

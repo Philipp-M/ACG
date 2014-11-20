@@ -24,6 +24,10 @@ struct OctreeNode
 	 */
 	void buildBoundingBox() { buildBB(this); }
 private:
+	/**
+	 * implementation of the above told method,
+	 * works recursively
+	 */
 	const GBoundingBox& buildBB(OctreeNode* node)
 	{
 		if(node->isLeaf)
@@ -62,6 +66,7 @@ public:
 	{
 		root.buildBoundingBox();
 	}
+	// following was almost taken 1:1 from scratchapixel, since I have not seen a point to rewrite it...
 	struct QueueElement
 	{
 		const OctreeNode *node; // octree node held by this node in the tree
@@ -73,6 +78,10 @@ public:
 private:
 	void insert(OctreeNode* node, const GObject* obj, const Vec3& centroid, const Vec3& minBB, const Vec3& maxBB)
 	{
+		/**
+		 * if the object ends in a leaf, the object will either be added to the node(if the leaf was empty)
+		 * otherwise both objects will be put in one of the subnodes/leafs...
+		 */
 		if (node->isLeaf)
 		{
 			if (node->data == NULL)
@@ -84,11 +93,12 @@ private:
 				{
 					Vec3 centroid_d = node->data->getCentroid();
 					double e = 1e-6;
+					// check if the centroids are (almost) the same.
 					if(centroid.x <= centroid_d.x*(1+e) && centroid.x >= centroid_d.x*(1-e) &&
 							centroid.y <= centroid_d.y*(1+e) && centroid.y >= centroid_d.y*(1-e) &&
 							centroid.z <= centroid_d.z*(1+e) && centroid.z >= centroid_d.z*(1-e))
 					{
-						centroid_d = centroid*0.999999; // if two centroids are almost the same, recompute the centroid, else this ends in endless recursion
+						centroid_d = centroid*0.999999; // if two centroids are (almost) the same, recompute the centroid, else this ends in endless recursion
 						insert(node, node->data, centroid_d, minBB, maxBB); // insert old object in subnode
 					}
 					else
@@ -100,6 +110,9 @@ private:
 		}
 		else
 		{
+			/**
+			 * some quite nice tricks are used from the scratchapixel website, as following:
+			 */
 			uint8_t child_id = 0;
 			Vec3 nodeCentroid = (minBB + maxBB) * 0.5f;
 			if (nodeCentroid.z < centroid.z)
@@ -117,6 +130,7 @@ private:
 			childBoundMax.y = (child_id & 2) ? maxBB.y : nodeCentroid.y;
 			childBoundMin.x = (child_id & 1) ? nodeCentroid.x : minBB.x;
 			childBoundMax.x = (child_id & 1) ? maxBB.x : nodeCentroid.x;
+			//recursively add the object in a subnode/leaf(where its centroid was inside the bounding box)
 			if(node->child[child_id] == NULL)
 				node->child[child_id] = new OctreeNode;
 			insert(node->child[child_id], obj, centroid, childBoundMin, childBoundMax);
@@ -151,16 +165,33 @@ GBVHAccelStruct::GBVHAccelStruct(const std::vector<GObject*>& objects_)
 
 bool GBVHAccelStruct::intersect(const Ray& ray, RayIntPt& intPoint) const
 {
+	// check if the BVH Bounding Box is intersected
 	if (!octree->root.bbox.intersect(ray))
 		return false;
 	double tMin = std::numeric_limits<double>::infinity();
 	std::priority_queue<Octree::QueueElement> queue;
 	queue.push(Octree::QueueElement(&octree->root, 0));
 	RayIntPt isectDataCurrent;
+	/**
+	 * explaining following code is quite difficult without a picture, like the figure 7.
+	 * at this website(http://www.scratchapixel.com/old/lessons/3d-basic-lessons/lesson-12-introduction-to-acceleration-structures/bounding-volume-hierarchy-bvh-part-2/)
+	 * the website shows also, that most of the code is from there, since I have not seen the point, to fully rewrite it...
+	 * there may be a more efficient solution than the priority queue, but since this is not a "speed" hack project,
+	 * I left the readable solution of scratchapixel...
+	 *
+	 * Although I try to explain the code a little bit
+	 */
+	/**
+	 * while there is an intersection with a bounding box, that is 'nearer' than the last intersection point(if any)
+	 * do the following(inside the loop)
+	 */
 	while (!queue.empty() && queue.top().t < tMin)
 	{
+		// take the nearest BoundingVolume, that was intersected
 		const OctreeNode *node = queue.top().node;
 		queue.pop();
+		// if it is a leaf check if the intersection Point( if any) is nearer than the current(if any)
+		// and update the resulting intersection point
 		if (node->isLeaf)
 		{
 			if (node->data->intersect(ray, isectDataCurrent))
@@ -172,6 +203,7 @@ bool GBVHAccelStruct::intersect(const Ray& ray, RayIntPt& intPoint) const
 				}
 			}
 		}
+		// if it was no leaf, check all the sub-bounding boxes, which can be a maximum of 8 ones(because an Octree was used to build up the Hierarchy)
 		else
 		{
 			for (uint8_t i = 0; i < 8; ++i)
@@ -179,27 +211,16 @@ bool GBVHAccelStruct::intersect(const Ray& ray, RayIntPt& intPoint) const
 				if (node->child[i] != NULL)
 				{
 					double tChild;
+					// if it was hit put it to the priority queue
 					if (node->child[i]->bbox.intersect(ray,tChild))
 						queue.push(Octree::QueueElement(node->child[i], tChild));
 				}
 			}
 		}
 	}
+	// if no Object was hit, the distance remains infinity, so the intersect functin will return false
 	if(tMin < std::numeric_limits<double>::infinity())
 		return true;
 	else
 		return false;
-}
-
-GBoundingBox GBVHAccelStruct::calculateBoundingBox(const std::vector<GBoundingBox>& bboxes)
-{
-	if (!bboxes.empty())
-	{
-		GBoundingBox bbox = bboxes[0];
-		for (size_t i = 1; i < bboxes.size(); i++)
-			bbox = bbox + bboxes[i];
-		return bbox;
-	}
-	else
-		return GBoundingBox(Vec3(), Vec3()); // should not happen... hopefully
 }
