@@ -29,6 +29,10 @@ Vec3 GTexturedTriangle::getCentroid() const
 
 bool GTexturedTriangle::intersect(const Ray& ray, RayIntPt& intPoint) const
 {
+	/**
+	 * the intersection code was mainly looked up at scratchapixel,
+	 * it is just the moeller trumbore algorithm
+	 */
 	Vec3 edge1 = v1 - v0;
 	Vec3 edge2 = v2 - v0;
 	Vec3 dir = ray.direction;
