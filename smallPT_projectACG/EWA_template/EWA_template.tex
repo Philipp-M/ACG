@@ -69,7 +69,7 @@ Innsbruck, \today
 %----------------------------------------------------------------------------------------
 
 \section{Introduction}
-For this project we had to implement certain advanced features based on smallPT. Every student in one group had to implement at least one main feature. In our group we chose Motion Blur (by Cem Okulmus), Depth of Field (by Stefan Spiss) and Specular/Texture/Normal Mapping (by Philipp Mildenberger). Additionally in our project extra features were implemented, such as: Acceleration Structures (by Philipp Mildenberger), simple Camera Control (by Stefan Spiss).
+For this project we had to implement certain advanced features based on smallPT. Every student in one group had to implement at least one main feature. In our group we chose Motion Blur (by Cem Okulmus), Depth of Field (by Stefan Spiss) and Specular/Texture/Normal Mapping (by Philipp Mildenberger). Additionally in our project extra features were implemented, such as: Acceleration Structures (by Philipp Mildenberger), Beer-Lambert law (by Philipp Mildenberger) and simple Camera Control (by Stefan Spiss).
 
 \section{Technical Overview}
 SmallPT was extended by .obj import and complex geometry now supporting triangle meshes. Additionally a bounding volume hierarchy (BVH) is used to speed up the calculation of complex scenes. Texture-/normal- and specular-mapping is implemented to generate more realistic images. Furthermore to simulate a camera, Depth of Field provides correct blurring of objects that are not in focus. It's now also easy possible to move the camera around, change it's focal distance, it's field of view and it's aperture size. To capture movements in still pictures the effect of Motion Blur is approached by simulating the aperture shutter speed.
@@ -109,18 +109,29 @@ Algorithms for rendering depth of field effects in computer graphics, \cite{bars
 
 \subsection{Specular/Texture/Normal Mapping}
 UV mapping from obj-files is supported, including import of color, specular and normal data.
-For specular mapping a new material had to be created: Glossy surface. It's used to supply specular data with a texture. The normal mapping is changing the intersection normal for depending on the texture for the surface. 
-For every intersection we return a special intersection structure, additionally containing the needed data for specular/normal/texture mapping. 
+For specular mapping a new material had to be created: Glossy surface. It's used to supply specular data with a texture. 
+
+The glossy surface is implemented as following: if it is fully glossy it acts like a mirror. the more roughness will be added(with a factor, that the specular map describes), the more diffuse it will be. 
+
+Normal mapping is changing the intersection normal relative to the object normal(which is in this case a triangle). The normal map is encoded in the three components, that describe a 3 dimensional Vector($R$ is $X$, $G$ is $Y$ and $B$ is $Z$).
+With this information the new Normal can be easily computed with a change of the base. The new base are two tangents, which are aligned to the axis of the normal map and the objects normal.
+A problem occurs if the glossy or diffuse reflection points beneath the surface, this will be handled with a simple reflection around the calculated normal.
+
+For every intersection an appropriate data structure is provided, containting the color, emission, surface roughness factor, normal, calculated normal and reflection type, this information is needed for the radiance function of smallPT.
 
 \subsection{Acceleration Structures}
-To accelerate the intersection of complex triangle-meshes in smallPT, we implemented different acceleration structures. 
-The first is just simple approach: A bounding box is put around every object, and the intersection function first checks every bounding box and only continues if one was hit.
+To accelerate the intersection of complex triangle-meshes in smallPT different acceleration structures were added.
+The first is just simple naive approach: A bounding box is put around every object, and the intersection function first checks every bounding box and only continues if one was hit.
 The second is a  Bounding Volume Hierarchy (BVH). An octree is used to build up the hierarchy recursively: Every object is inserted using its centroid. From these objects, using bottom-up traversal, the BVH is constructed.
 \\
 \\
 For the implementation of Acceleration Structures mainly the website scratchapixel \cite{link:scratch}
 was used.
-
+\subsection{Beer-Lambert law}
+For realistic transparent color absorbation, a simple but effective feature was added. The Beer-Lambert Law \cite{link:beerlambert} . the light is absorbed as following: $T$ is the light, that remains, $ℓ$ describes the path length inside the material and $\Sigma$ describes the attenuation coefficient of the material:
+\begin{center}
+T = e^{-ℓ \Sigma}
+\end{center}
 \subsection{Camera Control}
 In smallPT the camera settings are hard-coded (fixed position, direction, field of view). The project solution uses a additional camera class which implements all camera aspects like position, direction, field of view and focal distance. Now it is very simple to render a scene from different perspectives with different camera settings.
 
