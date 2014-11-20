@@ -88,7 +88,7 @@ This simulates an object that's moving with no acceleration.
 In standard smallPT the pinhole camera model is used. So everything in the scene is in focus. Normal cameras always have a Depth of Field, which means that only objects in a specific distance are in focus. Everything else is blurred depending on the distance to the focal point. In the project implementation the Thin-Lens model is used. For this the ray direction is changed. Rays are shot not only from one camera position, but distributed over the aperture circle. As target for the rays the focal plane is used instead of the image plane. The focal plane is perpendicular to the camera and at the position of the focal point. See Figure~\ref{fig:1}
 \\
 \\
-Furthermore for general information about Depth of Field following sources were used:
+For general information about Depth of Field following sources were used:
 \begin{itemize}
 \item
 A realistic camera model for computer graphics, \cite{kolb1995realistic}
@@ -130,18 +130,17 @@ was used.
 \subsection{Beer-Lambert law}
 For realistic transparent color absorbation, a simple but effective feature was added. The Beer-Lambert Law \cite{link:beerlambert} . the light is absorbed as following: $T$ is the light, that remains, $ℓ$ describes the path length inside the material and $\Sigma$ describes the attenuation coefficient of the material:
 \begin{center}
-T = e^{-ℓ \Sigma}
+$T = e^{-ℓ \Sigma}$
 \end{center}
 \subsection{Camera Control}
-In smallPT the camera settings are hard-coded (fixed position, direction, field of view). The project solution uses a additional camera class which implements all camera aspects like position, direction, field of view and focal distance. Now it is very simple to render a scene from different perspectives with different camera settings.
+In smallPT the camera settings are hard-coded (fixed position, direction, field of view). The project solution uses a additional camera class which implements all camera aspects like position, direction, field of view and focal distance. That make it very simple to render a scene from different perspectives with different camera settings.
 
 \section{Results}
 The following images are rendered with our program showing different features of it.
 
-
 \begin{itemize}
 \item
-Motion Blur:\\
+Motion Blur:
 \begin{figure}[H]
 \begin{center}
 \includegraphics[scale=0.4]{images/motionBlur560spp}
@@ -149,9 +148,9 @@ Motion Blur:\\
 \label{fig:2}
 \end{center}
 \end{figure}
-
+\newpage
 \item
-Depth of Field and changed camera settings:\\
+Depth of Field and changed camera settings:
 \begin{figure}[H]
 \begin{center}
 \begin{minipage}[b]{7.5 cm}
@@ -162,12 +161,12 @@ Depth of Field and changed camera settings:\\
 \includegraphics[scale=0.4]{images/DepthOfFieldBack1000spp}
 \label{fig:4}
 \end{minipage}
-\caption[Picture showing Depth of Field]{Picture rendered just with Depth of Field}
+\caption[Pictures showing Depth of Field]{Pictures rendered just with Depth of Field}
 \end{center}
 \end{figure}
 
 \item
-Specular/Texture/Normal Mapping:\\
+Specular/Texture/Normal Mapping:
 \begin{figure}[H]
 \begin{center}
 \includegraphics[scale=0.2]{images/bumbmapped1000spp}
@@ -175,7 +174,9 @@ Specular/Texture/Normal Mapping:\\
 \label{fig:5}
 \end{center}
 \end{figure}
-
+\newpage
+\item
+Changed Camera Position:
 \begin{figure}[H]
 \begin{center}
 \includegraphics[scale=0.4]{images/changedCameraPosition1000spp}
@@ -185,7 +186,7 @@ Specular/Texture/Normal Mapping:\\
 \end{figure}
 
 \item
-Putting all together:\\
+Putting all together:
 \begin{figure}[H]
 \begin{center}
 \includegraphics[scale=0.4]{images/deformedstone2100spp}
@@ -199,7 +200,7 @@ Putting all together:\\
 %----------------------------------------------------------------------------------------
 % Bibliography
 %----------------------------------------------------------------------------------------
-
+\newpage
 \bibliographystyle{plain}
 \bibliography{EWA_literature}
 

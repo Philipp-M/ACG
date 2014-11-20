@@ -115,7 +115,10 @@ int SDLViewer::renderThreadF(void* data) {
 	std::cout << "Start constructing scenes" << std::endl;
 
 	std::default_random_engine generator;
-	std::uniform_int_distribution<int> distribution(0, 0);
+	std::uniform_int_distribution<int> distribution(0, viewer->timeSteps -1);
+
+
+	// MotionBlur: Here we assign a motion to each object 
 
 	Motion motion = Motion(sceneObj, 1);
 //	Motion motion = Motion(sceneObj, viewer->timeSteps);
@@ -125,6 +128,7 @@ int SDLViewer::renderThreadF(void* data) {
 //	if( !motion.assign_motion(0, Vec3(-20.0, .0, .0)) )
 //		std::wcerr << "couldn't move object";
 	
+	//MotionBlur: Get the final scenes representing the motion
 	scenes = motion.get_scenes();
 
 	std::cerr << "time needed for building the scene: " << (double)(SDL_GetTicks() - viewer->timeElapsed) / 1000.0 << " s\n\n"; // print progress
@@ -147,6 +151,7 @@ int SDLViewer::renderThreadF(void* data) {
 							double r1 = 2 * erand48(Xi), dx = r1 < 1 ? sqrt(r1) - 1 : 1 - sqrt(2 - r1);
 							double r2 = 2 * erand48(Xi), dy = r2 < 1 ? sqrt(r2) - 1 : 1 - sqrt(2 - r2);
 
+							//MotionBlur: Randomly pick a time scene
 							int p = distribution(generator);
 							r = r + SmallPT::radiance(camera.generateRay(x, y, sx, sy, dx, dy, Xi), scenes[p], 0, Xi) * (1. / samps);
 						} // Camera rays are pushed ^^^^^ forward to start in interior

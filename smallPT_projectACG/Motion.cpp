@@ -17,6 +17,7 @@ bool Motion::assign_motion(uint32_t id, Vec3 goal) {			// translation to a goal
 		assigned_motion[id] = MotionType(Translation, goal);
 	return true;
 }
+
 bool Motion::assign_motion(uint32_t id, float rad, Dir d) {	//rotation
 	if( scene.size() <= id )
 		return false;
@@ -37,6 +38,7 @@ std::vector<GScene*> Motion::get_scenes() {
 
 	std::vector<GScene*> scenes;
 
+	//for all timesteps: go over all motions and increase them according to the motion type
 	for( int j = 0; j < timeSteps; ++j) {
 		//make fresh copy
 		std::vector<GPolygonObject<GTexturedTriangle>*> sceneObjT;
@@ -84,6 +86,7 @@ std::vector<GScene*> Motion::get_scenes() {
 		scenes.push_back(scene);
 	}
 	
+	//return pointer to final scene composition
 	return scenes;
 
 }
