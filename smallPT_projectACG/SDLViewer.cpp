@@ -113,6 +113,9 @@ int SDLViewer::renderThreadF(void* data) {
 
 	//TODO: Create multiple scenes in time
 	std::cout << "Start constructing scenes" << std::endl;
+	GScene scene;
+	for(GPolygonObject<GTexturedTriangle>* obj : sceneObj)
+		scene.addItem(obj);
 
 	std::default_random_engine generator;
 	std::uniform_int_distribution<int> distribution(0, viewer->timeSteps -1);
@@ -120,7 +123,7 @@ int SDLViewer::renderThreadF(void* data) {
 
 	// MotionBlur: Here we assign a motion to each object 
 
-	Motion motion = Motion(sceneObj, viewer->timeSteps);
+	//Motion motion = Motion(sceneObj, viewer->timeSteps);
 // uncomment for the motions depending on the order of the objects, loaded in the OBJ Loader
 //	if(!(motion.assign_motion(7, Vec3(0.0, 20.0, 0.0)) ))
 //		std::cerr << "couldn't move object";
@@ -128,7 +131,7 @@ int SDLViewer::renderThreadF(void* data) {
 //		std::wcerr << "couldn't move object";
 	
 	//MotionBlur: Get the final scenes representing the motion
-	scenes = motion.get_scenes();
+	//scenes = motion.get_scenes();
 
 	std::cerr << "time needed for building the scene: " << (double)(SDL_GetTicks() - viewer->timeElapsed) / 1000.0 << " s\n\n"; // print progress
 	viewer->timeElapsed = SDL_GetTicks();
@@ -152,7 +155,7 @@ int SDLViewer::renderThreadF(void* data) {
 
 							//MotionBlur: Randomly pick a time scene
 							int p = distribution(generator);
-							r = r + SmallPT::radiance(camera.generateRay(x, y, sx, sy, dx, dy, Xi), scenes[p], 0, Xi) * (1. / samps);
+							r = r + SmallPT::radiance(camera.generateRay(x, y, sx, sy, dx, dy, Xi), &scene, 0, Xi) * (1. / samps);
 						} // Camera rays are pushed ^^^^^ forward to start in interior
 						c[i] = c[i] + Vec3(r.x, r.y, r.z) * .25;
 					}
