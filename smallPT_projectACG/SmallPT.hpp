@@ -126,19 +126,10 @@ public:
 						intPoint.color = Vec3(exp(-intPoint.distance * densityFactor * (1 - fn.x)), exp(-intPoint.distance * densityFactor * (1 - fn.y)),
 								exp(-intPoint.distance * densityFactor * (1 - fn.z)));
 					}
-//					if (depth > 2)
-//					{
-						if ((erand48(Xi) < P))
-							r.setDirection(r.direction - intPoint.calcNormal * 2 * intPoint.calcNormal.dot(r.direction)), throughput *= intPoint.color * RP;
-						else
-							r.setDirection(tdir), throughput *= intPoint.color * TP;
-//					}
-//					else
-//					{
-//						throughput *= radiance(Ray(intPoint.position, r.direction - intPoint.normal * 2 * intPoint.normal.dot(ray.direction)), scene, depth, Xi) *
-//						Re + radiance(Ray(intPoint.position, tdir), scene, depth, Xi) * Tr;
-//						break;
-//					}
+					if ((erand48(Xi) < P))
+						r.setDirection(r.direction - intPoint.calcNormal * 2 * intPoint.calcNormal.dot(r.direction)), throughput *= intPoint.color * RP;
+					else
+						r.setDirection(tdir), throughput *= intPoint.color * TP;
 				}
 			}
 			if (++depth > 4)
