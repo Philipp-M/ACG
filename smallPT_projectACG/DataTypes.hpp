@@ -39,6 +39,13 @@ struct Vec3
 	{
 		return Vec3(x * b.x, y * b.y, z * b.z);
 	}
+	Vec3& operator*=(const Vec3& right)
+	{
+		this->x *= right.x;
+		this->y *= right.y;
+		this->z *= right.z;
+		return *this;
+	}
 	Vec3& norm()
 	{
 		return *this = *this * (1 / sqrt(x * x + y * y + z * z));
@@ -108,6 +115,13 @@ struct Ray
 		invdir.y = 1.0/direction_.y;
 		invdir.z = 1.0/direction_.z;
 	}
+	void setDirection(const Vec3& dir)
+	{
+		direction = dir;
+		invdir.x = 1.0/dir.x;
+		invdir.y = 1.0/dir.y;
+		invdir.z = 1.0/dir.z;
+	}
 	friend std::ostream& operator<<(std::ostream &out, const Ray& r)
 	{
 		return out << "(origin: " << r.origin << ", direction: " << r.direction << ")";
@@ -116,7 +130,7 @@ struct Ray
 // ENUM OF MATERIAL TYPES USED IN radiance FUNCTION
 enum Refl_t
 {
-	DIFF, SPEC, REFR, GLOSS
+	DIFF, SPEC, REFR, GLOSS, EMIS
 };
 
 // Bounding Box Primitive necessary for acceleration structures

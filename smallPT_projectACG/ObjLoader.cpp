@@ -86,7 +86,7 @@ std::vector<GPolygonObject<GTexturedTriangle>*> ObjLoader::loadOfFile(const char
 				if(mat.dissolve < 1)
 					faces.push_back(GTexturedTriangle(v0, v1, v2, u, v, w, colorMap, normalMap, specularMap, Vec3(), Vec3(mat.diffuse[0], mat.diffuse[1], mat.diffuse[2]) * 0.999, REFR));
 				else if(mat.diffuse[0] + mat.diffuse[1] + mat.diffuse[2] > 0.01 && mat.specular[0] + mat.specular[1] + mat.specular[2] > 1)
-					faces.push_back(GTexturedTriangle(v0, v1, v2, u, v, w, colorMap, normalMap, specularMap, Vec3(mat.diffuse[0], mat.diffuse[1], mat.diffuse[2]), Vec3(), DIFF));
+					faces.push_back(GTexturedTriangle(v0, v1, v2, u, v, w, colorMap, normalMap, specularMap, Vec3(mat.diffuse[0], mat.diffuse[1], mat.diffuse[2]), Vec3(), EMIS));
 				else if(mat.specular[0] + mat.specular[1] + mat.specular[2] > 1)
 					faces.push_back(GTexturedTriangle(v0, v1, v2, u, v, w, colorMap, normalMap, specularMap, Vec3(), Vec3(mat.specular[0], mat.specular[1], mat.specular[2]) * 0.999, SPEC));
 				else
