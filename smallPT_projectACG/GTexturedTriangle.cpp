@@ -3,25 +3,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-Vec3 GTexturedTriangle::getNorm() const
-{
-	return normal;
-}
-
-Vec3 GTexturedTriangle::getColor() const
-{
-	return color;
-}
-
-Vec3 GTexturedTriangle::getEmission() const
-{
-	return emission;
-}
-
-Refl_t GTexturedTriangle::getReflectionType() const
-{
-	return refl;
-}
 Vec3 GTexturedTriangle::getCentroid() const
 {
 	return (v0 + v1 + v2)*0.33333333333333333333;
@@ -55,6 +36,14 @@ bool GTexturedTriangle::intersect(const Ray& ray, RayIntPt& intPoint) const
 
 	if (t <= 0.00000001)
 		return false;
+
+	const Vec3& emission = mat->emission;
+	const Vec3& color = mat->color;
+	const Refl_t& refl = mat->refl;
+	const Texture* colorMap = mat->colorMap;
+	const Texture* normalMap = mat->normalMap;
+	const Texture* specularMap = mat->specularMap;
+
 	intPoint.distance = t;
 	intPoint.normal = normal;
 	intPoint.position = ray.origin + ray.direction * t;

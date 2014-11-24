@@ -4,15 +4,14 @@
 #include "DataTypes.hpp"
 #include "GObject.hpp"
 #include "TextureManager.hpp"
+#include "MaterialManager.hpp"
 
 class GTexturedTriangle : public GObject
 {
 public:
 
-	GTexturedTriangle(Vec3 v0_, Vec3 v1_, Vec3 v2_, Vec2 u, Vec2 v, Vec2 w,
-			const Texture* colorMap, const Texture* normalMap, const Texture* specularMap, Vec3 emission_, Vec3 color_, Refl_t refl_) :
-			v0(v0_), v1(v1_), v2(v2_), ut(u), vt(v), wt(w), emission(emission_), color(color_), refl(refl_),
-			colorMap(colorMap),normalMap(normalMap),specularMap(specularMap)
+	GTexturedTriangle(Vec3 v0_, Vec3 v1_, Vec3 v2_, Vec2 u, Vec2 v, Vec2 w, const Material* mat) :
+			v0(v0_), v1(v1_), v2(v2_), ut(u), vt(v), wt(w), mat(mat)
 	{
 		updateGeometry();
 	}
@@ -68,13 +67,8 @@ private:
 	Vec2 ut;
 	Vec2 vt;
 	Vec2 wt;
-	Vec3 emission;
-	Vec3 color;
 	Vec3 normal;
-	Refl_t refl;
-	const Texture* colorMap;
-	const Texture* normalMap;
-	const Texture* specularMap;
+	const Material* mat;
 };
 
 inline GTexturedTriangle::GTexturedTriangle(const GTexturedTriangle& other)
@@ -86,11 +80,6 @@ inline GTexturedTriangle::GTexturedTriangle(const GTexturedTriangle& other)
 	vt = other.vt;
 	wt = other.wt;
 	normal = other.normal;
-	color = other.color;
-	emission = other.emission;
-	refl = other.refl;
-	colorMap = other.colorMap;
-	normalMap = other.normalMap;
-	specularMap = other.specularMap;
+	mat = other.mat;
 }
 #endif /* GTEXTUREDTRIANGLE_HPP_ */

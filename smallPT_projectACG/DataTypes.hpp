@@ -19,6 +19,18 @@ struct Vec3
 		y = y_;
 		z = z_;
 	}
+	Vec3(const double vec[3])
+	{
+		x = vec[0];
+		y = vec[1];
+		z = vec[2];
+	}
+	Vec3(const float vec[3])
+	{
+		x = vec[0];
+		y = vec[1];
+		z = vec[2];
+	}
 	Vec3 operator+(const Vec3 &b) const
 	{
 		return Vec3(x + b.x, y + b.y, z + b.z);
