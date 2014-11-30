@@ -117,8 +117,8 @@ int SDLViewer::renderThreadF(void* data) {
 	for(GPolygonObject<GTexturedTriangle>* obj : sceneObj)
 		scene.addItem(obj);
 
-	std::default_random_engine generator;
-	std::uniform_int_distribution<int> distribution(0, viewer->timeSteps -1);
+//	std::default_random_engine generator;
+//	std::uniform_int_distribution<int> distribution(0, viewer->timeSteps -1);
 
 
 	// MotionBlur: Here we assign a motion to each object 
@@ -154,7 +154,7 @@ int SDLViewer::renderThreadF(void* data) {
 							double r2 = 2 * erand48(Xi), dy = r2 < 1 ? sqrt(r2) - 1 : 1 - sqrt(2 - r2);
 
 							//MotionBlur: Randomly pick a time scene
-							int p = distribution(generator);
+							//int p = distribution(generator);
 							r = r + SmallPT::radiance(camera.generateRay(x, y, sx, sy, dx, dy, Xi), &scene, 0, Xi) * (1. / samps);
 						} // Camera rays are pushed ^^^^^ forward to start in interior
 						c[i] = c[i] + Vec3(r.x, r.y, r.z) * .25;

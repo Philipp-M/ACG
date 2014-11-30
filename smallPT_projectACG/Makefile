@@ -1,5 +1,5 @@
 CXX=g++
-CXXFLAGS=-c -Wall -O3 -fopenmp -std=c++11
+CXXFLAGS=-c -Wall -O3 -fopenmp -std=c++11 -DGLM_FORCE_RADIANS
 #-L./SDL2/lib -Wall,-rpath,./SDL2/lib -lSDL2 -lpthread -Wall,--no-undefined -lm -ldl -lpthread -lrt
 LDFLAGS= -lpthread -lSDL2 -fopenmp
 #INCLUDES= -I./SDL2/include
