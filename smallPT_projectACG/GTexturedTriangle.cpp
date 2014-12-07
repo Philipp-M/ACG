@@ -49,6 +49,7 @@ bool GTexturedTriangle::intersect(const Ray& ray, RayIntPt& intPoint) const
 	intPoint.position = ray.origin + ray.direction * t;
 	intPoint.emission = emission;
 	intPoint.reflType = refl;
+	intPoint.glossyRoughness = mat->glossyFact;
 	intPoint.color = color;
 	/**
 	 * up to here it was mainly the normal triangle intersect method
@@ -69,8 +70,12 @@ bool GTexturedTriangle::intersect(const Ray& ray, RayIntPt& intPoint) const
 					+ ((int) (texCoordinate.x * colorMap->width - 0.00001))) * 4;
 			const uint8_t* pixel = &colorMap->pixels[pixelIndex];
 			// assign the color to the intersection structure, multiplied with the objects color
-			intPoint.color = color.mult(
-					Vec3(((double) pixel[0]) * 1.0 / 255.0 * 0.999, ((double) pixel[1]) * 1.0 / 255.0 * 0.999, ((double) pixel[2]) * 1.0 / 255.0 * 0.999));
+			if (refl == EMIS)
+				intPoint.emission = emission.mult(
+						Vec3(((double) pixel[0]) * 1.0 / 255.0 * 0.999, ((double) pixel[1]) * 1.0 / 255.0 * 0.999, ((double) pixel[2]) * 1.0 / 255.0 * 0.999));
+			else
+				intPoint.color = color.mult(
+						Vec3(((double) pixel[0]) * 1.0 / 255.0 * 0.999, ((double) pixel[1]) * 1.0 / 255.0 * 0.999, ((double) pixel[2]) * 1.0 / 255.0 * 0.999));
 		}
 		if (normalMap != NULL)
 		{
