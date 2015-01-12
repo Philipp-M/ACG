@@ -15,7 +15,7 @@ string Deterministic_LSystem::apply(string begin){
 
 	for (auto c : begin){
 		 map<char, string>::iterator it = rules.find(c);
-		if (it != rules.end)			// if rule found, apply string
+		if (it != rules.end())			// if rule found, apply string
 			new_string += (it->second);
 		else							// if not, keep the original character
 			new_string += c;
