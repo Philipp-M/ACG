@@ -1,8 +1,8 @@
 #include <math.h>
-#include "3DTurtle.hpp"
 #include "Eigen/Dense"
 #include "Eigen/Core"
-
+#include "Eigen/Geometry"
+#include "3DTurtle.hpp"
 
 using namespace std;
 
@@ -10,7 +10,8 @@ using namespace std;
 // draw a 3D line into mesh, the width is defined by line-width, the length by parameter s. 
 void _3DTurtle::move(float s){
 	
-	Vector3d side = (pos.n*pos.dir).colwise().normalize();
+	Vector3d side = (pos.n*pos.dir);
+	side.normalize();
 
 	//get vectors
 
@@ -89,13 +90,52 @@ void _3DTurtle::move(float s){
 
 }
 
+// rotation along the dir vector, only change to normal
+void _3DTurtle::roll(float a){
+	AngleAxis<float> aa(a, pos.dir);
+	pos.n = aa * pos.n;
+}
+
+//rotation along the side vector
+void _3DTurtle::pitch(float a){
+	Vector3d side = (pos.n*pos.dir);
+	side.normalize();
+	AngleAxis<float> aa(a, side);
+
+	pos.n = aa * pos.n;
+	pos.dir = aa* pos.dir;
+}
+
+//rotation along the normal
+void _3DTurtle::yaw(float a){
+	AngleAxis<float> aa(a, pos.n);
+	pos.dir = aa * pos.dir;
+}
+
+void _3DTurtle::reduce_line_width(){
+	line_width = max(0.0f, line_width - 0.1f);
+}
+
+void _3DTurtle::increase_color_index(){
+	line_width = min(1.0f, line_width + 0.1f);
+}
+
+
+void _3DTurtle::top_and_pop(){
+	if (!state_stack.empty())
+		this->pos = state_stack.top();
+	state_stack.pop();
+}
+
+void _3DTurtle::push(){
+	state_stack.push(this->pos);
+}
+
 
 _3DTurtle::_3DTurtle(){
-	{
-		pos.pos = Vector3d(0.0, 0.0, 0.0);	//starting at origin
-		pos.dir = Vector3d(0.0, 1.0, 0.0);	//point up initially
-		pos.n   = Vector3d(0.0, 0.0, 1.0);
-		line_width = 1.0f;
-		color_index = 0;
-	}
+	pos.pos = Vector3d(0.0, 0.0, 0.0);	//starting at origin
+	pos.dir = Vector3d(0.0, 1.0, 0.0);	//point up initially
+	pos.n   = Vector3d(0.0, 0.0, 1.0);
+	line_width = 1.0f;
+	color_index = 0;	
 }
