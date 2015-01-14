@@ -1,6 +1,11 @@
 #include <string>
 #include <set>
 #include <stack>
+
+#ifdef WIN32
+#define _USE_MATH_DEFINES
+#endif
+
 #include <OpenMesh/Core/Mesh/PolyMesh_ArrayKernelT.hh>
 #include "Eigen/Dense"
 
@@ -17,27 +22,26 @@ typedef struct{
 } position;
 
 
-//TODO: Add functionaliy for direct polygon draw mode: 
-//			o Some data structure to store the verteces
-//			o Store stuff into it, then once polygon-mode is turned of, put everything into face
-
-
 class _3DTurtle {
-private:
+
 	set<Vector3d> colors;
 	int color_index;
 	float line_width;
 	position pos;		
 	stack<position> state_stack;
 	geometry mesh;
-	
+	bool mode;
+	vector<geometry::VertexHandle> polygon_vertices;
+public:
 	//move foward
 	void move(float s);
+	void move_normal(float s);
+	void move_polygon(float s);
 
 	//change direction
-	void roll(float a);
-	void pitch(float a);
-	void yaw(float a);
+	void roll(double a);
+	void pitch(double a);
+	void yaw(double a);
 
 	//change drawing attributes
 	void reduce_line_width();
@@ -47,7 +51,14 @@ private:
 	void top_and_pop();
 	void push();
 
-public:
+	//switch modes
+	void polygon_mode();
+	void normal_mode();
+
+	//getter
+	geometry get_mesh();
+
+
 	_3DTurtle();
 
 

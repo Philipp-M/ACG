@@ -6,41 +6,49 @@
 
 using namespace std;
 
+void _3DTurtle::move(float s){
+	if (mode)		//polygon_mode activated
+		move_polygon(s);
+	else			//normal mode activated
+		move_normal(s);
+
+	//finally, change position
+	pos.pos = pos.pos + pos.dir * s;
+}
 
 // draw a 3D line into mesh, the width is defined by line-width, the length by parameter s. 
-void _3DTurtle::move(float s){
-	
-	Vector3d side = (pos.n*pos.dir);
+void _3DTurtle::move_normal(float s){
+	Vector3d side = pos.dir.cross(pos.n);
 	side.normalize();
 
 	//get vectors
 
 	Vector3d tmp = pos.pos + pos.n*(line_width/2);
 	geometry::VertexHandle p1 = mesh.add_vertex(geometry::Point(tmp(0),tmp(1),tmp(2)));		// hexagon top
-	tmp = pos.pos + (side * ((2 / 3)*line_width) + ((1 / 6)*pos.n));
+	tmp = pos.pos + (side * ((1. / 3.)*line_width) + ((1. / 6.)*pos.n));
 	geometry::VertexHandle p2 = mesh.add_vertex(geometry::Point(tmp(0), tmp(1), tmp(2)));	// hexagon top-left
-	tmp = pos.pos + (side * ((2 / 3)*line_width) - ((1 / 6)*pos.n));
+	tmp = pos.pos + (side * ((1. / 3.)*line_width) - ((1. / 6.)*pos.n));
 	geometry::VertexHandle p3 = mesh.add_vertex(geometry::Point(tmp(0), tmp(1), tmp(2)));	// hexagon bottom-left
-	Vector3d tmp = pos.pos - pos.n*(line_width / 2);
+	tmp = pos.pos - pos.n*(line_width / 2);
 	geometry::VertexHandle p4 = mesh.add_vertex(geometry::Point(tmp(0), tmp(1), tmp(2)));	// hexagon bottom
-	tmp = pos.pos - (side * ((2 / 3)*line_width) - ((1 / 6)*pos.n));
+	tmp = pos.pos - (side * ((1. / 3.)*line_width) + ((1. / 6.)*pos.n));
 	geometry::VertexHandle p5 = mesh.add_vertex(geometry::Point(tmp(0), tmp(1), tmp(2)));	// hexagon bottom-right
-	tmp = pos.pos - (side * ((2 / 3)*line_width) + ((1 / 6)*pos.n));
+	tmp = pos.pos - (side * ((1. / 3.)*line_width) - ((1. / 6.)*pos.n));
 	geometry::VertexHandle p6 = mesh.add_vertex(geometry::Point(tmp(0), tmp(1), tmp(2)));	// hexagon top-right
 
 
 	tmp = pos.pos + pos.n*(line_width / 2) + pos.dir*s;
 	geometry::VertexHandle t1 = mesh.add_vertex(geometry::Point(tmp(0), tmp(1), tmp(2)));	// hexagon top
-	tmp = pos.pos + (side * ((2 / 3)*line_width) + ((1 / 6)*pos.n)) + pos.dir*s;
+	tmp = pos.pos + (side * ((1. / 3.)*line_width) + ((1. / 6.)*pos.n)) + pos.dir*s;
 	geometry::VertexHandle t2 = mesh.add_vertex(geometry::Point(tmp(0), tmp(1), tmp(2)));	// hexagon top-left
-	tmp = pos.pos + (side * ((2 / 3)*line_width) - ((1 / 6)*pos.n)) + pos.dir*s;
+	tmp = pos.pos + (side * ((1. / 3.)*line_width) - ((1. / 6.)*pos.n)) + pos.dir*s;
 	geometry::VertexHandle t3 = mesh.add_vertex(geometry::Point(tmp(0), tmp(1), tmp(2)));	// hexagon bottom-left
-	Vector3d tmp = pos.pos - pos.n*(line_width / 2) + pos.dir*s;
+	tmp = pos.pos - pos.n*(line_width / 2) + pos.dir*s;
 	geometry::VertexHandle t4 = mesh.add_vertex(geometry::Point(tmp(0), tmp(1), tmp(2)));	// hexagon bottom
-	tmp = pos.pos - (side * ((2 / 3)*line_width) - ((1 / 6)*pos.n)) + pos.dir*s;
-	geometry::VertexHandle t5 = mesh.add_vertex(geometry::Point(tmp(0), tmp(1), tmp(2)));	// hexagon bottom-right
-	tmp = pos.pos - (side * ((2 / 3)*line_width) + ((1 / 6)*pos.n)) + pos.dir*s;
-	geometry::VertexHandle t6 = mesh.add_vertex(geometry::Point(tmp(0), tmp(1), tmp(2)));	// hexagon top-right
+	tmp = pos.pos - (side * ((1. / 3.)*line_width) + ((1. / 6.)*pos.n)) + pos.dir*s;
+	geometry::VertexHandle t5 = mesh.add_vertex(geometry::Point(tmp(0), tmp(1), tmp(2)));	// hexagon top-right
+	tmp = pos.pos - (side * ((1. / 3.)*line_width) - ((1. / 6.)*pos.n)) + pos.dir*s;
+	geometry::VertexHandle t6 = mesh.add_vertex(geometry::Point(tmp(0), tmp(1), tmp(2)));	// hexagon bottom-right
 
 	//add faces to geometry
 
@@ -87,28 +95,43 @@ void _3DTurtle::move(float s){
 	face_vhandles.push_back(t1);
 	face_vhandles.push_back(t2);
 	mesh.add_face(face_vhandles);
+}
+
+
+void _3DTurtle::move_polygon(float s){
+	//calculate new vertex point
+	pos.dir.normalize();
+	Vector3d tmp = pos.pos + pos.dir * s;
+	geometry::VertexHandle p = mesh.add_vertex(geometry::Point(tmp(0), tmp(1), tmp(2)));
+
+	//put new vertex into vector
+	polygon_vertices.push_back(p);
 
 }
 
 // rotation along the dir vector, only change to normal
-void _3DTurtle::roll(float a){
-	AngleAxis<float> aa(a, pos.dir);
+void _3DTurtle::roll(double a){
+	double rad = a* (M_PI / 180.);
+	AngleAxis<double> aa(rad, pos.dir);
 	pos.n = aa * pos.n;
 }
 
 //rotation along the side vector
-void _3DTurtle::pitch(float a){
-	Vector3d side = (pos.n*pos.dir);
+void _3DTurtle::pitch(double a){
+
+	double rad = a* (M_PI / 180.);
+	Vector3d side = pos.dir.cross(pos.n);
 	side.normalize();
-	AngleAxis<float> aa(a, side);
+	AngleAxis<double> aa((double)rad, side);
 
 	pos.n = aa * pos.n;
 	pos.dir = aa* pos.dir;
 }
 
 //rotation along the normal
-void _3DTurtle::yaw(float a){
-	AngleAxis<float> aa(a, pos.n);
+void _3DTurtle::yaw(double a){
+	double rad = a* (M_PI / 180.);
+	AngleAxis<double> aa(rad, pos.n);
 	pos.dir = aa * pos.dir;
 }
 
@@ -120,7 +143,6 @@ void _3DTurtle::increase_color_index(){
 	line_width = min(1.0f, line_width + 0.1f);
 }
 
-
 void _3DTurtle::top_and_pop(){
 	if (!state_stack.empty())
 		this->pos = state_stack.top();
@@ -131,6 +153,27 @@ void _3DTurtle::push(){
 	state_stack.push(this->pos);
 }
 
+void _3DTurtle::polygon_mode(){
+	this->mode = true;
+}
+
+void _3DTurtle::normal_mode(){
+	if (mode){		//if polygon-mode is being left, create the polygon-face and add it to mesh
+		vector<geometry::VertexHandle> face_vhandles;
+
+		for (geometry::VertexHandle v : polygon_vertices)
+			face_vhandles.push_back(v);
+
+		mesh.add_face(face_vhandles);
+	}
+	
+	this->mode = false;
+}
+
+geometry _3DTurtle::get_mesh(){
+	return geometry(this->mesh);	//pass copy, just to be safe
+}
+
 
 _3DTurtle::_3DTurtle(){
 	pos.pos = Vector3d(0.0, 0.0, 0.0);	//starting at origin
@@ -138,4 +181,5 @@ _3DTurtle::_3DTurtle(){
 	pos.n   = Vector3d(0.0, 0.0, 1.0);
 	line_width = 1.0f;
 	color_index = 0;	
+	mode = false;
 }
