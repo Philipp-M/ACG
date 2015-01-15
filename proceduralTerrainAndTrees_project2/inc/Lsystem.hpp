@@ -3,9 +3,11 @@
 #include <set>
 #include <map> 
 
+using namespace std;
+
 typedef struct{
-	std::string before;
-	std::string after;
+	string before;
+	string after;
 	char c;
 } context;
 
@@ -18,23 +20,24 @@ typedef struct{
 class LSystem{
 protected:
 	char start;
-	std::set<char> alphabet;
+	set<char> alphabet;
 public:
-	LSystem(std::set<char> _alphabet, char _star) : alphabet(_alphabet), start(_star){}
+	LSystem(set<char> _alphabet, char _star) : alphabet(_alphabet), start(_star){}
 
-	virtual std::string apply();
-	virtual std::string apply(std::string start_from);
+	virtual string apply();
+	virtual string apply(string start_from);
 };
 
 
 class Deterministic_LSystem : public LSystem{
 private: 
-	std::map<char,std::string> rules; 
+	map<char,string> rules; 
 	
 public:
-	Deterministic_LSystem(std::set<char> alphabet, std::map<char, std::string> _rules, char start) : LSystem(alphabet, start), rules(_rules) {}
-	std::string apply();
-	std::string apply(std::string start_from);
+	Deterministic_LSystem(set<char> alphabet, std::map<char, string> _rules, char start) : LSystem(alphabet, start), rules(_rules) {}
+	string apply(int generations);
+	string apply(string start_from,int generations);
+	static Deterministic_LSystem from_file(string name);
 };
 
 //class ContextSensitive_LSystem : public LSystem{
