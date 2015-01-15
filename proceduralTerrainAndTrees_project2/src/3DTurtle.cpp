@@ -1,4 +1,5 @@
 #include <math.h>
+#include <algorithm>
 #include "Eigen/Dense"
 #include "Eigen/Core"
 #include "Eigen/Geometry"
@@ -100,7 +101,6 @@ void _3DTurtle::move_normal(float s){
 
 void _3DTurtle::move_polygon(float s){
 	//calculate new vertex point
-	pos.dir.normalize();
 	Vector3d tmp = pos.pos + pos.dir * s;
 	geometry::VertexHandle p = mesh.add_vertex(geometry::Point(tmp(0), tmp(1), tmp(2)));
 
@@ -135,6 +135,12 @@ void _3DTurtle::yaw(double a){
 	pos.dir = aa * pos.dir;
 }
 
+
+void _3DTurtle::to_vertical(){
+	pos.dir = Vector3d(0.0, 1.0, 0.0);	//point up 
+	pos.n = Vector3d(0.0, 0.0, 1.0);
+}
+
 void _3DTurtle::reduce_line_width(){
 	line_width = max(0.0f, line_width - 0.1f);
 }
@@ -145,16 +151,16 @@ void _3DTurtle::increase_color_index(){
 
 void _3DTurtle::top_and_pop(){
 	if (!state_stack.empty())
-		this->pos = state_stack.top();
+		pos = state_stack.top();
 	state_stack.pop();
 }
 
 void _3DTurtle::push(){
-	state_stack.push(this->pos);
+	state_stack.push(pos);
 }
 
 void _3DTurtle::polygon_mode(){
-	this->mode = true;
+	mode = true;
 }
 
 void _3DTurtle::normal_mode(){
@@ -167,19 +173,85 @@ void _3DTurtle::normal_mode(){
 		mesh.add_face(face_vhandles);
 	}
 	
-	this->mode = false;
+	mode = false;
 }
 
 geometry _3DTurtle::get_mesh(){
-	return geometry(this->mesh);	//pass copy, just to be safe
+	return geometry(mesh);	//pass copy, just to be safe
 }
 
 
-_3DTurtle::_3DTurtle(){
+
+geometry _3DTurtle::render(string input){
+	//change all upper case letters to F, since they're synonymous (I think)
+	transform(input.begin(), input.end(), input.begin(), [](char c) { return isupper(c) ? 'F' : c; });
+
+	//interpretatation rules taken from "THE ALGORITHMIC BEAUTY OF PLANTS"
+	for (char c : input){
+		switch (c){
+			case 'F':
+				move(1.0);
+				break;
+			case 'f':
+				move(1.0);
+				break;
+			case '+':
+				yaw(angle);
+				break;
+			case '-':
+				yaw(-angle);
+				break;
+			case '^':
+				pitch(angle);
+				break;
+			case '&':
+				pitch(-angle);
+				break;
+			case '\\':
+				roll(angle);
+				break;
+			case '/':
+				roll(-angle);
+				break;
+			case '|':
+				yaw(180.0);
+				break;
+			case '$':
+				to_vertical();
+				break;
+			case '[':
+				push();
+				break;
+			case ']':
+				top_and_pop();
+				break;
+			case '{':
+				polygon_mode();
+				break;
+			case '}':
+				normal_mode();
+				break;
+			case '!':
+				reduce_line_width();
+				break;
+			case '\'':
+				color_index++;
+				break;
+			default:
+				cerr << "Could not interpret symbol " << c << endl;;
+		}
+	}
+
+	return get_mesh();
+}
+
+
+_3DTurtle::_3DTurtle(double angle){
 	pos.pos = Vector3d(0.0, 0.0, 0.0);	//starting at origin
 	pos.dir = Vector3d(0.0, 1.0, 0.0);	//point up initially
 	pos.n   = Vector3d(0.0, 0.0, 1.0);
 	line_width = 1.0f;
 	color_index = 0;	
+	this->angle = angle;
 	mode = false;
 }

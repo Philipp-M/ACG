@@ -13,6 +13,7 @@ int main(int argc, char* argv[]){
 	//simple instructions
 
 	turtle.move(4.0);
+	turtle.push();
 	turtle.yaw(90.0);
 	turtle.move(1.0);
 	turtle.pitch(45.0);
@@ -26,7 +27,10 @@ int main(int argc, char* argv[]){
 	turtle.yaw(90.0);
 	turtle.move(2.0);
 	turtle.normal_mode();
-
+	turtle.top_and_pop();
+	turtle.yaw(-12.0);
+	turtle.move(2.0);
+	
 	geometry g = turtle.get_mesh();
 
 	try

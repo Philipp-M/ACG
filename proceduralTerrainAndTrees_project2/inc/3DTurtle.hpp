@@ -23,15 +23,16 @@ typedef struct{
 
 
 class _3DTurtle {
-
+private:
+	vector<geometry::VertexHandle> polygon_vertices;
+	stack<position> state_stack;
 	set<Vector3d> colors;
+	position pos;
+	geometry mesh;
 	int color_index;
 	float line_width;
-	position pos;		
-	stack<position> state_stack;
-	geometry mesh;
+	double angle;
 	bool mode;
-	vector<geometry::VertexHandle> polygon_vertices;
 public:
 	//move foward
 	void move(float s);
@@ -42,6 +43,7 @@ public:
 	void roll(double a);
 	void pitch(double a);
 	void yaw(double a);
+	void to_vertical();
 
 	//change drawing attributes
 	void reduce_line_width();
@@ -58,11 +60,8 @@ public:
 	//getter
 	geometry get_mesh();
 
-
-	_3DTurtle();
-
-
-
+	//interpret string
 	geometry render(string input);
-
+	
+	_3DTurtle(double angle = 20.0);
 };
