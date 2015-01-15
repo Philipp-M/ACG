@@ -19,18 +19,18 @@ typedef struct{
 	Vector3d pos;	//position in 3D space
 	Vector3d dir;	//direction to draw
 	Vector3d n;		//the normal vector, useful for generating the actual faces
-} position;
+	float line_width;
+	int color_index;
+} state;
 
 
 class _3DTurtle {
 private:
 	vector<geometry::VertexHandle> polygon_vertices;
-	stack<position> state_stack;
+	stack<state> state_stack;
 	set<Vector3d> colors;
-	position pos;
+	state pos;
 	geometry mesh;
-	int color_index;
-	float line_width;
 	double angle;
 	bool mode;
 public:
@@ -61,7 +61,7 @@ public:
 	geometry get_mesh();
 
 	//interpret string
-	geometry render(string input);
+	geometry generate(string input);
 	
 	_3DTurtle(double angle = 20.0);
 };

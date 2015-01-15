@@ -1,4 +1,3 @@
-
 #ifdef WIN32
 #define _USE_MATH_DEFINES
 #endif
@@ -6,30 +5,16 @@
 #include <math.h>
 #include <OpenMesh/Core/IO/MeshIO.hh>
 #include "3DTurtle.hpp"
+#include "Lsystem.hpp"
 
 int main(int argc, char* argv[]){
-	_3DTurtle turtle;
+	_3DTurtle turtle(18.0);
 
-	//simple instructions
 
-	turtle.move(4.0);
-	turtle.push();
-	turtle.yaw(90.0);
-	turtle.move(1.0);
-	turtle.pitch(45.0);
-	turtle.move(2.0);
-	turtle.polygon_mode();
-	turtle.move(2.0); 
-	turtle.yaw(90.0);
-	turtle.move(2.0); 		
-	turtle.yaw(90.0);
-	turtle.move(2.0);
-	turtle.yaw(90.0);
-	turtle.move(2.0);
-	turtle.normal_mode();
-	turtle.top_and_pop();
-	turtle.yaw(-12.0);
-	turtle.move(2.0);
+	Deterministic_LSystem ls = Deterministic_LSystem::from_file("lsystems/flower.lsystem");
+	string bush = ls.apply(5);
+	//cout << bush << endl;
+	turtle.generate(bush);
 	
 	geometry g = turtle.get_mesh();
 
@@ -46,7 +31,6 @@ int main(int argc, char* argv[]){
 		std::cerr << x.what() << std::endl;
 		return 1;
 	}
-		
+			
 	return 0;
-
 }

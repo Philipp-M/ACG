@@ -24,8 +24,8 @@ protected:
 public:
 	LSystem(set<char> _alphabet, char _star) : alphabet(_alphabet), start(_star){}
 
-	virtual string apply();
-	virtual string apply(string start_from);
+	string apply();
+	string apply(string start_from);
 };
 
 
