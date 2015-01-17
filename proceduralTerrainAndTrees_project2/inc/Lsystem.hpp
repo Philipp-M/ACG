@@ -2,6 +2,7 @@
 #include <string>
 #include <set>
 #include <map> 
+#include <random>
 
 using namespace std;
 
@@ -19,13 +20,13 @@ typedef struct{
 
 class LSystem{
 protected:
+	float angle;
 	char start;
-	set<char> alphabet;
 public:
-	LSystem(set<char> _alphabet, char _star) : alphabet(_alphabet), start(_star){}
-
-	string apply();
-	string apply(string start_from);
+	LSystem(char _star, float _angle) :  start(_star), angle(_angle) {}
+	float get_angle() { return angle; }
+	string apply(int generations);
+	virtual string apply(string start_from, int generations) = 0;
 };
 
 
@@ -34,10 +35,22 @@ private:
 	map<char,string> rules; 
 	
 public:
-	Deterministic_LSystem(set<char> alphabet, std::map<char, string> _rules, char start) : LSystem(alphabet, start), rules(_rules) {}
-	string apply(int generations);
+	Deterministic_LSystem(map<char, string> _rules, char start, float angle) : LSystem(start,angle), rules(_rules) {}
+	using LSystem::apply;
 	string apply(string start_from,int generations);
 	static Deterministic_LSystem from_file(string name);
+};
+
+class Stochastic_LSystem : public LSystem {
+private:
+	mt19937 generator;	//random number generator
+	multimap<char, string> rules; //allows for multiple values per key (e.g.: 'a' -> 'B' and 'a' -> 'C' )
+
+public:
+	Stochastic_LSystem(multimap<char, string> _rules, char start,float angle) : LSystem(start,angle), rules(_rules) {}
+	using LSystem::apply;
+	string apply(string start_from, int generations);
+	static Stochastic_LSystem from_file(string name);
 };
 
 //class ContextSensitive_LSystem : public LSystem{
@@ -50,11 +63,3 @@ public:
 //	std::string apply(std::string start_from);
 //};
 //
-//class Stochastic_LSystem : public LSystem {
-//private:
-//	std::map<char_option, std::string> rules;
-//
-//public:
-//	Stochastic_LSystem(std::set<char> alphabet, std::map<char_option, std::string> _rules, char start) : LSystem(alphabet, start), rules(_rules) {}
-//
-//};

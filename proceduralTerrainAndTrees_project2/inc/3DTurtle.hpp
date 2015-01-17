@@ -1,11 +1,7 @@
+#pragma once
 #include <string>
 #include <set>
 #include <stack>
-
-#ifdef WIN32
-#define _USE_MATH_DEFINES
-#endif
-
 #include <OpenMesh/Core/Mesh/PolyMesh_ArrayKernelT.hh>
 #include "Eigen/Dense"
 
@@ -15,34 +11,34 @@ using namespace Eigen;
 typedef OpenMesh::PolyMesh_ArrayKernelT<> geometry;
 
 
-typedef struct{
-	Vector3d pos;	//position in 3D space
-	Vector3d dir;	//direction to draw
-	Vector3d n;		//the normal vector, useful for generating the actual faces
-	float line_width;
-	int color_index;
-} state;
+struct state {
+	Vector3f pos = Vector3f(0.0, 0.0, 0.0) ;	//	position in 3D space
+	Vector3f dir = Vector3f(0.0, 1.0, 0.0);		//	direction to draw
+	Vector3f n = Vector3f(0.0, 0.0, 1.0);;		//	the normal vector, useful for generating the actual faces
+	float line_width = 0.75f;					//	the diameter of the drawn tubes
+	int color_index = 0;						//	the color for new faces
+};
 
 
 class _3DTurtle {
 private:
 	vector<geometry::VertexHandle> polygon_vertices;
 	stack<state> state_stack;
-	set<Vector3d> colors;
+	set<Vector3f> colors;
 	state pos;
 	geometry mesh;
-	double angle;
+	float angle;
 	bool mode;
-public:
+
 	//move foward
 	void move(float s);
 	void move_normal(float s);
 	void move_polygon(float s);
 
 	//change direction
-	void roll(double a);
-	void pitch(double a);
-	void yaw(double a);
+	void roll(float a);
+	void pitch(float a);
+	void yaw(float a);
 	void to_vertical();
 
 	//change drawing attributes
@@ -57,11 +53,12 @@ public:
 	void polygon_mode();
 	void normal_mode();
 
+public:
 	//getter
 	geometry get_mesh();
 
 	//interpret string
 	geometry generate(string input);
 	
-	_3DTurtle(double angle = 20.0);
+	_3DTurtle(float angle);
 };

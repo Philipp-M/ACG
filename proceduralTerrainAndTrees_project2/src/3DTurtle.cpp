@@ -20,36 +20,36 @@ void _3DTurtle::move(float s){
 
 // draw a 3D line into mesh, the width is defined by line-width, the length by parameter s. 
 void _3DTurtle::move_normal(float s){
-	Vector3d side = pos.dir.cross(pos.n);
+	Vector3f side = pos.dir.cross(pos.n);
 	side.normalize();
 
 	//get vectors
 
-	Vector3d tmp = pos.pos + pos.n*(pos.line_width / 2);
+	Vector3f tmp = pos.pos + pos.n*(pos.line_width / 2);
 	geometry::VertexHandle p1 = mesh.add_vertex(geometry::Point(tmp(0),tmp(1),tmp(2)));		// hexagon top
-	tmp = pos.pos + (side * ((1. / 3.)*pos.line_width) + ((1. / 6.)*pos.n*pos.line_width));
+	tmp = pos.pos + (side * ((1.f/ 3.f)*pos.line_width) + ((1.f/ 6.f)*pos.n*pos.line_width));
 	geometry::VertexHandle p2 = mesh.add_vertex(geometry::Point(tmp(0), tmp(1), tmp(2)));	// hexagon top-left
-	tmp = pos.pos + (side * ((1. / 3.)*pos.line_width) - ((1. / 6.)*pos.n*pos.line_width));
+	tmp = pos.pos + (side * ((1.f/ 3.f)*pos.line_width) - ((1.f/ 6.f)*pos.n*pos.line_width));
 	geometry::VertexHandle p3 = mesh.add_vertex(geometry::Point(tmp(0), tmp(1), tmp(2)));	// hexagon bottom-left
 	tmp = pos.pos - pos.n*(pos.line_width / 2);
 	geometry::VertexHandle p4 = mesh.add_vertex(geometry::Point(tmp(0), tmp(1), tmp(2)));	// hexagon bottom
-	tmp = pos.pos - (side * ((1. / 3.)*pos.line_width) + ((1. / 6.)*pos.n*pos.line_width));
+	tmp = pos.pos - (side * ((1.f/ 3.f)*pos.line_width) + ((1.f/ 6.f)*pos.n*pos.line_width));
 	geometry::VertexHandle p5 = mesh.add_vertex(geometry::Point(tmp(0), tmp(1), tmp(2)));	// hexagon bottom-right
-	tmp = pos.pos - (side * ((1. / 3.)*pos.line_width) - ((1. / 6.)*pos.n*pos.line_width));
+	tmp = pos.pos - (side * ((1.f/ 3.f)*pos.line_width) - ((1.f/ 6.f)*pos.n*pos.line_width));
 	geometry::VertexHandle p6 = mesh.add_vertex(geometry::Point(tmp(0), tmp(1), tmp(2)));	// hexagon top-right
 
 
 	tmp = pos.pos + pos.n*(pos.line_width / 2) + pos.dir*s;
 	geometry::VertexHandle t1 = mesh.add_vertex(geometry::Point(tmp(0), tmp(1), tmp(2)));	// hexagon top
-	tmp = pos.pos + (side * ((1. / 3.)*pos.line_width) + ((1. / 6.)*pos.n*pos.line_width)) + pos.dir*s;
+	tmp = pos.pos + (side * ((1.f/ 3.f)*pos.line_width) + ((1.f/ 6.f)*pos.n*pos.line_width)) + pos.dir*s;
 	geometry::VertexHandle t2 = mesh.add_vertex(geometry::Point(tmp(0), tmp(1), tmp(2)));	// hexagon top-left
-	tmp = pos.pos + (side * ((1. / 3.)*pos.line_width) - ((1. / 6.)*pos.n*pos.line_width)) + pos.dir*s;
+	tmp = pos.pos + (side * ((1.f/ 3.f)*pos.line_width) - ((1.f/ 6.f)*pos.n*pos.line_width)) + pos.dir*s;
 	geometry::VertexHandle t3 = mesh.add_vertex(geometry::Point(tmp(0), tmp(1), tmp(2)));	// hexagon bottom-left
 	tmp = pos.pos - pos.n*(pos.line_width / 2) + pos.dir*s;
 	geometry::VertexHandle t4 = mesh.add_vertex(geometry::Point(tmp(0), tmp(1), tmp(2)));	// hexagon bottom
-	tmp = pos.pos - (side * ((1. / 3.)*pos.line_width) + ((1. / 6.)*pos.n*pos.line_width)) + pos.dir*s;
+	tmp = pos.pos - (side * ((1.f/ 3.f)*pos.line_width) + ((1.f/ 6.f)*pos.n*pos.line_width)) + pos.dir*s;
 	geometry::VertexHandle t5 = mesh.add_vertex(geometry::Point(tmp(0), tmp(1), tmp(2)));	// hexagon top-right
-	tmp = pos.pos - (side * ((1. / 3.)*pos.line_width) - ((1. / 6.)*pos.n*pos.line_width)) + pos.dir*s;
+	tmp = pos.pos - (side * ((1.f/ 3.f)*pos.line_width) - ((1.f/ 6.f)*pos.n*pos.line_width)) + pos.dir*s;
 	geometry::VertexHandle t6 = mesh.add_vertex(geometry::Point(tmp(0), tmp(1), tmp(2)));	// hexagon bottom-right
 
 	//add faces to geometry
@@ -102,7 +102,7 @@ void _3DTurtle::move_normal(float s){
 
 void _3DTurtle::move_polygon(float s){
 	//calculate new vertex point
-	Vector3d tmp = pos.pos + pos.dir * s;
+	Vector3f tmp = pos.pos + pos.dir * s;
 	geometry::VertexHandle p = mesh.add_vertex(geometry::Point(tmp(0), tmp(1), tmp(2)));
 
 	//put new vertex into vector
@@ -111,35 +111,35 @@ void _3DTurtle::move_polygon(float s){
 }
 
 // rotation along the dir vector, only change to normal
-void _3DTurtle::roll(double a){
-	double rad = a* (M_PI / 180.);
-	AngleAxis<double> aa(rad, pos.dir);
+void _3DTurtle::roll(float a){
+	float rad = a* ( (float)M_PI / 180.f);
+	AngleAxis<float> aa(rad, pos.dir);
 	pos.n = aa * pos.n;
 }
 
 //rotation along the side vector
-void _3DTurtle::pitch(double a){
+void _3DTurtle::pitch(float a){
 
-	double rad = a* (M_PI / 180.);
-	Vector3d side = pos.dir.cross(pos.n);
+	float rad = a* ((float)M_PI / 180.f);
+	Vector3f side = pos.dir.cross(pos.n);
 	side.normalize();
-	AngleAxis<double> aa((double)rad, side);
+	AngleAxis<float> aa(rad, side);
 
 	pos.n = aa * pos.n;
 	pos.dir = aa* pos.dir;
 }
 
 //rotation along the normal
-void _3DTurtle::yaw(double a){
-	double rad = a* (M_PI / 180.);
-	AngleAxis<double> aa(rad, pos.n);
+void _3DTurtle::yaw(float a){
+	float rad = a* ((float)M_PI / 180.f);
+	AngleAxis<float> aa(rad, pos.n);
 	pos.dir = aa * pos.dir;
 }
 
 
 void _3DTurtle::to_vertical(){
-	pos.dir = Vector3d(0.0, 1.0, 0.0);	//point up 
-	pos.n = Vector3d(0.0, 0.0, 1.0);
+	pos.dir = Vector3f(0.0, 1.0, 0.0);	//point up 
+	pos.n = Vector3f(0.0, 0.0, 1.0);
 }
 
 void _3DTurtle::reduce_line_width(){
@@ -245,12 +245,7 @@ geometry _3DTurtle::generate(string input){
 }
 
 
-_3DTurtle::_3DTurtle(double angle){
-	pos.pos = Vector3d(0.0, 0.0, 0.0);	//starting at origin
-	pos.dir = Vector3d(0.0, 1.0, 0.0);	//point up initially
-	pos.n   = Vector3d(0.0, 0.0, 1.0);
-	pos.line_width = 0.75f;
-	pos.color_index = 0;	
+_3DTurtle::_3DTurtle(float angle){
 	this->angle = angle;
 	mode = false;
 }

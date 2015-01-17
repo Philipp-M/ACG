@@ -1,3 +1,4 @@
+DETERMINISTIC
 s: 18.0
 w: A
 r1: A -> C+[A+G]--//[--E]C[++E]-[AG]++AG
