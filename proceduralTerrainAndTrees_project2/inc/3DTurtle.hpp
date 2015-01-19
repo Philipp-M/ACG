@@ -4,6 +4,7 @@
 #include <stack>
 #include <OpenMesh/Core/Mesh/PolyMesh_ArrayKernelT.hh>
 #include "Eigen/Dense"
+#include "Lsystem.hpp"
 
 using namespace std;
 using namespace Eigen;
@@ -59,6 +60,8 @@ public:
 
 	//interpret string
 	geometry generate(string input);
+	geometry generate(LSystem *ls, int generation);
+
 	
-	_3DTurtle(float angle);
+	_3DTurtle(float angle = 0.0);
 };

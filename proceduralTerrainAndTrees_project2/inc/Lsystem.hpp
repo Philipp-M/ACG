@@ -1,8 +1,9 @@
 #pragma once
 #include <string>
-#include <set>
 #include <map> 
 #include <random>
+#include <chrono>
+
 
 using namespace std;
 
@@ -16,7 +17,6 @@ typedef struct{
 	float chance;
 	char c;
 } char_option;
-
 
 class LSystem{
 protected:
@@ -38,7 +38,7 @@ public:
 	Deterministic_LSystem(map<char, string> _rules, char start, float angle) : LSystem(start,angle), rules(_rules) {}
 	using LSystem::apply;
 	string apply(string start_from,int generations);
-	static Deterministic_LSystem from_file(string name);
+	static Deterministic_LSystem* from_file(string name);
 };
 
 class Stochastic_LSystem : public LSystem {
@@ -47,10 +47,13 @@ private:
 	multimap<char, string> rules; //allows for multiple values per key (e.g.: 'a' -> 'B' and 'a' -> 'C' )
 
 public:
-	Stochastic_LSystem(multimap<char, string> _rules, char start,float angle) : LSystem(start,angle), rules(_rules) {}
+	Stochastic_LSystem(multimap<char, string> _rules, char start,float angle) : LSystem(start,angle), rules(_rules) {
+		chrono::high_resolution_clock::duration d = chrono::system_clock::now().time_since_epoch();
+		generator.seed((unsigned long)d.count());
+	}
 	using LSystem::apply;
 	string apply(string start_from, int generations);
-	static Stochastic_LSystem from_file(string name);
+	static Stochastic_LSystem* from_file(string name);
 };
 
 //class ContextSensitive_LSystem : public LSystem{

@@ -1,7 +1,4 @@
-#include <math.h>
-#include <algorithm>
 #include <iostream>
-#include "Eigen/Dense"
 #include "Eigen/Core"
 #include "Eigen/Geometry"
 #include "3DTurtle.hpp"
@@ -183,8 +180,15 @@ geometry _3DTurtle::get_mesh(){
 }
 
 
+geometry _3DTurtle::generate(LSystem *ls, int generation){
+	this->angle = ls->get_angle();
+	string input = ls->apply(generation);
+	free(ls);
+	return generate(input);
+}
+
 geometry _3DTurtle::generate(string input){
-	
+
 	//interpretatation rules taken from "THE ALGORITHMIC BEAUTY OF PLANTS"
 	for (char c : input){
 		switch (c){

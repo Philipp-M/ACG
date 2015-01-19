@@ -1,5 +1,4 @@
 #include <string>
-#include <set>
 #include <map> 
 #include <vector>
 #include <random>
@@ -32,7 +31,7 @@ string Deterministic_LSystem::apply(string begin,int generations){
 	return new_string;
 }
 
-Deterministic_LSystem Deterministic_LSystem::from_file(string name){
+Deterministic_LSystem *Deterministic_LSystem::from_file(string name){
 	ifstream file;
 	file.open(name);
 	if (!file.is_open()){
@@ -87,7 +86,7 @@ Deterministic_LSystem Deterministic_LSystem::from_file(string name){
 		getline(file, tmp);
 	}
 	cout << endl;
-	return Deterministic_LSystem(rules, start,angle);
+	return (new Deterministic_LSystem(rules, start,angle));
 }
 
 
@@ -98,21 +97,21 @@ string Stochastic_LSystem::apply(string begin, int generations){
 		for (auto c : begin){
 			auto ret = rules.equal_range(c);	// range from first rule, to last
 
-			multimap<char, string>::iterator it = ret.first;
+			multimap<char, string>::iterator it;
 			vector<string> strings;
-			for (it = ret.first; it != ret.second; it++);	//put all rules into a vector
+			for (it = ret.first; it != ret.second; it++)	//put all rules into a vector
 				strings.push_back(it->second);
 			
-			if (it != rules.end()) 			// if rule found, apply string
-				if (strings.size() != 1){		// use random choice if multipe rules present
+			if (ret.first != ret.second) 		// if rule found, apply string
+				if (strings.size() > 1){		// use random choice if multipe rules present
 					uniform_int_distribution<int> distribution(0, strings.size() - 1);
-	
 					new_string += strings[distribution(generator)];
 				}
-				else							// otherwise identical to deterministic
-					new_string += it->second;
+				else	// otherwise identical to deterministic
+					new_string += strings[0];
 			else							// if not, keep the original character
-				new_string += c;
+					new_string += c;
+			
 		}
 		begin = new_string;
 	}
@@ -121,7 +120,7 @@ string Stochastic_LSystem::apply(string begin, int generations){
 }
 
 
-Stochastic_LSystem Stochastic_LSystem::from_file(string name){
+Stochastic_LSystem *Stochastic_LSystem::from_file(string name){
 	ifstream file;
 	file.open(name);
 	if (!file.is_open()){
@@ -176,7 +175,7 @@ Stochastic_LSystem Stochastic_LSystem::from_file(string name){
 		getline(file, tmp);
 	}
 	cout << endl;
-	return Stochastic_LSystem(rules, start,angle);
+	return new Stochastic_LSystem(rules, start,angle);
 }
 
 

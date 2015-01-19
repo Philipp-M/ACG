@@ -1,7 +1,7 @@
 DETERMINISTIC
 s: 18.0
 w: A
-r1: A -> C+[A+G]--//[--E]C[++E]-[AG]++AG
+r1: A -> C+[A+G]--//[--E]C[++E]-[AG]++AG//
 r2: C -> FD[//&&E][//^^E]FD
 r3: D -> DFD
 r4: E -> ['{+f-ff-f+|+f-ff-f}]
