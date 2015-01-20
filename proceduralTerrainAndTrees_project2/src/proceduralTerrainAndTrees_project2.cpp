@@ -29,11 +29,16 @@
 //=============================================================================
 
 
+#ifdef WIN32
+#define _USE_MATH_DEFINES
+#endif
+
 #include <iostream>
 // -------------------- OpenMesh
 #include <OpenMesh/Core/IO/MeshIO.hh>
 #include <OpenMesh/Core/Mesh/PolyMesh_ArrayKernelT.hh>
 #include "INoise.hpp"
+
 
 // ----------------------------------------------------------------------------
 
@@ -106,7 +111,6 @@ int main()
   face_vhandles.push_back(vhandle[7]);
   face_vhandles.push_back(vhandle[4]);
   mesh.add_face(face_vhandles);
-
 
   // write mesh to output.obj
   try
