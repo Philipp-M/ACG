@@ -8,7 +8,7 @@
 int main(int argc, char* argv[]){
 	
 	_3DTurtle turtle;
-	turtle.generate(Stochastic_LSystem::from_file("lsystems/flower2.lsystem"),3);
+	turtle.generate(Stochastic_LSystem::from_file("lsystems/flower2.lsystem"),4);
 	geometry g = turtle.get_mesh();
 
 

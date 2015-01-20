@@ -77,7 +77,11 @@ This is a really elegant and thoughtful introduction to our project.
 Implemented by: Cem Okulmus
 
 \subsection{Technical Overview}
-The implementation consists of two parts. One is the "LSystem" class, which is responsible for importing a set of rules that define the L-System and consequently generating new strings that represent a word from the language the L-System defined. This is done by applying a formal rewriting system, the nature of which depends on the actual type of the L-System. The end result is a string that contains simple commands on how to "draw" a three-dimensional mesh. 
+The implementation consists of two parts. One is the "LSystem" class, which is
+responsible for importing a set of rules that define the L-System and
+consequently generating new strings that represent a word from the language the
+L-System defined. This is done by applying a formal rewriting system, the nature
+of which depends on the actual type of the L-System. The end result is a string that contains simple commands on how to "draw" a three-dimensional mesh.
 \newline
 The second part is the generation of a three-dimensional mesh of the wanted plant. This is done by a well known method of turtle graphics. This concept was explained in detail in the lecture, so only a concise summary will be given. The idea is that the "turtle" follows the list of commands sequentially and generates the mesh as it moves through space. To accommodate branching structures, as they are common in nature, a state stack is introduced, a state being the exact position and direction of the "turtle".
 
@@ -100,7 +104,7 @@ This extends the previous type by a, possibly empty, environment, for each varia
 \begin{wrapfigure}{R}{0.5\textwidth}
   \begin{center}
     \includegraphics[width=0.45\textwidth]{images/line}
-  \end{center}
+  \end{center} 
   \caption{A three-dimensional line produced by "\_3DTurtle" class}
   \label{fig:line}
 \end{wrapfigure}
@@ -108,10 +112,12 @@ This extends the previous type by a, possibly empty, environment, for each varia
 \subsubsection{Three-dimensional Turtle Graphics}
 The "\_3DTurtle" class is very straight-forward implementation of a turtle graphics renderer in three-dimensions. The operations on meshes were implemented using OpenMesh\footnote{www.openmesh.org}, which made it very easy to add an arbitrary amount of faces to the final geometry. The needed calculations for rotation (and similar operations) in three-dimensional space were done using the library Eigen\footnote{www.eigen.tuxfamily.org}. To move in space, the three operations yaw, pitch and roll are needed to orientate the "turtle". A three-dimensional line, with a fixed length, is rendered by connecting two hexagons, as can be seen in Figure \ref{fig:line}. Additionally a polygon mode, where the turtle can sequentially follow the shape of any polygon and add it to the mesh, is provided. The interpretation of symbols is taken from a book by P.Prusinkiewicz, which also explained the Turtle Graphics model in more detail.
 
-\section{Procedural terain}
+\section{Terrain Generation based on Stream Erosion}
 Implemented by: Stefan Spiss and Phillip Mildenberger
 
 \subsection{Technical Overview}
+The project based on the paper: ``Terrain Simulation Using a Model of
+Stream Erosion''\cite{kelley1988terrain}
 
 
 \subsection{Implementation Detail}
