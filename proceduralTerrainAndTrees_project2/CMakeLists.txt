@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 
 project( PTAT )
-set( PTAT_SRCS src/proceduralTerrainAndTrees_project2.cpp )
+set( PTAT_SRCS src/proceduralTerrainAndTrees_project2.cpp src/DrainageNetworkTree.cpp)
 include_directories(./inc/)
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 add_definitions(-std=c++11)
