@@ -1,8 +1,8 @@
 #pragma once
-#include "DrainageBasin.hpp"
 #include "DrainagePolygon.hpp"
 #include <vector>
-
+#include "Common.hpp"
+class DrainageNetworkTree;
 class DrainageNetworkNode
 {
 	friend class DrainageBasin;

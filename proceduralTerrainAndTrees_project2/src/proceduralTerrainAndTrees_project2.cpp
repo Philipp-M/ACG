@@ -51,9 +51,9 @@ int main()
 	vhandle[3] = drainageBasin.add_vertex(Mesh::Point(-1, 0, 0));
 	vhandle[4] = drainageBasin.add_vertex(Mesh::Point(1, 1, 0));
 	vhandle[5] = drainageBasin.add_vertex(Mesh::Point(1, 0, 0));
-	vhandle[6] = drainageBasin.add_vertex(Mesh::Point(1, 0.5, 0));
-	vhandle[7] = drainageBasin.add_vertex(Mesh::Point(0.2, 0.55, 0));
-	vhandle[8] = drainageBasin.add_vertex(Mesh::Point(1, 0.55, 0));
+//	vhandle[6] = drainageBasin.add_vertex(Mesh::Point(1, 0.5, 0));
+//	vhandle[7] = drainageBasin.add_vertex(Mesh::Point(0.2, 0.55, 0));
+//	vhandle[8] = drainageBasin.add_vertex(Mesh::Point(1, 0.55, 0));
 //  vhandle[6] = mesh.add_vertex(MyMesh::Point( 1,  1, -1));
 //  vhandle[7] = mesh.add_vertex(MyMesh::Point(-1,  1, -1));
 //
@@ -71,9 +71,9 @@ int main()
 //
 	face_vhandles.clear();
 	face_vhandles.push_back(vhandle[5]);
-	face_vhandles.push_back(vhandle[6]);
-	face_vhandles.push_back(vhandle[7]);
-	face_vhandles.push_back(vhandle[8]);
+//	face_vhandles.push_back(vhandle[6]);
+//	face_vhandles.push_back(vhandle[7]);
+//	face_vhandles.push_back(vhandle[8]);
 	face_vhandles.push_back(vhandle[4]);
 	face_vhandles.push_back(vhandle[1]);
 	face_vhandles.push_back(vhandle[0]);
