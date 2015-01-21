@@ -7,17 +7,14 @@
 
 using namespace std;
 
-typedef struct{
-	string before;
-	string after;
-	char c;
-} context;
+/*
+*	Lindenmayer Systems
 
-typedef struct{
-	float chance;
-	char c;
-} char_option;
-
+*	Base class for all types of L-Systems. Defines the basic interfaces that each 
+*	child class has to provide. 
+*
+*
+*/
 class LSystem{
 protected:
 	float angle;
@@ -25,11 +22,20 @@ protected:
 public:
 	LSystem(char _star, float _angle) :  start(_star), angle(_angle) {}
 	float get_angle() { return angle; }
+	//produces a string, starting  with the predefined character
 	string apply(int generations);
+	//produces a string, starting from a given input string
 	virtual string apply(string start_from, int generations) = 0;
 };
 
-
+/*
+*	Deterministic and Context-free L-Systems
+*
+*	Each variable to replace can only be occur once in the rules map. 
+*	The simplest form of L-System. 
+*
+*
+*/
 class Deterministic_LSystem : public LSystem{
 private: 
 	map<char,string> rules; 
@@ -41,6 +47,14 @@ public:
 	static Deterministic_LSystem* from_file(string name);
 };
 
+
+/*
+*	Stochastic and Context-free L-Systems
+*	
+*	An extension of Deterministic L-Systems. Allows additionally for multiple rules that 
+*	replace the same symbol
+*
+*/
 class Stochastic_LSystem : public LSystem {
 private:
 	mt19937 generator;	//random number generator

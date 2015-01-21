@@ -22,6 +22,7 @@ void _3DTurtle::move_normal(float s){
 
 	//get vectors
 
+	//starting hexagon
 	Vector3f tmp = pos.pos + pos.n*(pos.line_width / 2);
 	geometry::VertexHandle p1 = mesh.add_vertex(geometry::Point(tmp(0),tmp(1),tmp(2)));		// hexagon top
 	tmp = pos.pos + (side * ((1.f/ 3.f)*pos.line_width) + ((1.f/ 6.f)*pos.n*pos.line_width));
@@ -36,6 +37,7 @@ void _3DTurtle::move_normal(float s){
 	geometry::VertexHandle p6 = mesh.add_vertex(geometry::Point(tmp(0), tmp(1), tmp(2)));	// hexagon top-right
 
 
+	//goal hexagon
 	tmp = pos.pos + pos.n*(pos.line_width / 2) + pos.dir*s;
 	geometry::VertexHandle t1 = mesh.add_vertex(geometry::Point(tmp(0), tmp(1), tmp(2)));	// hexagon top
 	tmp = pos.pos + (side * ((1.f/ 3.f)*pos.line_width) + ((1.f/ 6.f)*pos.n*pos.line_width)) + pos.dir*s;
@@ -96,7 +98,7 @@ void _3DTurtle::move_normal(float s){
 	mesh.add_face(face_vhandles);
 }
 
-
+// move forward and put a new vertices into polygon_vertices
 void _3DTurtle::move_polygon(float s){
 	//calculate new vertex point
 	Vector3f tmp = pos.pos + pos.dir * s;
@@ -147,20 +149,24 @@ void _3DTurtle::increase_color_index(){
 	pos.line_width = min(1.0f, pos.line_width + (pos.line_width*0.05f));
 }
 
+//stack operation
 void _3DTurtle::top_and_pop(){
 	if (!state_stack.empty())
 		pos = state_stack.top();
 	state_stack.pop();
 }
 
+//stack operation
 void _3DTurtle::push(){
 	state_stack.push(pos);
 }
 
+//start polygon mode
 void _3DTurtle::polygon_mode(){
 	mode = true;
 }
 
+//deactivate polygon-mode, if necessary create new face
 void _3DTurtle::normal_mode(){
 	if (mode){		//if polygon-mode is being left, create the polygon-face and add it to mesh
 		vector<geometry::VertexHandle> face_vhandles;
@@ -179,7 +185,7 @@ geometry _3DTurtle::get_mesh(){
 	return geometry(mesh);	//pass copy, just to be safe
 }
 
-
+//convenience function
 geometry _3DTurtle::generate(LSystem *ls, int generation){
 	this->angle = ls->get_angle();
 	string input = ls->apply(generation);

@@ -1,6 +1,5 @@
 #pragma once
 #include <string>
-#include <set>
 #include <stack>
 #include <OpenMesh/Core/Mesh/PolyMesh_ArrayKernelT.hh>
 #include "Eigen/Dense"
@@ -11,7 +10,9 @@ using namespace Eigen;
 
 typedef OpenMesh::PolyMesh_ArrayKernelT<> geometry;
 
-
+/*
+*	The state struct of the _3DTurtle class, necessary for branching 
+*/
 struct state {
 	Vector3f pos = Vector3f(0.0, 0.0, 0.0) ;	//	position in 3D space
 	Vector3f dir = Vector3f(0.0, 1.0, 0.0);		//	direction to draw
@@ -23,13 +24,12 @@ struct state {
 
 class _3DTurtle {
 private:
-	vector<geometry::VertexHandle> polygon_vertices;
-	stack<state> state_stack;
-	set<Vector3f> colors;
-	state pos;
-	geometry mesh;
-	float angle;
-	bool mode;
+	vector<geometry::VertexHandle> polygon_vertices;	// needed to temporarily store polygon vertices
+	stack<state> state_stack;							// the state stack that is necessary for branching
+	state pos;											// the current state of the turtle
+	geometry mesh;										// the mesh that is updated in each intermediate step
+	float angle;										// the base angle for roll, pitch and yaw
+	bool mode;										    // activates polygon-mdoe
 
 	//move foward
 	void move(float s);
