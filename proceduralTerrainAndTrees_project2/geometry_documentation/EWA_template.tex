@@ -211,10 +211,16 @@ factor between $-0.37$ and $-0.837$.
 \subsubsection{Drainage Divides}
 The drainage divides are inserted similar as the links. They are also starting 
 from the junction, and are calculated 
-#todo
+todo
 \subsection{Implementation Detail}
 The Implementation is done with a (binary-)tree like structure, where the root
 node is the initial link. The leafs of the tree are the exterior links.
+The main loop of this implementation is done in ``buildDrainageNetwork''
+The first part checks whether a link has to be inserted. If it will be inserted,
+another function recalculates the mesh based on the meta data saved in each
+node, ike the parametric length or the shreve order.
+This loop continues until every sublink is saturated with its drainage area.
+
 \section{Results}
 
 
