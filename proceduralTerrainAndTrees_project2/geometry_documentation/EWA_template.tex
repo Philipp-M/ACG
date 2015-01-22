@@ -1,0 +1,228 @@
+%----------------------------------------------------------------------------------------
+% Geometric Modeling Project
+% Report LaTeX template (English)
+% Interactive Graphics and Simulation Group
+% University of Innsbruck
+%----------------------------------------------------------------------------------------
+
+\documentclass[11pt,a4paper]{article}
+
+%----------------------------------------------------------------------------------------
+% Include required packages
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{wrapfig}
+\usepackage[english]{babel} 
+%\usepackage[ngerman]{babel}
+
+\usepackage[utf8x]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{float}
+
+\usepackage[left=2.7cm, right=2.7cm, top=3cm]{geometry}
+
+\usepackage{url}
+
+%----------------------------------------------------------------------------------------
+% Start document
+
+\begin{document}
+
+
+%----------------------------------------------------------------------------------------
+% Title page
+%----------------------------------------------------------------------------------------
+
+\begin{titlepage} % User-defined title page
+
+\begin{center}
+\includegraphics[width=1.2cm]{images/uibk}
+
+\begin{large}
+Leopold-Franzens-Universität Innsbruck\\[5mm]
+Institute of Computer Science\\
+Interactive Graphics and Simulation Group\\[25mm]
+\end{large}
+
+{\LARGE \bf Geometric Modeling Project}
+
+Advanced Computer Graphics WS14\\ 
+Documentation\\[15mm]
+
+Phillip Mildenberger\\
+Stefan Spiss\\
+Cem Okulmus\\[35mm]
+
+advised by\\
+Savoye Yann Pierre, PhD\\[10mm]
+
+\vfill
+
+
+Innsbruck, \today
+\end{center}
+
+\end{titlepage}
+
+
+%----------------------------------------------------------------------------------------
+% Main body
+%----------------------------------------------------------------------------------------
+
+\section{Introduction}
+This is a really elegant and thoughtful introduction to our project. 
+//introduce the name Lindenmayer-Systems, with abbreviation L-System. 
+
+\section{Procedural plants using L-Systems and Turtle Graphics \newline visualisation}
+Implemented by: Cem Okulmus
+
+\subsection{Technical Overview}
+The implementation consists of two parts. One is the ``LSystem'' class, which is
+responsible for importing a set of rules that define the L-System and
+consequently generating new strings that represent a word from the language the
+L-System defined. This is done by applying a formal rewriting system, the nature
+of which depends on the actual type of the L-System. The end result is a string that contains simple commands on how to ``draw'' a three-dimensional mesh.
+\newline
+The second part is the generation of a three-dimensional mesh of the wanted
+plant. This is done by a well known method of turtle graphics. This concept was
+explained in detail in the lecture, so only a concise summary will be given. 
+The idea is that the ``turtle'' follows the list of commands sequentially and
+generates the mesh as it moves through space. To accommodate branching
+structures, as they are common in nature, a state stack is introduced, a state
+being the exact position and direction of the ``turtle''.
+
+\subsection{Implementation Detail}
+
+\subsubsection{L-System types}
+Three basic types of L-Systems were implemented. Each of them is an extension of the former, so the L-Systems accepted by the first, would also be accepted by the second and third, and so forth. All L-Systems, like all formal languages, define an alphabet. Additionally L-Systems have a set for variables, where variables are a subset of the alphabet. The variables are the symbols which will be replaced in the production rules.
+
+\begin{description}
+
+\item[Deterministic and Context-free L-System]\hfill \\
+This type of L-System is also known as D0L in literature. All its production rules must define a single symbol to replace, since it is  context-free and a string of its alphabet to replace it with. Depending on how often this is iterated, we will get a different word of the language, assuming a fixed starting symbol. 
+\item[Stochastic and Context-free L-System]\hfill \\
+This extends the previous type by allowing multiple rules for the same variable. These will be treated as possible applications. Their probability is uniformly distributed. (E.g.: Three rules means a probability of 1/3 for each of them)
+\item[Stochastic and Context-sensitive L-System]\hfill \\
+This extends the previous type by a, possibly empty, environment, for each variable. This restricts the rule, and will only apply it if the environment can be matched. Matches with multiple applicable rules are resolved by choosing the longest match, then the prior rule in the L-System definition, similar to an LR-Parser.
+\end{description}
+
+
+\begin{wrapfigure}{R}{0.5\textwidth}
+  \begin{center}
+    \includegraphics[width=0.45\textwidth]{images/line}
+  \end{center} 
+  \caption{A three-dimensional line produced by ``\_3DTurtle'' class}
+  \label{fig:line}
+\end{wrapfigure}
+
+\subsubsection{Three-dimensional Turtle Graphics}
+The ``\_3DTurtle'' class is very straight-forward implementation of a turtle
+graphics renderer in three-dimensions. The operations on meshes were implemented
+using OpenMesh\footnote{www.openmesh.org}, which made it very easy to add an
+arbitrary amount of faces to the final geometry. The needed calculations for
+rotation (and similar operations) in three-dimensional space were done using the
+library Eigen\footnote{www.eigen.tuxfamily.org}. To move in space, the three
+operations yaw, pitch and roll are needed to orientate the ``turtle''. A
+three-dimensional line, with a fixed length, is rendered by connecting two
+hexagons, as can be seen in Figure \ref{fig:line}. Additionally a polygon mode,
+where the turtle can sequentially follow the shape of any polygon and add it to
+the mesh, is provided. The interpretation of symbols is taken from a book by
+P.Prusinkiewicz\cite{prusinkiewicz1990algorithmic}, which also explained the Turtle Graphics model in more detail.
+
+\section{Terrain Generation based on Stream Erosion}
+Implemented by: Philipp Mildenberger and Stefan Spiss
+
+\begin{wrapfigure}{r}{0.4\textwidth}
+  \vspace{-20pt}
+  \begin{center}
+    \includegraphics[width=0.3\textwidth]{images/DrainageInitial}
+  \end{center}
+  \vspace{-20pt}
+  \caption{Initial Drainage Basin \cite{kelley1988terrain}}
+  \label{fig:initDrain}
+  \vspace{-10pt}
+\end{wrapfigure}
+\subsection{Technical Overview}
+The project is based on the paper: ``Terrain Simulation Using a Model of
+Stream Erosion''\cite{kelley1988terrain} .
+Initially an outline in 2D is representing the drainage basin - the area where
+the Stream Network is placed, is given.
+A single link is the basis, and represents the main stream. Figure
+\ref{fig:initDrain} shows this scenario.
+The areas connected to a link are called ``drainage areas''. This area
+contributes water to a stream which is herein called link.
+% \begin{wrapfigure}{r}{0.4\textwidth}
+%   \vspace{-20pt}
+%   \begin{center}
+%     \includegraphics[width=0.3\textwidth]{images/DrainageExplanation}
+%   \end{center}
+%   \vspace{-20pt}
+%   \caption{Initial Drainage Basin \cite{kelley1988terrain}}
+%   \label{fig:explDrain}
+%   \vspace{-10pt}
+% \end{wrapfigure}
+\subsubsection{The Addition of a stream/link}
+A recursive algorithm is used to generate streams into this Network, until the
+drainage areas aren't strong enough to support a new stream. This recursion
+basis is predefined by a constant $C$ which stands for ``channel maintenance''.
+A link is now added until $\frac{A}{L} < C$ where $A$ is the local drainage
+area of a link and $L$ is the length of an individual link.
+Since every link has its own drainage area, drainage divides will be
+inserted if a link is inserted. Those drainage divides describe a ridge between
+the links. Every link has an ordinal number, which is in Shreve Order
+\cite{shreve1966statistical}.
+This means that a link has a magnitude $m + n$, where $m$ and $n$ are the
+magnitudes of the sublinks.
+This is defined recursively, until an exterior link is
+reached, which has magnitude $1$.
+The following Figure \ref{fig:explDrain} explains this concept.
+\begin{figure}[h!]
+  \centering
+	\includegraphics[width=0.6\textwidth]{images/DrainageExplanation}
+	\caption{Drainage System \cite{kelley1988terrain}} 
+	\label{fig:explDrain}
+\end{figure}
+\subsubsection{characteristics of a link}
+The junction position of a link is determined with the following equotion:
+\begin{align}
+Junction = MeanJunction + rand() * DeltaJunction
+\end{align} 
+where $MeanJunction$ is a predefined value, $rand()$ a random function with
+values from 0 to 1 and $DeltaJunction$ the strength of perturbance of the position.
+The length of an exterior link is determined the same way with exchanging
+$MeanJunction$ with $MeanLength$ and $DeltaJunction$ with $DeltaLength$.
+The Junction angle is estimated using the Howard geometric model
+\cite{howard1971optimal}:
+\begin{align}
+JunctionAngle &= E_1 + E_2
+\end{align}
+where
+\begin{align}
+E_1 &= arccos(\frac{S_3}{S_1}) \\
+E_2 &= arccos(\frac{S_3}{S_2})
+\end{align} 
+$S_1$, $S_2$ and $S_3$ are the slope tangients of a link, which are achieved
+with a simplified form of Flint's equation \cite{flint1974stream}:
+\begin{align}
+S = p(2u - 1)^q
+\end{align}
+where $S$ is the slope tangent $u$ the Shreve Order magnitude and $q$ is a
+factor between $-0.37$ and $-0.837$.
+\subsubsection{Drainage Divides}
+The drainage divides are inserted similar as the links. They are also starting 
+from the junction, and are calculated 
+#todo
+\subsection{Implementation Detail}
+The Implementation is done with a (binary-)tree like structure, where the root
+node is the initial link. The leafs of the tree are the exterior links.
+\section{Results}
+
+
+%----------------------------------------------------------------------------------------
+% Bibliography
+%----------------------------------------------------------------------------------------
+\newpage
+\bibliographystyle{plain}
+\bibliography{EWA_literature}
+
+\end{document}
