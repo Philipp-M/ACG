@@ -241,7 +241,8 @@ The main loop of this implementation is done in ``buildDrainageNetwork''.
 The first part checks whether a link has to be inserted. If it will be inserted,
 another function recalculates the mesh based on the meta data saved in each
 node, like the parametric length or the shreve order.
-This loop continues until every sublink is saturated with its drainage area.
+This loop continues until every sublink is saturated with its drainage area.\\
+Unfortunately we could not complete the implementation due to the complexity of the topic and the difficulty of debugging OpenMesh. At the moment the subdivision of the links is almost working. Everything works fine until, after several iterations an unexpected condition occurs while deleting an edge.
 
 %----------------------------------------------------------------------------------------
 % Bibliography

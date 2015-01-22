@@ -1,0 +1,49 @@
+This is BibTeX, Version 0.99d (TeX Live 2013/Debian)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: EWA_template.aux
+The style file: plain.bst
+Database file #1: EWA_literature.bib
+Warning--can't use both volume and number fields in kelley1988terrain
+Warning--empty journal in prusinkiewicz1990algorithmic
+You've used 5 entries,
+            2118 wiz_defined-function locations,
+            530 strings with 4745 characters,
+and the built_in function-call counts, 1596 in all, are:
+= -- 156
+> -- 67
+< -- 2
++ -- 28
+- -- 22
+* -- 111
+:= -- 272
+add.period$ -- 15
+call.type$ -- 5
+change.case$ -- 25
+chr.to.int$ -- 0
+cite$ -- 7
+duplicate$ -- 62
+empty$ -- 123
+format.name$ -- 22
+if$ -- 325
+int.to.chr$ -- 0
+int.to.str$ -- 5
+missing$ -- 6
+newline$ -- 28
+num.names$ -- 10
+pop$ -- 26
+preamble$ -- 1
+purify$ -- 21
+quote$ -- 0
+skip$ -- 44
+stack$ -- 0
+substring$ -- 100
+swap$ -- 13
+text.length$ -- 2
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 18
+warning$ -- 2
+while$ -- 17
+width$ -- 6
+write$ -- 55
+(There were 2 warnings)
