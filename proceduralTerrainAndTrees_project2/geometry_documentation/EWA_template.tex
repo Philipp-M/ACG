@@ -70,8 +70,9 @@ Innsbruck, \today
 %----------------------------------------------------------------------------------------
 
 \section{Introduction}
-This is a really elegant and thoughtful introduction to our project. 
-//introduce the name Lindenmayer-Systems, with abbreviation L-System. 
+In this Project, the goal was to use procedural Methods to generate meshes. 
+The idea was to generate a landscape and adding different plants to it.
+For the generation of procedural plants, L-Systems were used. The landscape generation is based on the erosion of streams. Unfortunately the landscape generation was more time consuming then expected. So we couldn't implement the full procedural landscape as we originally wanted.
 
 \section{Procedural plants using L-Systems and Turtle Graphics \newline visualisation}
 Implemented by: Cem Okulmus
@@ -84,7 +85,7 @@ L-System defined. This is done by applying a formal rewriting system, the nature
 of which depends on the actual type of the L-System. The end result is a string that contains simple commands on how to ``draw'' a three-dimensional mesh.
 \newline
 The second part is the generation of a three-dimensional mesh of the wanted
-plant. This is done by a well known method of turtle graphics. This concept was
+plant. This is done by the well known method of turtle graphics. This concept was
 explained in detail in the lecture, so only a concise summary will be given. 
 The idea is that the ``turtle'' follows the list of commands sequentially and
 generates the mesh as it moves through space. To accommodate branching
@@ -182,15 +183,16 @@ The following Figure \ref{fig:explDrain} explains this concept.
 	\caption{Drainage System \cite{kelley1988terrain}} 
 	\label{fig:explDrain}
 \end{figure}
-\subsubsection{characteristics of a link}
+\subsubsection{Characteristics of a link}
 The junction position of a link is determined with the following equotion:
 \begin{align}
 Junction = MeanJunction + rand() * DeltaJunction
 \end{align} 
 where $MeanJunction$ is a predefined value, $rand()$ a random function with
-values from 0 to 1 and $DeltaJunction$ the strength of perturbance of the position.
+values from -1 to 1 and $DeltaJunction$ the strength of perturbation of the position.\\
 The length of an exterior link is determined the same way with exchanging
-$MeanJunction$ with $MeanLength$ and $DeltaJunction$ with $DeltaLength$.
+$MeanJunction$ with $MeanLength$ and $DeltaJunction$ with $DeltaLength$.\\
+$Junction$ and $Length$ both must be between 0 and 1.\\
 The Junction angle is estimated using the Howard geometric model
 \cite{howard1971optimal}:
 \begin{align}
@@ -206,19 +208,31 @@ with a simplified form of Flint's equation \cite{flint1974stream}:
 \begin{align}
 S = p(2u - 1)^q
 \end{align}
-where $S$ is the slope tangent $u$ the Shreve Order magnitude and $q$ is a
+where $S$ is the slope tangent, $u$ the Shreve Order magnitude and $q$ is a
 factor between $-0.37$ and $-0.837$.
 \subsubsection{Drainage Divides}
 The drainage divides are inserted similar as the links. They are also starting 
-from the junction, and are calculated 
-todo
+from the junction and splitting the drainage polygon in a certain angle.\\
+These angles are computed according to the Howard geometric model \cite{howard1971optimal}:\\
+There are three different cases for the calculation:
+\begin{itemize}
+\item
+Angle for the drainage divide between the upper links.
+\item
+Angle for the drainage divide between stronger up link and down link.
+\item
+Angle for the drainage divide between weaker up link and down link.
+\end{itemize}
+
+For more details look at \cite{howard1971optimal} (page 6-8).
+
 \subsection{Implementation Detail}
 The Implementation is done with a (binary-)tree like structure, where the root
 node is the initial link. The leafs of the tree are the exterior links.
-The main loop of this implementation is done in ``buildDrainageNetwork''
+The main loop of this implementation is done in ``buildDrainageNetwork''.
 The first part checks whether a link has to be inserted. If it will be inserted,
 another function recalculates the mesh based on the meta data saved in each
-node, ike the parametric length or the shreve order.
+node, like the parametric length or the shreve order.
 This loop continues until every sublink is saturated with its drainage area.
 
 \section{Results}
