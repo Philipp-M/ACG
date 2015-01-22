@@ -3,12 +3,18 @@
 
 // ------------- DrainageNetworkNode --------------
 
-DrainageNetworkNode::DrainageNetworkNode(const DrainageNetworkTree& fatherTree, DrainageNetworkNode* parent, const Mesh& basinMesh,
+DrainageNetworkNode::DrainageNetworkNode(const DrainageNetworkTree& parentTree, DrainageNetworkNode* parent, const Mesh& basinMesh,
 		double parametricLength, Mesh::HalfedgeHandle heh) :
-		fatherTree(fatherTree), parent(parent), left(nullptr), right(nullptr), hedgeH(heh), parametricLength(parametricLength), shreveOrder(1), valleySlopeL(0), valleySlopeR(0)
+		parentTree(parentTree), parent(parent), left(nullptr), right(nullptr), hedgeH(heh), parametricLength(parametricLength), shreveOrder(1), valleySlopeL(0), valleySlopeR(0)
 {
 }
-
+DrainageNetworkNode::~DrainageNetworkNode()
+{
+	if (left != nullptr)
+		delete left;
+	if (right != nullptr)
+		delete right;
+}
 bool DrainageNetworkNode::checkLocalChannelMaintenance(const Mesh& basinMesh, double channelMaintenance) const
 {
 	Mesh::Scalar dP0 = calculateFaceArea(basinMesh, basinMesh.face_handle(hedgeH));
@@ -20,10 +26,10 @@ bool DrainageNetworkNode::insertChannel(const Mesh& basinMesh, double channelMai
 {
 	if (!checkLocalChannelMaintenance(basinMesh, channelMaintenance))
 	{
-		double junction = fatherTree.meanJunction + fatherTree.deltaJunction * ((double) rand() / RAND_MAX);
+		double junction = parentTree.meanJunction + parentTree.deltaJunction * ((double) rand() / RAND_MAX);
 		bool leftUpstream = false;
 		// check reaches
-		DrainageNetworkTree::BasinPart partOfBasin = fatherTree.basinPart(basinMesh.point(basinMesh.from_vertex_handle(hedgeH)));
+		DrainageNetworkTree::BasinPart partOfBasin = parentTree.basinPart(basinMesh.point(basinMesh.from_vertex_handle(hedgeH)));
 
 		if (partOfBasin == DrainageNetworkTree::BasinPart::MIDDLE)
 		{
@@ -36,10 +42,10 @@ bool DrainageNetworkNode::insertChannel(const Mesh& basinMesh, double channelMai
 				leftUpstream = true;
 		}
 
-		double exteriorLength = fatherTree.meanLength + fatherTree.deltaLength * ((double) rand() / RAND_MAX);
+		double exteriorLength = parentTree.meanLength + parentTree.deltaLength * ((double) rand() / RAND_MAX);
 		parametricLength = junction;
-		DrainageNetworkNode* upstream = new DrainageNetworkNode(fatherTree, this, basinMesh, (1.0 - junction)*parametricLength);
-		DrainageNetworkNode* exteriorLink = new DrainageNetworkNode(fatherTree, this, basinMesh, exteriorLength);
+		DrainageNetworkNode* upstream = new DrainageNetworkNode(parentTree, this, basinMesh, (1.0 - junction)*parametricLength);
+		DrainageNetworkNode* exteriorLink = new DrainageNetworkNode(parentTree, this, basinMesh, exteriorLength);
 		upstream->left = left;
 		upstream->right = right;
 		upstream->shreveOrder = shreveOrder;
@@ -92,9 +98,9 @@ void DrainageNetworkNode::recalculateBasinMesh(Mesh& basinMesh, Mesh::HalfedgeHa
 		debugMesh(debugi++, basinMesh);
 		// also deletes faces
 		//basinMesh.delete_edge(tmpEh, false);
-		double SD = fatherTree.meanLength * pow((2 * shreveOrder - 1), -0.6);
-		double SL = fatherTree.meanLength * pow((2 * left->shreveOrder - 1), -0.6);
-		double SR = fatherTree.meanLength * pow((2 * right->shreveOrder - 1), -0.6);
+		double SD = parentTree.meanLength * pow((2 * shreveOrder - 1), -0.6);
+		double SL = parentTree.meanLength * pow((2 * left->shreveOrder - 1), -0.6);
+		double SR = parentTree.meanLength * pow((2 * right->shreveOrder - 1), -0.6);
 		double EL = acos(SD / SL);
 		double ER = acos(SD / SR);
 		Mesh::HalfedgeHandle rightLinkEdge = addEdge(basinMesh, heh, -ER);
@@ -161,14 +167,6 @@ double DrainageNetworkNode::getValleySlopeR()
 		valleySlopeR = ((double) rand() / RAND_MAX) * M_PI_2 * 0.9 + 0.01;
 	return valleySlopeR;
 }
-
-DrainageNetworkNode::~DrainageNetworkNode()
-{
-	if (left != nullptr)
-		delete left;
-	if (right != nullptr)
-		delete right;
-}
 Mesh::Scalar DrainageNetworkNode::length(const Mesh& basinMesh) const
 {
 	return basinMesh.calc_edge_length(hedgeH);
@@ -184,21 +182,6 @@ Mesh::Scalar DrainageNetworkNode::lengthIncSub(const Mesh& basinMesh) const
 		return length(basinMesh) + right->lengthIncSub(basinMesh);
 	return length(basinMesh);
 }
-//int DrainageNetworkNode::recalculateShreveOrder()
-//{
-//	shreveOrder = 0;
-//	// source drainage
-//	if (left == nullptr && right == nullptr)
-//	{
-//		shreveOrder = 1;
-//		return 1;
-//	}
-//	if (left != nullptr)
-//		shreveOrder += left->recalculateShreveOrder();
-//	if (right != nullptr)
-//		shreveOrder += right->recalculateShreveOrder();
-//	return shreveOrder;
-//}
 
 // ------------- DrainageNetworkNode --------------
 
@@ -207,8 +190,6 @@ DrainageNetworkTree::DrainageNetworkTree(const Mesh& basinMesh, Mesh::HalfedgeHa
 		channelMaintenance(channelMaintenance), meanJunction(meanJunction), deltaJunction(deltaJunction), meanLength(meanLength), deltaLength(deltaLength)
 {
 	root = new DrainageNetworkNode(*this, nullptr, basinMesh, 1, initLink);
-
-	// calculate the Face area of the connected polygons, since the initlink divides the basin, each halfedge HAS to have a connected face!
 	OpenMesh::Vec3f direction = basinMesh.calc_edge_vector(initLink).normalize();
 	OpenMesh::Vec3f directionPerpend = direction % OpenMesh::Vec3f(0, 0, 1);
 	upperLine[0] = direction * basinMesh.calc_edge_length(initLink) * upperStart;
@@ -226,13 +207,12 @@ DrainageNetworkTree::~DrainageNetworkTree()
 
 Mesh DrainageNetworkTree::buildDrainageNetwork(const Mesh& mesh, Mesh::HalfedgeHandle initLink)
 {
-	//Mesh drainageBasin = mesh;
 	Mesh calculatedMesh;
 	do
 	{
 		calculatedMesh = mesh;
 		root->recalculateBasinMesh(calculatedMesh, initLink);
-		debugMesh(debugi++, calculatedMesh);
+		//debugMesh(debugi++, calculatedMesh);
 	} while(root->insertChannel(calculatedMesh, channelMaintenance));
 	return calculatedMesh;
 }
