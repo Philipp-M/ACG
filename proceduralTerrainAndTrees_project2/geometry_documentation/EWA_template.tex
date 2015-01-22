@@ -223,8 +223,16 @@ Angle for the drainage divide between stronger up link and down link.
 \item
 Angle for the drainage divide between weaker up link and down link.
 \end{itemize}
-
 For more details look at \cite{howard1971optimal} (page 6-8).
+\subsubsection{Calculation of the height}
+After the horizontal drainage basin is generated. The height information must be added.
+The calculation of the stream heights is done using a recursive algorithm, starting from the predefined outlet (root) at the base elevation. 
+Every recursive step uses following formula:
+\begin{align}
+h_{upstream} = h_{downstream} + S * L
+\end{align}
+Where $h_{upsteram}$ is the height of the current junction, $h_{downstream}$ is the height of the downstream junction, $S$ is the slope tangents and $L$ is the length of the current link.\\
+The height of the valley sidewalls are calculated with a similar model using the slope tangents of the valleys. 
 
 \subsection{Implementation Detail}
 The Implementation is done with a (binary-)tree like structure, where the root
@@ -234,9 +242,6 @@ The first part checks whether a link has to be inserted. If it will be inserted,
 another function recalculates the mesh based on the meta data saved in each
 node, like the parametric length or the shreve order.
 This loop continues until every sublink is saturated with its drainage area.
-
-\section{Results}
-
 
 %----------------------------------------------------------------------------------------
 % Bibliography
