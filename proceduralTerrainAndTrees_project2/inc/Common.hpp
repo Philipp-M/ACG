@@ -4,6 +4,10 @@
 #include <OpenMesh/Core/IO/MeshIO.hh>
 #include <string>
 
+/*
+ * Authors: Philipp Mildenberger, Stefan Spiss
+ */
+
 struct MyTraits : public OpenMesh::DefaultTraits
 {
 	VertexAttributes(OpenMesh::Attributes::Status);
@@ -13,7 +17,12 @@ struct MyTraits : public OpenMesh::DefaultTraits
 };
 
 typedef OpenMesh::PolyMesh_ArrayKernelT<MyTraits> Mesh;
+
 static int debugi = 0;
+
+/*
+ * method to debug the mesh, writes a obj file!
+ */
 inline void debugMesh(int i, const Mesh& mesh)
 {
 	try
@@ -49,6 +58,9 @@ inline Mesh::Scalar calculateFaceArea(const Mesh& mesh, Mesh::FaceHandle fh)
 	return retVal * 0.5;
 }
 
+/*
+ * splits the link given as the HalfedgeHandle at the parametricLength
+ */
 inline Mesh::HalfedgeHandle splitLinkInBasinMesh(Mesh& mesh, Mesh::HalfedgeHandle heh, double paramtricLength)
 {
 	double edgeLength = mesh.calc_edge_length(heh) * paramtricLength;
@@ -59,14 +71,23 @@ inline Mesh::HalfedgeHandle splitLinkInBasinMesh(Mesh& mesh, Mesh::HalfedgeHandl
 	return retVal;
 }
 
+/*
+ * add edge starting at the start point of the halfedge "heh" splitting the polygon with the angle "angle"
+ */
 inline Mesh::HalfedgeHandle addEdge(Mesh& mesh, Mesh::HalfedgeHandle heh, double angle)
 {
 	const double EPSILON = 10e-5;
 
-	//OpenMesh::Vec3f = OpenMesh::Vec3f(cos(angle), sin(angle), 0);
+	// vector for the edge direction
 	OpenMesh::Vec3f edgeDir = mesh.calc_edge_vector(heh).normalize();
+
+	// absolute angel of the edge
 	double angleEdge = acos(edgeDir[0]) * (edgeDir[1] >= 0 ? 1 : -1);
+
+	// direction vector for new edge
 	OpenMesh::Vec3f dir = OpenMesh::Vec3f(cos(angle + angleEdge), sin(angle + angleEdge), 0);
+
+	// getting the correct face
 	Mesh::HalfedgeHandle halfedge = (angle < 0 ? mesh.opposite_halfedge_handle(heh) : heh);
 	Mesh::FaceHandle fh = mesh.face_handle(halfedge);
 
@@ -75,9 +96,15 @@ inline Mesh::HalfedgeHandle addEdge(Mesh& mesh, Mesh::HalfedgeHandle heh, double
 	Mesh::Point pNew;
 	Mesh::HalfedgeHandle eNew;
 	Mesh::HalfedgeHandle startHalfEdge;
+
+	// two points on the line where the new edge should be
 	Mesh::Point pe1 = mesh.point(mesh.from_vertex_handle(heh));
 	Mesh::Point pe2 = pe1 + dir;
 
+	// iterating over all edges and check if intersection between the line through that edge
+	// and the line of the new edge
+	// if intersection -> check if in face and if its the nearest intersection
+	// if that is the case -> safe point and edge
 	for (; fh_it.is_valid(); ++fh_it)
 	{
 		if(mesh.point(mesh.to_vertex_handle(*fh_it)) == pe1)
@@ -96,23 +123,24 @@ inline Mesh::HalfedgeHandle addEdge(Mesh& mesh, Mesh::HalfedgeHandle heh, double
 			double length = (pInt - pe1).length();
 			if (length < minLength)
 			{
-
 				minLength = length;
 				pNew = pInt;
 				eNew = *fh_it;
 			}
 		}
 	}
-	std::cout << minLength << std::endl;
+
+	// if no intersection found, exit program
 	if(minLength == 10e20)
 	{
 		std::cerr << "Error: No intersection!!!" << std::endl;
 		exit(-1);
 	}
-	mesh.split_edge(mesh.edge_handle(eNew), mesh.add_vertex(pNew));
-	//debugMesh(99+debugi++,mesh);
 
+	// split edge where intersection is and insert new edge
+	mesh.split_edge(mesh.edge_handle(eNew), mesh.add_vertex(pNew));
 	Mesh::HalfedgeHandle toHalfEdge = eNew;
 	Mesh::HalfedgeHandle ehr = mesh.insert_edge(startHalfEdge, toHalfEdge);
+
 	return ehr;
 }

@@ -1,11 +1,14 @@
 #pragma once
-#include "DrainagePolygon.hpp"
 #include <vector>
 #include "Common.hpp"
+
+/*
+ * Authors: Philipp Mildenberger, Stefan Spiss
+ */
+
 class DrainageNetworkTree;
 class DrainageNetworkNode
 {
-	friend class DrainageBasin;
 	friend class DrainageNetworkTree;
 private:
 	/**
@@ -41,10 +44,6 @@ private:
 	 * and don't need any further splits
 	 */
 	bool checkLocalChannelMaintenance(const Mesh& basinMesh, double channelMaintenance) const;
-	/**
-	 * returns the length of this link and recursively all lengths of its child links
-	 */
-	Mesh::Scalar lengthIncSub(const Mesh& basinMesh) const;
 	/**
 	 * checks if there is a link where the channelMaintenance is smaller than A/L if it is smaller a channel
 	 * will be inserted and true will be returned, if no channel is inserted(and false returned), the drainage system is saturated
